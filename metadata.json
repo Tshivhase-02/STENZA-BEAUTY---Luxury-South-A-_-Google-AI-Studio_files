@@ -1,0 +1,6 @@
+{
+  "name": "STENZA BEAUTY - Luxury South African Beauty Marketplace",
+  "description": "Discover, book, and experience South Africa's premier beauty artisans, luxury hair salons, nail studios, and wellness specialists.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
