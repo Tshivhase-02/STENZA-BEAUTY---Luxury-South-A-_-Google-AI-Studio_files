@@ -65,7 +65,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocationModal 
                   <span className="font-bold text-xs">TT</span>
                 </a>
                 <a
-                  href="https://wa.me/27824591084"
+                  href="https://wa.me/27608164224"
                   target="_blank"
                   rel="noreferrer"
                   className="w-8 h-8 rounded-full bg-emerald-900 hover:bg-emerald-700 flex items-center justify-center text-white transition cursor-pointer"
@@ -79,13 +79,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocationModal 
             {/* Direct WhatsApp Concierge hotline */}
             <div className="pt-2">
               <a 
-                href="https://wa.me/27824591084?text=Hi%20STENZA%20Concierge,%20I%20would%20like%20assistance%20with%20a%20booking"
+                href="https://wa.me/27608164224?text=Hi%20STENZA%20Concierge,%20I%20would%20like%20assistance%20with%20a%20booking"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-emerald-950/60 border border-emerald-700/50 text-emerald-300 text-xs font-medium hover:bg-emerald-900/60 transition-colors"
               >
                 <span className="material-symbols-outlined text-[18px] text-emerald-400">chat</span>
-                <span>Mzansi Concierge: +27 82 459 1084</span>
+                <span>Mzansi Concierge: +27 60 816 4224</span>
               </a>
             </div>
           </div>

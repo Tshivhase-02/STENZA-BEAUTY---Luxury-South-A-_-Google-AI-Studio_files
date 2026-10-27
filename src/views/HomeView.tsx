@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PROVIDERS, Provider, CITIES_DATA } from '../data/beautyData';
+import { adminService } from '../services/adminService';
 import { 
   Search, 
   MapPin, 
@@ -282,6 +283,40 @@ export const HomeView: React.FC<HomeViewProps> = ({
   // FAQ Expand state (Tracks which index is open)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
+  // Dynamically sourced featured studios from Admin Advertising Management
+  const activeFeaturedAdminStudios = adminService.getActiveApprovedFeaturedStudios();
+  const displayFeaturedStudios: Provider[] = activeFeaturedAdminStudios.length > 0 
+    ? activeFeaturedAdminStudios.map(fs => {
+        const match = PROVIDERS.find(p => p.id === fs.id);
+        if (match) return match;
+        return {
+          id: fs.id,
+          name: fs.businessName,
+          founder: fs.founderName,
+          city: fs.city,
+          suburb: fs.suburb,
+          address: fs.address,
+          rating: fs.rating || 5.0,
+          reviewCount: fs.reviewCount || 0,
+          startingPrice: 350,
+          coverImage: fs.coverUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80',
+          avatar: fs.logoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+          categories: [fs.category],
+          headline: `${fs.category} Specialist in ${fs.suburb}`,
+          bio: fs.adminNotes || 'Premier verified beauty studio.',
+          offersMobile: fs.offersHouseCalls,
+          travelFee: fs.travelFee || 150,
+          services: [],
+          amenities: ['Verified Accreditation', 'Escrow Protected'],
+          openingHours: [{ day: 'Mon - Sat', hours: '09:00 - 18:00' }],
+          reviews: [],
+          ratingBreakdown: { hygiene: 5.0, punctuality: 4.9, technique: 5.0, hospitality: 4.9 },
+          gallery: [fs.coverUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80'],
+          verified: true
+        } as unknown as Provider;
+      })
+    : PROVIDERS.slice(0, 5);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onNavigate('discover');
@@ -510,7 +545,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
         {/* Studios Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROVIDERS.slice(0, 5).map((studio) => (
+          {displayFeaturedStudios.map((studio) => (
             <div
               key={studio.id}
               className="bg-white rounded-3xl border border-stone-200/90 shadow-xs hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col justify-between group"

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { PROVIDERS, Provider, CATEGORIES } from '../data/beautyData';
+import { adminService } from '../services/adminService';
 
 interface DiscoverViewProps {
   onNavigate: (view: string, providerId?: string) => void;
@@ -25,6 +26,12 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
 
   const filteredProviders = useMemo(() => {
     return PROVIDERS.filter((pro) => {
+      // Exclude suspended, disabled, or deleted studios from public search
+      const adminRecord = adminService.getStudioById(pro.id);
+      if (adminRecord && (adminRecord.isDeleted || adminRecord.operationalStatus === 'suspended' || adminRecord.operationalStatus === 'disabled' || adminRecord.approvalStatus === 'rejected')) {
+        return false;
+      }
+
       // Category filter
       if (selectedCategory !== 'All') {
         const matchesCat = pro.categories.some((c) =>

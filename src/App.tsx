@@ -32,6 +32,7 @@ import { StudioPreviewView } from './views/artisan/StudioPreviewView';
 // Data models & Seed Data
 import { INITIAL_BOOKINGS, Booking, BeautyProduct } from './data/beautyData';
 import { calculateLoyaltySummary, LoyaltyReward } from './data/loyaltyData';
+import { adminService } from './services/adminService';
 import { 
   INITIAL_APPLICATIONS, 
   INITIAL_STUDIOS, 
@@ -212,6 +213,20 @@ export default function App() {
       [newApp.studioId]: newStudio,
     }));
 
+    // Register into comprehensive adminService directory (with PENDING status)
+    adminService.registerNewStudio({
+      id: newApp.studioId,
+      businessName: newApp.businessName,
+      founderName: newApp.applicantName,
+      category: newApp.category,
+      city: newApp.city,
+      suburb: newApp.suburb,
+      address: newApp.address,
+      email: newApp.email,
+      phone: newApp.phone,
+      idNumber: newApp.idNumber
+    });
+
     setCurrentView('application_submitted');
   };
 
@@ -222,6 +237,11 @@ export default function App() {
     reason: string,
     reviewedBy: string
   ) => {
+    // Synchronize approval status with adminService
+    const matchedApp = applications.find((a) => a.id === appId);
+    if (matchedApp) {
+      adminService.updateApprovalStatus(matchedApp.studioId, newStatus, reason);
+    }
     const now = new Date().toLocaleDateString('en-ZA', {
       day: 'numeric',
       month: 'short',
@@ -580,6 +600,9 @@ export default function App() {
             redeemedPoints={redeemedPoints}
             onOpenLoyaltyModal={() => setLoyaltyModalOpen(true)}
             isLoggedIn={isLoggedIn}
+            currentUserName={clientName}
+            currentUserEmail="naledi.mokwena@stenzabeauty.co.za"
+            currentUserId="usr-client-01"
           />
         )}
 
@@ -592,6 +615,11 @@ export default function App() {
             onCancelBooking={handleCancelBooking}
             redeemedPoints={redeemedPoints}
             onOpenLoyaltyModal={() => setLoyaltyModalOpen(true)}
+            isLoggedIn={isLoggedIn}
+            currentUserName={clientName}
+            currentUserEmail="naledi.mokwena@stenzabeauty.co.za"
+            currentUserId="usr-client-01"
+            onRequireLogin={() => handleNavigate('auth', undefined, 'login')}
           />
         )}
 

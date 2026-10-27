@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { PROVIDERS, Provider, ServiceItem, Booking } from '../data/beautyData';
 import { calculateLoyaltySummary, AVAILABLE_REWARDS } from '../data/loyaltyData';
+import { ReportStudioModal } from '../components/ReportStudioModal';
+import { adminService } from '../services/adminService';
 
 interface ProfileViewProps {
   providerId: string;
@@ -10,6 +12,9 @@ interface ProfileViewProps {
   redeemedPoints: number;
   onOpenLoyaltyModal: () => void;
   isLoggedIn?: boolean;
+  currentUserName?: string;
+  currentUserEmail?: string;
+  currentUserId?: string;
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({
@@ -20,6 +25,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   redeemedPoints,
   onOpenLoyaltyModal,
   isLoggedIn = false,
+  currentUserName = 'Naledi Mokwena',
+  currentUserEmail = 'naledi.mokwena@stenzabeauty.co.za',
+  currentUserId = 'usr-client-01',
 }) => {
   const provider: Provider = PROVIDERS.find((p) => p.id === providerId) || PROVIDERS[0];
 
@@ -30,6 +38,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [activeTab, setActiveTab] = useState<'services' | 'loyalty' | 'portfolio' | 'reviews' | 'about'>('services');
   const [selectedImageModal, setSelectedImageModal] = useState<string | null>(null);
   const [applyLoyaltyDiscount, setApplyLoyaltyDiscount] = useState<boolean>(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+
+  // Administrative Moderation Status Check
+  const adminStudio = adminService.getStudioById(provider.id);
+  const isSuspended = adminStudio?.operationalStatus === 'suspended' || adminStudio?.operationalStatus === 'disabled' || adminStudio?.isDeleted;
+  const isUnderReview = adminStudio?.operationalStatus === 'under_review';
 
   const activeService: ServiceItem | undefined =
     provider.services.find((s) => s.id === selectedServiceId) || provider.services[0];
@@ -85,10 +99,21 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <span>{loyaltySummary.availablePoints} Loyalty Pts</span>
             </button>
 
-            <span className="px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-xs font-semibold text-emerald-300 flex items-center gap-1">
+            <span className="px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-xs font-semibold text-emerald-300 hidden md:flex items-center gap-1">
               <span className="material-symbols-outlined text-[14px]">verified</span>
               <span>STENZA Escrow Verified</span>
             </span>
+
+            {/* Clearly visible Report Studio button on mobile and desktop */}
+            <button
+              onClick={() => setIsReportModalOpen(true)}
+              className="px-3 py-1.5 rounded-full bg-black/40 hover:bg-rose-950/80 hover:text-rose-200 backdrop-blur-md text-xs font-semibold text-stone-200 flex items-center gap-1.5 transition-colors border border-white/10 cursor-pointer"
+              title="Report this studio or safety concern"
+            >
+              <span className="material-symbols-outlined text-[15px] text-rose-400">flag</span>
+              <span className="hidden sm:inline">Report Studio</span>
+              <span className="sm:hidden">Report</span>
+            </button>
           </div>
         </div>
 
@@ -623,6 +648,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           {/* Right Column: Sticky Booking Concierge Card with Loyalty Redemption */}
           <div className="lg:col-span-4">
             <div className="sticky top-24 bg-white p-6 rounded-3xl border border-[#e5e0d8] shadow-xl space-y-5">
+              {isSuspended && (
+                <div className="p-3.5 bg-rose-50 border border-rose-300 rounded-2xl text-xs text-rose-800 space-y-1">
+                  <div className="flex items-center gap-1.5 font-bold text-rose-900">
+                    <span className="material-symbols-outlined text-[16px]">warning</span>
+                    <span>Studio Listing Restricted</span>
+                  </div>
+                  <p className="text-[11px] leading-relaxed">
+                    This studio profile is currently suspended under STENZA Marketplace Moderation policies. New appointments are temporarily paused.
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-center justify-between pb-3 border-b border-[#f0ede6]">
                 <div className="text-xs font-serif font-bold text-[#26152d]">
                   Quick Concierge Reservation
@@ -785,39 +822,73 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
               {/* Action Buttons */}
               <div className="space-y-2">
-                <button
-                  onClick={() => {
-                    if (!isLoggedIn) {
-                      onNavigate('auth', undefined, 'login');
-                    } else {
-                      onOpenBookingModal(provider.id, selectedServiceId, discountAmount);
-                    }
-                  }}
-                  className="w-full py-3.5 rounded-xl bg-[#695684] hover:bg-[#584572] text-white text-xs font-semibold shadow-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[16px]">calendar_month</span>
-                  <span>Request This Appointment</span>
-                </button>
+                {isSuspended ? (
+                  <div className="p-3 bg-stone-100 rounded-xl text-center text-stone-500 text-xs font-semibold">
+                    Appointments Disabled During Compliance Review
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        if (!isLoggedIn) {
+                          onNavigate('auth', undefined, 'login');
+                        } else {
+                          onOpenBookingModal(provider.id, selectedServiceId, discountAmount);
+                        }
+                      }}
+                      className="w-full py-3.5 rounded-xl bg-[#695684] hover:bg-[#584572] text-white text-xs font-semibold shadow-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">calendar_month</span>
+                      <span>Request This Appointment</span>
+                    </button>
 
-                <a
-                  href={`https://wa.me/27824591084?text=Hi%20${provider.founder},%20I'm%20viewing%20${provider.name}%20on%20STENZA%20Beauty%20and%20interested%20in%20${activeService?.name}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <span className="material-symbols-outlined text-[16px] text-emerald-600">chat</span>
-                  <span>Instant WhatsApp Artisan Inquiry</span>
-                </a>
+                    <a
+                      href={`https://wa.me/27824591084?text=Hi%20${provider.founder},%20I'm%20viewing%20${provider.name}%20on%20STENZA%20Beauty%20and%20interested%20in%20${activeService?.name}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <span className="material-symbols-outlined text-[16px] text-emerald-600">chat</span>
+                      <span>Instant WhatsApp Artisan Inquiry</span>
+                    </a>
+                  </>
+                )}
               </div>
 
               <div className="text-[10px] text-gray-500 text-center flex items-center justify-center gap-1">
                 <span className="material-symbols-outlined text-[12px] text-emerald-600">shield</span>
                 <span>Protected by STENZA South Africa Escrow & POPIA Act</span>
               </div>
+
+              {/* Customer Report Concern Trigger */}
+              <div className="pt-2 border-t border-[#f0ede6] text-center">
+                <button
+                  type="button"
+                  onClick={() => setIsReportModalOpen(true)}
+                  className="text-[11px] text-rose-600 hover:text-rose-800 font-semibold inline-flex items-center gap-1 cursor-pointer hover:underline transition"
+                >
+                  <span className="material-symbols-outlined text-[14px]">flag</span>
+                  <span>Report this studio or pricing concern</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Customer Report Modal */}
+      <ReportStudioModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        studioId={provider.id}
+        studioName={provider.name}
+        isLoggedIn={isLoggedIn}
+        currentUserName={currentUserName}
+        currentUserEmail={currentUserEmail}
+        currentUserId={currentUserId}
+        onRequireLogin={() => onNavigate('auth', undefined, 'login')}
+        onViewMyReports={() => onNavigate('bookings')}
+      />
 
       {/* Image Modal */}
       {selectedImageModal && (
