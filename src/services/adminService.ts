@@ -471,6 +471,151 @@ const INITIAL_APPEALS: StudioAppeal[] = [
   }
 ];
 
+// Initial Seed Promotions (South African marketplace offers)
+const INITIAL_PROMOTIONS: StudioPromotion[] = [
+  {
+    id: 'PRM-2026-01',
+    studioId: 'luxe-nail-studio',
+    studioName: 'Luxe Nail Studio',
+    studioImage: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80',
+    studioCategory: 'Nails',
+    title: 'Spring Gel Mani + Pedi Duo Special',
+    shortDescription: 'Enjoy a complete Russian manicure with bespoke cuticle therapy and deluxe gel pedicure.',
+    discountBadge: '20% OFF',
+    originalPrice: 650,
+    promotionalPrice: 520,
+    startDate: '2026-10-15',
+    expiryDate: '2026-11-20',
+    termsAndConditions: 'Valid on weekdays only between 09:00 and 15:00. Advance booking required. Cannot be combined with loyalty points discount.',
+    serviceId: 'srv-1',
+    isPublished: true,
+    approvalStatus: 'approved',
+    section: 'special_offers',
+    featuredOrder: 1,
+    createdAt: '2026-10-15T08:00:00Z'
+  },
+  {
+    id: 'PRM-2026-02',
+    studioId: 'crown-braids-lounge',
+    studioName: 'Crown & Coiffure Braiding Lounge',
+    studioImage: '/assets/aistudio/Media__7__14ebe8b0.jpg',
+    studioCategory: 'Hair',
+    title: 'Signature Mzansi Knotless Braids + Scalp Treatment',
+    shortDescription: 'Precision stitch braiding including botanical scalp therapy, steaming, and edge definition.',
+    discountBadge: 'R180 OFF',
+    originalPrice: 850,
+    promotionalPrice: 670,
+    startDate: '2026-10-18',
+    expiryDate: '2026-11-25',
+    termsAndConditions: 'Includes hypoallergenic synthetic extensions. Natural hair wash included. Booking deposit required.',
+    isPublished: true,
+    approvalStatus: 'approved',
+    section: 'special_offers',
+    featuredOrder: 2,
+    createdAt: '2026-10-18T10:00:00Z'
+  },
+  {
+    id: 'PRM-2026-03',
+    studioId: 'afro-botanics-lounge',
+    studioName: 'Afro Botanics Natural Hair Lounge',
+    studioImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80',
+    studioCategory: 'Hair',
+    title: 'New Studio Spotlight: Complimentary Hydration Treatment',
+    shortDescription: 'Newly accredited boutique salon in Camps Bay welcoming clients with pure Marula oil deep conditioning.',
+    discountBadge: 'NEW STUDIO',
+    originalPrice: 450,
+    promotionalPrice: 320,
+    startDate: '2026-10-20',
+    expiryDate: '2026-12-10',
+    termsAndConditions: 'Available for first-time visitors to Afro Botanics. Limited to 20 clients per week.',
+    isPublished: true,
+    approvalStatus: 'approved',
+    section: 'new_studios',
+    featuredOrder: 3,
+    createdAt: '2026-10-20T11:00:00Z'
+  },
+  {
+    id: 'PRM-2026-04',
+    studioId: 'luxe-nail-studio',
+    studioName: 'Luxe Nail Studio',
+    studioImage: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80',
+    studioCategory: 'Nails',
+    title: 'House-Call Travel Fee Waived: Sandton & Rosebank',
+    shortDescription: 'Book mobile beauty services directly to your home or office with zero travel fee on Tuesdays & Thursdays.',
+    discountBadge: 'FREE TRAVEL',
+    originalPrice: 150,
+    promotionalPrice: 0,
+    startDate: '2026-10-22',
+    expiryDate: '2026-11-15',
+    termsAndConditions: 'Applies to mobile bookings of R450 or more within a 15km radius of Sandton Central.',
+    isPublished: true,
+    approvalStatus: 'approved',
+    section: 'latest_updates',
+    featuredOrder: 4,
+    createdAt: '2026-10-22T09:00:00Z'
+  },
+  {
+    id: 'PRM-2026-05',
+    studioId: 'velvet-lash-atelier',
+    studioName: 'Velvet Lash & Brow Atelier',
+    studioImage: 'https://images.unsplash.com/photo-1583001800475-4309e5c54cae?auto=format&fit=crop&w=600&q=80',
+    studioCategory: 'Lashes',
+    title: 'Weekend Flash: Volume Lash Full Set',
+    shortDescription: 'Limited weekend appointments available with lead lash stylist at an introductory promotional rate.',
+    discountBadge: 'ENDS SOON',
+    originalPrice: 750,
+    promotionalPrice: 580,
+    startDate: '2026-10-24',
+    expiryDate: '2026-10-31',
+    termsAndConditions: 'Flash promotion valid through this weekend only. Non-refundable R150 booking confirmation.',
+    isPublished: true,
+    approvalStatus: 'approved',
+    section: 'ending_soon',
+    featuredOrder: 5,
+    createdAt: '2026-10-24T12:00:00Z'
+  },
+  {
+    id: 'PRM-2026-06',
+    studioId: 'studio-nompu-dermal',
+    studioName: 'Nompumelelo Dermal Lab',
+    studioImage: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80',
+    studioCategory: 'Skincare',
+    title: 'Medical Micro-Needling Launch Offer',
+    shortDescription: 'Introductory pricing on collagen induction therapy with sterile peptide ampoules.',
+    discountBadge: '30% OFF',
+    originalPrice: 950,
+    promotionalPrice: 665,
+    startDate: '2026-11-01',
+    expiryDate: '2026-12-01',
+    termsAndConditions: 'Requires 48-hour pre-treatment consultation. Unsuitable for active acne.',
+    isPublished: false,
+    approvalStatus: 'pending',
+    section: 'special_offers',
+    featuredOrder: 6,
+    createdAt: '2026-10-26T15:00:00Z'
+  },
+  {
+    id: 'PRM-2026-EXPIRED',
+    studioId: 'luxe-nail-studio',
+    studioName: 'Luxe Nail Studio',
+    studioImage: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=600&q=80',
+    studioCategory: 'Nails',
+    title: 'Winter Warmth Paraffin Hand Spa',
+    shortDescription: 'Deep hydration paraffin bath and hand massage.',
+    discountBadge: 'EXPIRED',
+    originalPrice: 350,
+    promotionalPrice: 280,
+    startDate: '2026-08-01',
+    expiryDate: '2026-09-30',
+    termsAndConditions: 'Winter campaign expired.',
+    isPublished: true,
+    approvalStatus: 'approved',
+    section: 'special_offers',
+    featuredOrder: 99,
+    createdAt: '2026-08-01T00:00:00Z'
+  }
+];
+
 // Service Class
 class AdminService {
   private studios: AdminStudio[] = [];
@@ -478,6 +623,7 @@ class AdminService {
   private auditLogs: AuditLogEntry[] = [];
   private appeals: StudioAppeal[] = [];
   private notifications: StudioOwnerNotification[] = [];
+  private promotions: StudioPromotion[] = [];
 
   constructor() {
     this.initStorage();
@@ -496,11 +642,15 @@ class AdminService {
 
       const storedAppeals = localStorage.getItem(STORAGE_KEYS.APPEALS);
       this.appeals = storedAppeals ? JSON.parse(storedAppeals) : INITIAL_APPEALS;
+
+      const storedPromos = localStorage.getItem(STORAGE_KEYS.PROMOTIONS);
+      this.promotions = storedPromos ? JSON.parse(storedPromos) : INITIAL_PROMOTIONS;
     } catch (e) {
       this.studios = INITIAL_ADMIN_STUDIOS;
       this.reports = INITIAL_REPORTS;
       this.auditLogs = INITIAL_AUDIT_LOGS;
       this.appeals = INITIAL_APPEALS;
+      this.promotions = INITIAL_PROMOTIONS;
     }
   }
 
@@ -517,6 +667,14 @@ class AdminService {
       localStorage.setItem(STORAGE_KEYS.REPORTS, JSON.stringify(this.reports));
     } catch (e) {
       console.warn('LocalStorage error saving reports', e);
+    }
+  }
+
+  private savePromotions() {
+    try {
+      localStorage.setItem(STORAGE_KEYS.PROMOTIONS, JSON.stringify(this.promotions));
+    } catch (e) {
+      console.warn('LocalStorage error saving promotions', e);
     }
   }
 
@@ -1247,9 +1405,8 @@ class AdminService {
 
   // ================= PROMOTIONS & OFFERS MANAGEMENT =================
   public getPromotions(includeUnpublishedAndExpired = false): StudioPromotion[] {
-    const data = this.loadFromStorage<StudioPromotion[]>(STORAGE_KEYS.PROMOTIONS, INITIAL_PROMOTIONS);
     if (includeUnpublishedAndExpired) {
-      return data;
+      return [...this.promotions];
     }
 
     const today = new Date().toISOString().split('T')[0];
@@ -1259,7 +1416,7 @@ class AdminService {
         .map((s) => s.id)
     );
 
-    return data.filter((p) => {
+    return this.promotions.filter((p: StudioPromotion) => {
       // Must be published and approved
       if (!p.isPublished || p.approvalStatus !== 'approved') return false;
       // Must not be expired (expiryDate >= today)
@@ -1271,21 +1428,21 @@ class AdminService {
   }
 
   public getPromotionById(id: string): StudioPromotion | undefined {
-    const list = this.getPromotions(true);
-    return list.find((p) => p.id === id);
+    return this.promotions.find((p) => p.id === id);
   }
 
   public createPromotion(newPromoData: Omit<StudioPromotion, 'id' | 'createdAt'>): StudioPromotion {
-    const list = this.getPromotions(true);
     const newPromo: StudioPromotion = {
       ...newPromoData,
       id: `PRM-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
       createdAt: new Date().toISOString(),
     };
-    const updated = [newPromo, ...list];
-    this.saveToStorage(STORAGE_KEYS.PROMOTIONS, updated);
+    this.promotions.unshift(newPromo);
+    this.savePromotions();
 
-    this.logAuditEvent({
+    this.logAudit({
+      adminId: 'ADM-COMPLIANCE-01',
+      adminName: 'Govender M. (Compliance Desk)',
       action: 'STUDIO_FEATURED',
       targetType: 'promotion',
       targetId: newPromo.id,
@@ -1297,28 +1454,28 @@ class AdminService {
   }
 
   public updatePromotion(id: string, updates: Partial<StudioPromotion>): StudioPromotion | null {
-    const list = this.getPromotions(true);
-    const index = list.findIndex((p) => p.id === id);
+    const index = this.promotions.findIndex((p) => p.id === id);
     if (index === -1) return null;
 
-    const updatedItem = { ...list[index], ...updates };
-    list[index] = updatedItem;
-    this.saveToStorage(STORAGE_KEYS.PROMOTIONS, list);
+    const updatedItem = { ...this.promotions[index], ...updates };
+    this.promotions[index] = updatedItem;
+    this.savePromotions();
 
-    this.logAuditEvent({
+    this.logAudit({
+      adminId: 'ADM-COMPLIANCE-01',
+      adminName: 'Govender M. (Compliance Desk)',
       action: 'STUDIO_INFO_UPDATED',
       targetType: 'promotion',
       targetId: id,
       targetName: updatedItem.title,
-      reason: `Promotion updated`
+      reason: `Promotion "${updatedItem.title}" updated`
     });
 
     return updatedItem;
   }
 
   public togglePromotionPublished(id: string): { success: boolean; isPublished: boolean; message: string } {
-    const list = this.getPromotions(true);
-    const item = list.find((p) => p.id === id);
+    const item = this.promotions.find((p) => p.id === id);
     if (!item) return { success: false, isPublished: false, message: 'Promotion not found' };
 
     // Eligibility check
@@ -1332,9 +1489,11 @@ class AdminService {
     }
 
     item.isPublished = !item.isPublished;
-    this.saveToStorage(STORAGE_KEYS.PROMOTIONS, list);
+    this.savePromotions();
 
-    this.logAuditEvent({
+    this.logAudit({
+      adminId: 'ADM-COMPLIANCE-01',
+      adminName: 'Govender M. (Compliance Desk)',
       action: item.isPublished ? 'STUDIO_FEATURED' : 'STUDIO_UNFEATURED',
       targetType: 'promotion',
       targetId: id,
@@ -1350,24 +1509,25 @@ class AdminService {
   }
 
   public updatePromotionApproval(id: string, status: 'approved' | 'rejected'): boolean {
-    const list = this.getPromotions(true);
-    const item = list.find((p) => p.id === id);
+    const item = this.promotions.find((p) => p.id === id);
     if (!item) return false;
     item.approvalStatus = status;
     if (status === 'rejected') {
       item.isPublished = false;
     }
-    this.saveToStorage(STORAGE_KEYS.PROMOTIONS, list);
+    this.savePromotions();
     return true;
   }
 
   public deletePromotion(id: string): boolean {
-    const list = this.getPromotions(true);
-    const filtered = list.filter((p) => p.id !== id);
-    if (filtered.length === list.length) return false;
-    this.saveToStorage(STORAGE_KEYS.PROMOTIONS, filtered);
+    const filtered = this.promotions.filter((p) => p.id !== id);
+    if (filtered.length === this.promotions.length) return false;
+    this.promotions = filtered;
+    this.savePromotions();
 
-    this.logAuditEvent({
+    this.logAudit({
+      adminId: 'ADM-COMPLIANCE-01',
+      adminName: 'Govender M. (Compliance Desk)',
       action: 'STUDIO_SOFT_DELETED',
       targetType: 'promotion',
       targetId: id,
@@ -1379,149 +1539,5 @@ class AdminService {
   }
 }
 
-// Initial Seed Promotions (South African marketplace offers)
-const INITIAL_PROMOTIONS: StudioPromotion[] = [
-  {
-    id: 'PRM-2026-01',
-    studioId: 'luxe-nail-studio',
-    studioName: 'Luxe Nail Studio',
-    studioImage: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80',
-    studioCategory: 'Nails',
-    title: 'Spring Gel Mani + Pedi Duo Special',
-    shortDescription: 'Enjoy a complete Russian manicure with bespoke cuticle therapy and deluxe gel pedicure.',
-    discountBadge: '20% OFF',
-    originalPrice: 650,
-    promotionalPrice: 520,
-    startDate: '2026-10-15',
-    expiryDate: '2026-11-20',
-    termsAndConditions: 'Valid on weekdays only between 09:00 and 15:00. Advance booking required. Cannot be combined with loyalty points discount.',
-    serviceId: 'srv-1',
-    isPublished: true,
-    approvalStatus: 'approved',
-    section: 'special_offers',
-    featuredOrder: 1,
-    createdAt: '2026-10-15T08:00:00Z'
-  },
-  {
-    id: 'PRM-2026-02',
-    studioId: 'crown-braids-lounge',
-    studioName: 'Crown & Coiffure Braiding Lounge',
-    studioImage: '/assets/aistudio/Media__7__14ebe8b0.jpg',
-    studioCategory: 'Hair',
-    title: 'Signature Mzansi Knotless Braids + Scalp Treatment',
-    shortDescription: 'Precision stitch braiding including botanical scalp therapy, steaming, and edge definition.',
-    discountBadge: 'R180 OFF',
-    originalPrice: 850,
-    promotionalPrice: 670,
-    startDate: '2026-10-18',
-    expiryDate: '2026-11-25',
-    termsAndConditions: 'Includes hypoallergenic synthetic extensions. Natural hair wash included. Booking deposit required.',
-    isPublished: true,
-    approvalStatus: 'approved',
-    section: 'special_offers',
-    featuredOrder: 2,
-    createdAt: '2026-10-18T10:00:00Z'
-  },
-  {
-    id: 'PRM-2026-03',
-    studioId: 'afro-botanics-lounge',
-    studioName: 'Afro Botanics Natural Hair Lounge',
-    studioImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80',
-    studioCategory: 'Hair',
-    title: 'New Studio Spotlight: Complimentary Hydration Treatment',
-    shortDescription: 'Newly accredited boutique salon in Camps Bay welcoming clients with pure Marula oil deep conditioning.',
-    discountBadge: 'NEW STUDIO',
-    originalPrice: 450,
-    promotionalPrice: 320,
-    startDate: '2026-10-20',
-    expiryDate: '2026-12-10',
-    termsAndConditions: 'Available for first-time visitors to Afro Botanics. Limited to 20 clients per week.',
-    isPublished: true,
-    approvalStatus: 'approved',
-    section: 'new_studios',
-    featuredOrder: 3,
-    createdAt: '2026-10-20T11:00:00Z'
-  },
-  {
-    id: 'PRM-2026-04',
-    studioId: 'luxe-nail-studio',
-    studioName: 'Luxe Nail Studio',
-    studioImage: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80',
-    studioCategory: 'Nails',
-    title: 'House-Call Travel Fee Waived: Sandton & Rosebank',
-    shortDescription: 'Book mobile beauty services directly to your home or office with zero travel fee on Tuesdays & Thursdays.',
-    discountBadge: 'FREE TRAVEL',
-    originalPrice: 150,
-    promotionalPrice: 0,
-    startDate: '2026-10-22',
-    expiryDate: '2026-11-15',
-    termsAndConditions: 'Applies to mobile bookings of R450 or more within a 15km radius of Sandton Central.',
-    isPublished: true,
-    approvalStatus: 'approved',
-    section: 'latest_updates',
-    featuredOrder: 4,
-    createdAt: '2026-10-22T09:00:00Z'
-  },
-  {
-    id: 'PRM-2026-05',
-    studioId: 'velvet-lash-atelier',
-    studioName: 'Velvet Lash & Brow Atelier',
-    studioImage: 'https://images.unsplash.com/photo-1583001800475-4309e5c54cae?auto=format&fit=crop&w=600&q=80',
-    studioCategory: 'Lashes',
-    title: 'Weekend Flash: Volume Lash Full Set',
-    shortDescription: 'Limited weekend appointments available with lead lash stylist at an introductory promotional rate.',
-    discountBadge: 'ENDS SOON',
-    originalPrice: 750,
-    promotionalPrice: 580,
-    startDate: '2026-10-24',
-    expiryDate: '2026-10-31',
-    termsAndConditions: 'Flash promotion valid through this weekend only. Non-refundable R150 booking confirmation.',
-    isPublished: true,
-    approvalStatus: 'approved',
-    section: 'ending_soon',
-    featuredOrder: 5,
-    createdAt: '2026-10-24T12:00:00Z'
-  },
-  {
-    id: 'PRM-2026-06',
-    studioId: 'studio-nompu-dermal',
-    studioName: 'Nompumelelo Dermal Lab',
-    studioImage: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80',
-    studioCategory: 'Skincare',
-    title: 'Medical Micro-Needling Launch Offer',
-    shortDescription: 'Introductory pricing on collagen induction therapy with sterile peptide ampoules.',
-    discountBadge: '30% OFF',
-    originalPrice: 950,
-    promotionalPrice: 665,
-    startDate: '2026-11-01',
-    expiryDate: '2026-12-01',
-    termsAndConditions: 'Requires 48-hour pre-treatment consultation. Unsuitable for active acne.',
-    isPublished: false,
-    approvalStatus: 'pending',
-    section: 'special_offers',
-    featuredOrder: 6,
-    createdAt: '2026-10-26T15:00:00Z'
-  },
-  {
-    id: 'PRM-2026-EXPIRED',
-    studioId: 'luxe-nail-studio',
-    studioName: 'Luxe Nail Studio',
-    studioImage: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=600&q=80',
-    studioCategory: 'Nails',
-    title: 'Winter Warmth Paraffin Hand Spa',
-    shortDescription: 'Deep hydration paraffin bath and hand massage.',
-    discountBadge: 'EXPIRED',
-    originalPrice: 350,
-    promotionalPrice: 280,
-    startDate: '2026-08-01',
-    expiryDate: '2026-09-30',
-    termsAndConditions: 'Winter campaign expired.',
-    isPublished: true,
-    approvalStatus: 'approved',
-    section: 'special_offers',
-    featuredOrder: 99,
-    createdAt: '2026-08-01T00:00:00Z'
-  }
-];
-
 export const adminService = new AdminService();
+

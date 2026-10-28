@@ -107,6 +107,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocationModal 
                 </button>
               </li>
               <li>
+                <button onClick={() => onNavigate('offers')} className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5 text-amber-200">
+                  <span>✨ Updates & Offers</span>
+                </button>
+              </li>
+              <li>
                 <button onClick={() => onNavigate('how-it-works')} className="hover:text-white transition-colors cursor-pointer text-left">
                   How It Works
                 </button>

@@ -55,6 +55,7 @@ import {
   StudioReport, 
   AuditLogEntry, 
   StudioAppeal, 
+  StudioPromotion,
   ReportStatus, 
   ApprovalStatus, 
   OperationalStatus 
@@ -132,12 +133,20 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [previewDoc, setPreviewDoc] = useState<ArtisanDocument | null>(null);
 
+  // Promotions State
+  const [promotionsList, setPromotionsList] = useState<StudioPromotion[]>([]);
+  const [promotionsSubTab, setPromotionsSubTab] = useState<'offers' | 'featured_studios'>('offers');
+  const [promoSectionFilter, setPromoSectionFilter] = useState<string>('all');
+  const [promoStatusFilter, setPromoStatusFilter] = useState<string>('all');
+  const [promoSearch, setPromoSearch] = useState<string>('');
+
   // Reload data from adminService
   const refreshData = () => {
     setStudios(adminService.getStudios(true));
     setReports(adminService.getReports());
     setAuditLogs(adminService.getAuditLogs());
     setAppeals(adminService.getAppeals());
+    setPromotionsList(adminService.getPromotions(true));
   };
 
   useEffect(() => {
@@ -258,6 +267,50 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
     adminService.reorderFeatured(newOrder.map((s) => s.id));
     refreshData();
   };
+
+  // Handlers for Promotion Actions
+  const handleTogglePromotionPublished = (promo: StudioPromotion) => {
+    const res = adminService.togglePromotionPublished(promo.id);
+    if (!res.success) {
+      alert(res.message);
+    }
+    refreshData();
+  };
+
+  const handleApprovePromotion = (promoId: string) => {
+    adminService.updatePromotionApproval(promoId, 'approved');
+    adminService.togglePromotionPublished(promoId);
+    refreshData();
+  };
+
+  const handleDeletePromotion = (promo: StudioPromotion) => {
+    if (window.confirm(`Are you sure you want to remove promotion "${promo.title}"?`)) {
+      adminService.deletePromotion(promo.id);
+      refreshData();
+    }
+  };
+
+  // Filtered Promotions for Admin
+  const filteredPromotions = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
+    return promotionsList.filter((p) => {
+      const q = promoSearch.toLowerCase();
+      const matchesSearch = !q || p.title.toLowerCase().includes(q) || p.studioName.toLowerCase().includes(q);
+      const matchesSection = promoSectionFilter === 'all' || p.section === promoSectionFilter;
+      
+      let matchesStatus = true;
+      if (promoStatusFilter === 'published') {
+        matchesStatus = p.isPublished && p.approvalStatus === 'approved' && p.expiryDate >= today;
+      } else if (promoStatusFilter === 'unpublished') {
+        matchesStatus = !p.isPublished && p.approvalStatus === 'approved';
+      } else if (promoStatusFilter === 'expired') {
+        matchesStatus = p.expiryDate < today;
+      } else if (promoStatusFilter === 'pending') {
+        matchesStatus = p.approvalStatus === 'pending';
+      }
+      return matchesSearch && matchesSection && matchesStatus;
+    });
+  }, [promotionsList, promoSearch, promoSectionFilter, promoStatusFilter]);
 
   const handleOpenEnforcement = (studio: AdminStudio, type: EnforcementType) => {
     setEnforceStudio(studio);
@@ -1204,7 +1257,7 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
             </div>
           )}
 
-          {/* TAB 3: LANDING PAGE PROMOTIONS */}
+          {/* TAB 3: LANDING PAGE & STOREFRONT PROMOTIONS */}
           {activeTab === 'promotions' && (
             <div className="space-y-6">
               {/* Promotion Header Banner */}
@@ -1212,15 +1265,15 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-bold uppercase tracking-wider">
-                      STOREFRONT ADVERTISING MANAGEMENT
+                      STOREFRONT & PROMOTIONS MANAGEMENT
                     </span>
-                    <span className="text-xs text-stone-400">Public Homepage Showcase</span>
+                    <span className="text-xs text-stone-400">Marketing & Storefront Display</span>
                   </div>
                   <h2 className="text-xl font-serif font-bold text-white">
-                    Featured Studios Showcase Manager
+                    Advertising, Deals & Landing Showcase
                   </h2>
                   <p className="text-xs text-stone-300 max-w-2xl mt-1">
-                    Control which approved beauty studios appear in the primary Featured Studios section of the customer landing page. Ineligible, unapproved, or suspended studios are automatically blocked from appearing.
+                    Manage public promotional deals, discount campaigns, and homepage featured studio positioning. Unapproved, suspended, or expired promotions are automatically blocked from public display.
                   </p>
                 </div>
 
@@ -1230,10 +1283,259 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
                     className="px-4 py-2.5 bg-[#b86b86] hover:bg-[#a25974] text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-md cursor-pointer"
                   >
                     <Eye className="w-4 h-4" />
-                    <span>Preview Landing Page</span>
+                    <span>Preview Storefront</span>
                   </button>
                 </div>
               </div>
+
+              {/* Sub-tab Navigation */}
+              <div className="flex items-center gap-3 border-b border-stone-200 pb-3">
+                <button
+                  onClick={() => setPromotionsSubTab('offers')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+                    promotionsSubTab === 'offers'
+                      ? 'bg-[#26152d] text-white shadow-xs'
+                      : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-50'
+                  }`}
+                >
+                  <Megaphone className="w-4 h-4" />
+                  <span>Special Offers & Discounts</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] ${
+                    promotionsSubTab === 'offers' ? 'bg-white/20 text-white' : 'bg-stone-100 text-stone-700'
+                  }`}>
+                    {promotionsList.length}
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => setPromotionsSubTab('featured_studios')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+                    promotionsSubTab === 'featured_studios'
+                      ? 'bg-[#26152d] text-white shadow-xs'
+                      : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-50'
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Homepage Featured Studios</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] ${
+                    promotionsSubTab === 'featured_studios' ? 'bg-white/20 text-white' : 'bg-stone-100 text-stone-700'
+                  }`}>
+                    {featuredStudios.length}
+                  </span>
+                </button>
+              </div>
+
+              {/* SUBTAB 1: SPECIAL OFFERS & DISCOUNTS */}
+              {promotionsSubTab === 'offers' && (
+                <div className="space-y-5">
+                  {/* Status / Metric Overview */}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div className="bg-white p-4 rounded-2xl border border-emerald-200 bg-emerald-50/20 shadow-xs">
+                      <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Live in Store</span>
+                      <div className="text-2xl font-serif font-bold text-emerald-900 mt-0.5">
+                        {promotionsList.filter(p => {
+                          const today = new Date().toISOString().split('T')[0];
+                          return p.isPublished && p.approvalStatus === 'approved' && p.expiryDate >= today;
+                        }).length}
+                      </div>
+                      <p className="text-[11px] text-emerald-700 mt-1">Visible on Updates & Offers page</p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-2xl border border-amber-200 bg-amber-50/20 shadow-xs">
+                      <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider">Pending Review</span>
+                      <div className="text-2xl font-serif font-bold text-amber-900 mt-0.5">
+                        {promotionsList.filter(p => p.approvalStatus === 'pending').length}
+                      </div>
+                      <p className="text-[11px] text-amber-700 mt-1">Awaiting moderation approval</p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs">
+                      <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Unpublished Drafts</span>
+                      <div className="text-2xl font-serif font-bold text-stone-800 mt-0.5">
+                        {promotionsList.filter(p => !p.isPublished && p.approvalStatus === 'approved').length}
+                      </div>
+                      <p className="text-[11px] text-stone-500 mt-1">Approved but paused by admin/studio</p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-2xl border border-rose-200 bg-rose-50/20 shadow-xs">
+                      <span className="text-[10px] font-bold text-rose-700 uppercase tracking-wider">Expired Deals</span>
+                      <div className="text-2xl font-serif font-bold text-rose-900 mt-0.5">
+                        {promotionsList.filter(p => p.expiryDate < new Date().toISOString().split('T')[0]).length}
+                      </div>
+                      <p className="text-[11px] text-rose-700 mt-1">Automatically hidden from clients</p>
+                    </div>
+                  </div>
+
+                  {/* Filter and Search Bar */}
+                  <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div className="sm:col-span-6 relative">
+                      <Search className="w-4 h-4 absolute left-3 top-3 text-stone-400" />
+                      <input
+                        type="text"
+                        placeholder="Search promotions by title or studio name..."
+                        value={promoSearch}
+                        onChange={(e) => setPromoSearch(e.target.value)}
+                        className="w-full pl-9 pr-3 py-2 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-3">
+                      <select
+                        value={promoSectionFilter}
+                        onChange={(e) => setPromoSectionFilter(e.target.value)}
+                        className="w-full py-2 px-3 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                      >
+                        <option value="all">All Placement Sections</option>
+                        <option value="special_offers">Special Offers & Discounts</option>
+                        <option value="new_studios">New Studios Spotlight</option>
+                        <option value="ending_soon">Promotions Ending Soon</option>
+                        <option value="latest_updates">Latest Studio Updates</option>
+                      </select>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                      <select
+                        value={promoStatusFilter}
+                        onChange={(e) => setPromoStatusFilter(e.target.value)}
+                        className="w-full py-2 px-3 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                      >
+                        <option value="all">All Statuses</option>
+                        <option value="published">Live & Published</option>
+                        <option value="unpublished">Unpublished / Paused</option>
+                        <option value="pending">Pending Approval</option>
+                        <option value="expired">Expired (Hidden)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Promotions Table / List */}
+                  <div className="bg-white rounded-2xl border border-stone-200 shadow-xs overflow-hidden">
+                    <div className="p-4 bg-stone-50 border-b border-stone-200 flex items-center justify-between">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700">
+                        Registered Promotions Queue ({filteredPromotions.length})
+                      </h3>
+                      <span className="text-[11px] text-stone-500">
+                        Spring Boot API Contract: <code className="text-[#b86b86]">/api/admin/promotions/**</code>
+                      </span>
+                    </div>
+
+                    {filteredPromotions.length === 0 ? (
+                      <div className="p-12 text-center text-stone-400 text-xs">
+                        No promotions match the current filter criteria.
+                      </div>
+                    ) : (
+                      <div className="divide-y divide-stone-100">
+                        {filteredPromotions.map((promo) => {
+                          const today = new Date().toISOString().split('T')[0];
+                          const isExpired = promo.expiryDate < today;
+                          const isLive = promo.isPublished && promo.approvalStatus === 'approved' && !isExpired;
+
+                          return (
+                            <div key={promo.id} className="p-4 hover:bg-stone-50/60 transition flex flex-col md:flex-row md:items-center justify-between gap-4">
+                              <div className="flex items-start gap-4">
+                                <img
+                                  src={promo.studioImage}
+                                  alt={promo.studioName}
+                                  className="w-16 h-16 rounded-xl object-cover border border-stone-200 shrink-0"
+                                />
+                                <div className="space-y-1">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="font-mono text-[10px] font-bold text-stone-400 bg-stone-100 px-1.5 py-0.5 rounded">
+                                      {promo.id}
+                                    </span>
+                                    <h4 className="font-bold text-sm text-[#26152d]">{promo.title}</h4>
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#b86b86]/10 text-[#b86b86] border border-[#b86b86]/30">
+                                      {promo.discountBadge}
+                                    </span>
+                                  </div>
+
+                                  <p className="text-xs text-stone-600 line-clamp-1">
+                                    {promo.shortDescription}
+                                  </p>
+
+                                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-stone-500">
+                                    <span>Studio: <strong className="text-stone-800">{promo.studioName}</strong> ({promo.studioCategory})</span>
+                                    <span>•</span>
+                                    <span>Valid: <strong>{promo.startDate}</strong> to <strong className={isExpired ? 'text-rose-600 font-bold' : ''}>{promo.expiryDate}</strong></span>
+                                    {promo.promotionalPrice && (
+                                      <>
+                                        <span>•</span>
+                                        <span>Price: <strong className="text-emerald-700">R{promo.promotionalPrice}</strong> {promo.originalPrice && <span className="line-through text-stone-400">R{promo.originalPrice}</span>}</span>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-3 self-end md:self-center shrink-0">
+                                {/* Status Badge */}
+                                {isExpired ? (
+                                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-stone-100 text-stone-600 border border-stone-300">
+                                    Expired (Auto-hidden)
+                                  </span>
+                                ) : promo.approvalStatus === 'pending' ? (
+                                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
+                                    Pending Review
+                                  </span>
+                                ) : isLive ? (
+                                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                                    <CheckCircle className="w-3 h-3 text-emerald-600" />
+                                    Live in Store
+                                  </span>
+                                ) : (
+                                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-stone-100 text-stone-600 border border-stone-200">
+                                    Unpublished
+                                  </span>
+                                )}
+
+                                {/* Approval Action for Pending */}
+                                {promo.approvalStatus === 'pending' && (
+                                  <button
+                                    onClick={() => handleApprovePromotion(promo.id)}
+                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs cursor-pointer"
+                                  >
+                                    Approve & Publish
+                                  </button>
+                                )}
+
+                                {/* Publish / Unpublish Toggle */}
+                                {promo.approvalStatus === 'approved' && (
+                                  <button
+                                    onClick={() => handleTogglePromotionPublished(promo)}
+                                    disabled={isExpired}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition border cursor-pointer ${
+                                      isExpired
+                                        ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
+                                        : promo.isPublished
+                                        ? 'bg-stone-50 hover:bg-stone-100 text-stone-700 border-stone-200'
+                                        : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
+                                    }`}
+                                  >
+                                    {promo.isPublished ? 'Unpublish' : 'Publish to Store'}
+                                  </button>
+                                )}
+
+                                {/* Delete Action */}
+                                <button
+                                  onClick={() => handleDeletePromotion(promo)}
+                                  className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                                  title="Delete Promotion"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* SUBTAB 2: HOMEPAGE FEATURED STUDIOS SHOWCASE */}
+              {promotionsSubTab === 'featured_studios' && (
+                <div className="space-y-6">
 
               {/* Status / Count Box */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1408,6 +1710,8 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
               </div>
             </div>
           )}
+        </div>
+      )}
 
           {/* TAB 4: REPORTS & COMPLAINTS */}
           {activeTab === 'reports' && (

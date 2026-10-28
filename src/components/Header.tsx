@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-3">
             <span className="inline-block w-2 h-2 rounded-full bg-[#d4af37] animate-pulse"></span>
             <span className="tracking-wide text-[11px] sm:text-xs">
-              South Africa’s Premier Beauty Marketplace 
+             South Africa’s Beauty & Wellness Marketplace
             </span>
           </div>
 
@@ -129,18 +129,38 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
 
-            <button
+                <button
+              onClick={() => onNavigate('offers')}
+              className={`transition-colors hover:text-[#b86b86] relative py-1 flex items-center gap-1.5 cursor-pointer ${
+                currentView === 'offers' ? 'text-[#b86b86] font-semibold' : 'text-[#26152d]'
+              }`}
+            >
+              <span>Updates & Offers</span>
+              <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-1.5 py-0.2 rounded-full border border-amber-300">
+                Deals
+              </span>
+              {currentView === 'offers' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#b86b86] rounded-full"></span>
+              )}
+            </button>
+
+             <button
               onClick={() => onNavigate('how-it-works')}
               className={`transition-colors hover:text-[#b86b86] relative py-1 ${
                 currentView === 'how-it-works' ? 'text-[#b86b86] font-semibold' : 'text-[#26152d]'
               }`}
             >
-              How It Works
+              
+              <span>How It Works</span>
               {currentView === 'how-it-works' && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#b86b86] rounded-full"></span>
               )}
             </button>
           </nav>
+          
+           
+
+        
 
           {/* Top-Right Corner: Login and Register buttons + Shopping Bag */}
           <div className="flex items-center gap-2.5 sm:gap-3">
@@ -274,7 +294,16 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => { onNavigate('how-it-works'); setMobileMenuOpen(false); }}
               className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
             >
-              How to Book
+              How It Works
+            </button>
+            <button
+              onClick={() => { onNavigate('offers'); setMobileMenuOpen(false); }}
+              className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
+            >
+              <span>Updates & Offers</span>
+              <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full border border-amber-300">
+                Deals
+              </span>
             </button>
 
             {isLoggedIn && (

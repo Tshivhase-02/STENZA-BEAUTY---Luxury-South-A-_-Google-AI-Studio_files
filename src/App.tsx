@@ -18,6 +18,7 @@ import { ProfileView } from './views/ProfileView';
 import { BookingsView } from './views/BookingsView';
 import { AuthView } from './views/AuthView';
 import { HowItWorksView } from './views/HowItWorksView';
+import { UpdatesAndOffersView } from './views/UpdatesAndOffersView';
 
 // Artisan & Admin Suite Views
 import { ArtisanRegistrationView } from './views/artisan/ArtisanRegistrationView';
@@ -647,6 +648,13 @@ export default function App() {
             onNavigate={handleNavigate}
             onAddToCart={handleAddToCart}
             onOpenBookingModal={() => handleOpenBookingModal()}
+          />
+        )}
+
+        {currentView === 'offers' && (
+          <UpdatesAndOffersView
+            onNavigate={handleNavigate}
+            onOpenBookingModal={(pId, sId) => handleOpenBookingModal(pId, sId)}
           />
         )}
 

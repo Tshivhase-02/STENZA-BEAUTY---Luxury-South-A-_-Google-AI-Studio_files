@@ -2,7 +2,7 @@
 
 @theme {
   --font-serif: "Playfair Display", Georgia, serif;
-  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   --color-primary: #695684;
   --color-primary-container: #b9a3d6;
   --color-on-primary: #ffffff;
