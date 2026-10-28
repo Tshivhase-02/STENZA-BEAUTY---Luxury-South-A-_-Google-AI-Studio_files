@@ -694,7 +694,7 @@ class AdminService {
     }
   }
 
-  private logAudit(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) {
+  public logAudit(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) {
     const newLog: AuditLogEntry = {
       ...entry,
       id: `AUD-${Math.floor(1000 + Math.random() * 9000)}`,

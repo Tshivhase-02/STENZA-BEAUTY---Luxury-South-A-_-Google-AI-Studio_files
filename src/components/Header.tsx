@@ -57,9 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
             ) : (
               <span className="text-[#b86b86] font-semibold">✨ 100% Escrow Protected</span>
             )}
-            <span className="text-[#695684]">|</span>
-            <span className="text-[#f6d9fb]">POPIA Compliant</span>
-            <span className="text-[#695684]">|</span>
+          
             <button
               onClick={() => onNavigate('admin_review')}
               className="text-stone-300 hover:text-emerald-300 transition-colors flex items-center gap-1 font-semibold hover:underline cursor-pointer bg-white/10 px-2 py-0.5 rounded"
@@ -109,12 +107,15 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             <button
-              onClick={() => onNavigate('discover')}
-              className={`transition-colors hover:text-[#b86b86] relative py-1 ${
+              onClick={() => onNavigate('categories')}
+              className={`transition-colors hover:text-[#b86b86] relative py-1 cursor-pointer ${
                 currentView === 'categories' ? 'text-[#b86b86] font-semibold' : 'text-[#26152d]'
               }`}
             >
               Categories
+              {currentView === 'categories' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#b86b86] rounded-full"></span>
+              )}
             </button>
 
             <button
@@ -151,7 +152,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               
-              <span>How It Works</span>
+              <span>Your Guide to STENZA</span>
               {currentView === 'how-it-works' && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#b86b86] rounded-full"></span>
               )}
@@ -278,8 +279,8 @@ export const Header: React.FC<HeaderProps> = ({
               Home
             </button>
             <button
-              onClick={() => { onNavigate('discover'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
+              onClick={() => { onNavigate('categories'); setMobileMenuOpen(false); }}
+              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors cursor-pointer"
             >
               Categories
             </button>
@@ -290,12 +291,7 @@ export const Header: React.FC<HeaderProps> = ({
             
               Explore Studios
             </button>
-            <button
-              onClick={() => { onNavigate('how-it-works'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
-            >
-              How It Works
-            </button>
+
             <button
               onClick={() => { onNavigate('offers'); setMobileMenuOpen(false); }}
               className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
@@ -305,6 +301,14 @@ export const Header: React.FC<HeaderProps> = ({
                 Deals
               </span>
             </button>
+
+            <button
+              onClick={() => { onNavigate('how-it-works'); setMobileMenuOpen(false); }}
+              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
+            >
+             Your Guide to STENZA
+            </button>
+           
 
             {isLoggedIn && (
               <button

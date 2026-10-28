@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StudioProfile } from '../../data/artisanWorkflowData';
+import { categoryService } from '../../services/categoryService';
 import { 
   Building, 
   MapPin, 
@@ -222,12 +223,15 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
                   onChange={(e) => setCategory(e.target.value)}
                   className="w-full text-sm px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86] bg-white"
                 >
-                  <option value="Nail Couture">Nail Couture & BIAB</option>
-                  <option value="Clinical Skincare">Clinical Skincare & Dermal Facials</option>
-                  <option value="Hair Artistry">Hair Artistry & Knotless Braids</option>
-                  <option value="Lash & Brow">Lash Extensions & Microblading</option>
-                  <option value="Gentlemen Grooming">Gentlemen Grooming & Barbering</option>
-                  <option value="Bridal & Glam">Bridal & Editorial Makeup</option>
+                  {/* Preserve current if legacy */}
+                  {!categoryService.getServiceCategories().some(c => c.name === category) && (
+                    <option value={category}>{category} (Current)</option>
+                  )}
+                  {categoryService.getServiceCategories().map((cat) => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.name} ({cat.group})
+                    </option>
+                  ))}
                 </select>
               </div>
 

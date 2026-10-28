@@ -221,6 +221,18 @@ export const ALL_CATEGORIES: StenzaCategory[] = [
     keywords: ['perfume', 'fragrance', 'body butter', 'body wash', 'lotion', 'scent', 'cologne']
   },
   {
+    id: 'herbal-wellness-products',
+    name: 'Herbal & Wellness Products',
+    shortDescription: 'Indigenous herbal teas, African botanical balms, bath salts and holistic remedies.',
+    group: 'Beauty & Personal Care Products',
+    type: 'PRODUCT',
+    icon: 'local_florist',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80',
+    isActive: true,
+    itemCountText: '75+ Remedies',
+    keywords: ['herbal', 'wellness', 'buchu', 'tea', 'balm', 'african ginger', 'bath salts', 'tincture']
+  },
+  {
     id: 'beauty-tools-equipment',
     name: 'Beauty Tools & Equipment',
     shortDescription: 'Styling irons, hair dryers, UV nail lamps, lash tweezers and makeup brushes.',
@@ -355,23 +367,37 @@ export function getCategoryById(id: string): StenzaCategory | undefined {
  * e.g. 'Luxury Hair' -> 'hair-styling', 'Nail Couture' -> 'nails', 'Skincare and Facials' -> 'skincare-facials'
  */
 export function mapLegacyCategoryToSlug(categoryString: string): string {
-  if (!categoryString) return 'nails';
+  if (!categoryString) return 'hair-styling';
   const clean = categoryString.toLowerCase().trim();
 
-  if (clean.includes('braid') || clean.includes('protective')) return 'braids-protective-styles';
-  if (clean.includes('hair') && (clean.includes('style') || clean.includes('cut') || clean.includes('lux'))) return 'hair-styling';
-  if (clean.includes('nail')) return 'nails';
-  if (clean.includes('lash') || clean.includes('brow')) return 'lashes-brows';
-  if (clean.includes('skin') && clean.includes('product')) return 'skincare-products';
-  if (clean.includes('skin') || clean.includes('facial') || clean.includes('dermal')) return 'skincare-facials';
-  if (clean.includes('makeup') && clean.includes('cosmetic')) return 'makeup-cosmetics';
-  if (clean.includes('makeup') || clean.includes('glam') || clean.includes('mua')) return 'makeup-glam';
-  if (clean.includes('wax') || clean.includes('removal')) return 'waxing-hair-removal';
-  if (clean.includes('spa') || clean.includes('body') || clean.includes('massage') || clean.includes('wellness')) return 'spa-body-treatments';
-  if (clean.includes('barber') || clean.includes('groom')) return 'hair-styling';
+  // Direct ID match
+  const directId = ALL_CATEGORIES.find((c) => c.id.toLowerCase() === clean);
+  if (directId) return directId.id;
 
-  const exact = ALL_CATEGORIES.find((c) => c.id === clean || c.name.toLowerCase() === clean);
-  if (exact) return exact.id;
+  // Direct Name match
+  const directName = ALL_CATEGORIES.find((c) => c.name.toLowerCase() === clean);
+  if (directName) return directName.id;
+
+  // Keyword / Substring match
+  if (clean.includes('braid') || clean.includes('protective')) return 'braids-protective-styles';
+  if (clean.includes('lash') || clean.includes('brow') || clean.includes('microblade')) return 'lashes-brows';
+  if (clean.includes('nail') || clean.includes('biab') || clean.includes('manicure') || clean.includes('pedicure')) return 'nails';
+  if (clean.includes('skin') && (clean.includes('product') || clean.includes('cream') || clean.includes('serum'))) return 'skincare-products';
+  if (clean.includes('skin') || clean.includes('facial') || clean.includes('dermal') || clean.includes('clinic')) return 'skincare-facials';
+  if (clean.includes('makeup') && (clean.includes('cosmetic') || clean.includes('product'))) return 'makeup-cosmetics';
+  if (clean.includes('makeup') || clean.includes('glam') || clean.includes('mua') || clean.includes('bridal')) return 'makeup-glam';
+  if (clean.includes('wax') || clean.includes('removal') || clean.includes('laser')) return 'waxing-hair-removal';
+  if (clean.includes('spa') || clean.includes('massage') || clean.includes('body treatment')) return 'spa-body-treatments';
+  if (clean.includes('herbal') || clean.includes('wellness product') || clean.includes('remedy') || clean.includes('tea')) return 'herbal-wellness-products';
+  if (clean.includes('wig') || clean.includes('extension') || clean.includes('bundle') || clean.includes('lace frontal')) return 'wigs-hair-extensions';
+  if (clean.includes('fragrance') || clean.includes('perfume') || clean.includes('scent') || clean.includes('body care') || clean.includes('body butter')) return 'fragrances-body-care';
+  if (clean.includes('tool') || clean.includes('brush') || clean.includes('equipment') || clean.includes('dryer')) return 'beauty-tools-equipment';
+  if (clean.includes('activewear') || clean.includes('gym') || clean.includes('legging') || clean.includes('workout')) return 'activewear-gym-wear';
+  if (clean.includes('shoe') || clean.includes('footwear') || clean.includes('heel') || clean.includes('sandal') || clean.includes('sneaker')) return 'shoes-footwear';
+  if (clean.includes('accessory') || clean.includes('jewel') || clean.includes('handbag') || clean.includes('sunglass')) return 'fashion-accessories';
+  if (clean.includes('shapewear') || clean.includes('lingerie') || clean.includes('waist') || clean.includes('corset')) return 'shapewear-lingerie';
+  if (clean.includes('cloth') || clean.includes('fashion') || clean.includes('dress') || clean.includes('robe') || clean.includes('co-ord')) return 'clothing-fashion';
+  if (clean.includes('hair') || clean.includes('style') || clean.includes('cut') || clean.includes('barber') || clean.includes('groom')) return 'hair-styling';
 
   return 'hair-styling';
 }

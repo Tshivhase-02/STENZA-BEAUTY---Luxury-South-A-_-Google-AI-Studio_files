@@ -114,12 +114,31 @@ export default function App() {
 
   const pendingAppsCount = applications.filter((a) => a.status === 'pending').length;
 
-  const handleNavigate = (view: string, providerId?: string, authMode?: 'login' | 'register') => {
+  // Discovery Category & Tab state
+  const [discoverCategory, setDiscoverCategory] = useState<string>('all');
+  const [discoverTab, setDiscoverTab] = useState<'services' | 'products'>('services');
+
+  const handleNavigate = (
+    view: string, 
+    providerId?: string, 
+    authMode?: 'login' | 'register',
+    categoryId?: string,
+    categoryType?: 'SERVICE' | 'PRODUCT'
+  ) => {
     if (providerId) {
       setSelectedProviderId(providerId);
     }
     if (authMode) {
       setAuthInitialMode(authMode);
+    }
+    if (categoryId) {
+      setDiscoverCategory(categoryId);
+    }
+    if (categoryType) {
+      setDiscoverTab(categoryType === 'PRODUCT' ? 'products' : 'services');
+    } else if (view === 'categories') {
+      setDiscoverCategory('all');
+      setDiscoverTab('services');
     }
     // Access control: Require Access ID before entering Admin Portal
     if (view === 'admin_review' && !isAdminAuthenticated) {
@@ -589,6 +608,9 @@ export default function App() {
             onOpenBookingModal={(pId) => handleOpenBookingModal(pId)}
             selectedCity={selectedCity}
             onOpenLocationModal={() => setLocationModalOpen(true)}
+            initialCategory={discoverCategory}
+            initialTab={discoverTab}
+            onAddToCart={handleAddToCart}
           />
         )}
 

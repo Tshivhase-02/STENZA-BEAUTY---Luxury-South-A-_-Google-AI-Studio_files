@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Edit3, Building, MapPin, Phone, FileText, Check } from 'lucide-react';
 import { AdminStudio } from '../../types/admin';
 import { adminService } from '../../services/adminService';
+import { categoryService } from '../../services/categoryService';
 
 interface EditStudioAdminModalProps {
   isOpen: boolean;
@@ -9,18 +10,6 @@ interface EditStudioAdminModalProps {
   studio: AdminStudio | null;
   onSuccess: () => void;
 }
-
-const CATEGORIES = [
-  'Hair and Hairstyles',
-  'Nails',
-  'Makeup',
-  'Lashes and Brows',
-  'Skincare and Facials',
-  'Barbering',
-  'Waxing and Hair Removal',
-  'Bridal Beauty',
-  'Spa and Wellness'
-];
 
 export const EditStudioAdminModal: React.FC<EditStudioAdminModalProps> = ({
   isOpen,
@@ -106,8 +95,11 @@ export const EditStudioAdminModal: React.FC<EditStudioAdminModalProps> = ({
               onChange={(e) => setCategory(e.target.value)}
               className="w-full p-2.5 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 focus:outline-hidden focus:border-[#b86b86]"
             >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
+              {!categoryService.getServiceCategories().some(c => c.name === category) && (
+                <option value={category}>{category} (Current)</option>
+              )}
+              {categoryService.getServiceCategories().map((c) => (
+                <option key={c.id} value={c.name}>{c.name} — {c.group}</option>
               ))}
             </select>
           </div>

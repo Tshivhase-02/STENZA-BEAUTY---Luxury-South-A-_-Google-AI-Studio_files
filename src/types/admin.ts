@@ -117,8 +117,9 @@ export interface AuditLogEntry {
     | 'REPORT_STATUS_CHANGED'
     | 'REPORT_RESOLVED'
     | 'REPORT_DISMISSED'
-    | 'APPEAL_DECIDED';
-  targetType: 'studio' | 'report' | 'promotion' | 'appeal';
+    | 'APPEAL_DECIDED'
+    | 'CATEGORY_STATUS_TOGGLED';
+  targetType: 'studio' | 'report' | 'promotion' | 'appeal' | 'category';
   targetId: string;
   targetName: string;
   reason?: string;

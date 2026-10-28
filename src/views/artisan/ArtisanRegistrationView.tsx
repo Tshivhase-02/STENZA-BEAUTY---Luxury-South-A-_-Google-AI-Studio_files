@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArtisanApplication, ArtisanDocument, OperatingDay, DEFAULT_WEEKLY_SCHEDULE } from '../../data/artisanWorkflowData';
+import { categoryService } from '../../services/categoryService';
 import { 
   Clock, 
   Calendar, 
@@ -491,13 +492,11 @@ export const ArtisanRegistrationView: React.FC<ArtisanRegistrationViewProps> = (
                   onChange={(e) => setCategory(e.target.value)}
                   className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] bg-white outline-none"
                 >
-                  <option value="Nail Couture">Nail Couture & BIAB</option>
-                  <option value="Clinical Skincare">Clinical Skincare & Facials</option>
-                  <option value="Hair Artistry">Hair Trichology & Styling</option>
-                  <option value="Lash & Brow">Lashes & Microblading</option>
-                  <option value="Gentlemen Grooming">Gentlemen Barbering</option>
-                  <option value="Bridal & Glam">Bridal & Glam Makeup</option>
-                  <option value="Spa & Wellness">Holistic Spa & Body</option>
+                  {categoryService.getServiceCategories().map((cat) => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.name} — {cat.group}
+                    </option>
+                  ))}
                 </select>
               </div>
 

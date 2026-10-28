@@ -47,7 +47,9 @@ import {
   Edit,
   Shield,
   Layers,
-  Star
+  Star,
+  Scissors,
+  ShoppingBag
 } from 'lucide-react';
 import { adminService } from '../../services/adminService';
 import { 
@@ -65,6 +67,9 @@ import { EditStudioAdminModal } from '../../components/admin/EditStudioAdminModa
 import { EnforcementActionModal, EnforcementType } from '../../components/admin/EnforcementActionModal';
 import { ReportDecisionModal } from '../../components/admin/ReportDecisionModal';
 import { LandingPagePreviewModal } from '../../components/admin/LandingPagePreviewModal';
+import { categoryService } from '../../services/categoryService';
+import { StenzaCategory, CategoryGroup, CategoryType, mapLegacyCategoryToSlug } from '../../data/categoryData';
+import { CURATED_PRODUCTS } from '../../data/beautyData';
 
 interface AdminReviewViewProps {
   applications: ArtisanApplication[];
@@ -80,7 +85,7 @@ interface AdminReviewViewProps {
   onLogoutAdmin?: () => void;
 }
 
-type AdminTab = 'analytics' | 'studios' | 'promotions' | 'reports' | 'appeals' | 'accreditation' | 'audit_logs';
+type AdminTab = 'analytics' | 'studios' | 'categories' | 'promotions' | 'reports' | 'appeals' | 'accreditation' | 'audit_logs';
 
 export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
   applications,
@@ -153,6 +158,45 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
     refreshData();
   }, []);
 
+  // Category Management State
+  const [categoriesList, setCategoriesList] = useState<StenzaCategory[]>(categoryService.getAllCategories());
+  const [categorySearch, setCategorySearch] = useState<string>('');
+  const [categoryGroupFilter, setCategoryGroupFilter] = useState<string>('all');
+  const [categoryTypeFilter, setCategoryTypeFilter] = useState<string>('all');
+  const [categoryStatusFilter, setCategoryStatusFilter] = useState<string>('all');
+  const [categoryToast, setCategoryToast] = useState<string | null>(null);
+
+  const categoryMetrics = useMemo(() => {
+    return categoryService.getCategoryMetrics(studios, CURATED_PRODUCTS);
+  }, [studios]);
+
+  const handleToggleCategoryActive = (catId: string, currentStatus: boolean) => {
+    const newStatus = !currentStatus;
+    categoryService.toggleCategoryActive(catId, newStatus);
+    setCategoriesList(categoryService.getAllCategories());
+    setCategoryToast(`Category "${catId}" has been ${newStatus ? 'activated' : 'deactivated'}.`);
+    setTimeout(() => setCategoryToast(null), 3000);
+
+    adminService.logAudit({
+      adminId: 'ADMIN-01',
+      adminName: 'Lead Platform Administrator',
+      action: 'CATEGORY_STATUS_TOGGLED',
+      targetType: 'category',
+      targetId: catId,
+      targetName: catId,
+      newState: newStatus ? 'active' : 'inactive',
+      reason: `Category [${catId}] status toggled to ${newStatus ? 'Active' : 'Inactive (Prevented from new registrations)'}`
+    });
+    setAuditLogs(adminService.getAuditLogs());
+  };
+
+  const handleResetCategories = () => {
+    categoryService.resetToDefaults();
+    setCategoriesList(categoryService.getAllCategories());
+    setCategoryToast('Categories successfully reset to factory defaults.');
+    setTimeout(() => setCategoryToast(null), 3000);
+  };
+
   // Update applications sync
   useEffect(() => {
     if (applications.length > 0 && !selectedAppId) {
@@ -181,7 +225,10 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
         s.category.toLowerCase().includes(q);
 
       // Category
-      const matchesCategory = studioCategoryFilter === 'all' || s.category === studioCategoryFilter;
+      const matchesCategory = 
+        studioCategoryFilter === 'all' || 
+        s.category === studioCategoryFilter || 
+        mapLegacyCategoryToSlug(s.category) === studioCategoryFilter;
 
       // Approval
       const matchesApproval = studioApprovalFilter === 'all' || s.approvalStatus === studioApprovalFilter;
@@ -632,6 +679,21 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
               </button>
 
               <button
+                onClick={() => setActiveTab('categories')}
+                className={`px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
+                  activeTab === 'categories'
+                    ? 'bg-[#b86b86] text-white font-bold shadow-sm'
+                    : 'text-stone-400 hover:text-stone-200 hover:bg-white/5'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5 text-pink-300" />
+                <span>Category Management</span>
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-pink-400/20 text-pink-300 font-bold border border-pink-400/30">
+                  {categoriesList.filter(c => c.isActive).length}/{categoriesList.length}
+                </span>
+              </button>
+
+              <button
                 onClick={() => setActiveTab('promotions')}
                 className={`px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${
                   activeTab === 'promotions'
@@ -942,16 +1004,18 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
                       }}
                       className="w-full py-2 px-3 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
                     >
-                      <option value="all">All Categories</option>
-                      <option value="Nails">Nails</option>
-                      <option value="Hair and Hairstyles">Hair & Hairstyles</option>
-                      <option value="Skincare and Facials">Skincare & Facials</option>
-                      <option value="Barbering">Barbering</option>
-                      <option value="Lashes and Brows">Lashes & Brows</option>
-                      <option value="Spa and Wellness">Spa & Wellness</option>
-                      <option value="Makeup">Makeup</option>
-                      <option value="Waxing and Hair Removal">Waxing</option>
-                      <option value="Bridal Beauty">Bridal Beauty</option>
+                      <option value="all">All Categories ({studios.length} studios)</option>
+                      {categoryService.getServiceCategories(true).map((cat) => {
+                        const count = studios.filter(s => 
+                          s.category === cat.name || 
+                          mapLegacyCategoryToSlug(s.category) === cat.id
+                        ).length;
+                        return (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name} ({count})
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -1251,6 +1315,350 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
                     >
                       Next
                     </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: CATEGORY MANAGEMENT & GOVERNANCE */}
+          {activeTab === 'categories' && (
+            <div className="space-y-6">
+              {/* Category Toast Alert */}
+              {categoryToast && (
+                <div className="p-4 bg-emerald-900/90 border border-emerald-500/50 text-white rounded-2xl flex items-center justify-between shadow-lg animate-in fade-in slide-in-from-top-2">
+                  <div className="flex items-center gap-3 text-xs font-semibold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>{categoryToast}</span>
+                  </div>
+                  <button
+                    onClick={() => setCategoryToast(null)}
+                    className="text-stone-300 hover:text-white text-xs cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {/* Category Header Banner */}
+              <div className="bg-gradient-to-r from-[#26152d] to-[#1b0d21] text-white p-6 rounded-3xl shadow-md border border-stone-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 rounded bg-pink-400/20 text-pink-300 border border-pink-400/40 text-[10px] font-bold uppercase tracking-wider">
+                      TAXONOMY & CATEGORY GOVERNANCE
+                    </span>
+                    <span className="text-xs text-stone-400">Services & Physical Products</span>
+                  </div>
+                  <h2 className="text-xl font-serif font-bold text-white">
+                    Marketplace Categories & Catalog Taxonomy
+                  </h2>
+                  <p className="text-xs text-stone-300 max-w-2xl mt-1">
+                    Supervise active categories across Hair & Styling, Beauty Services, Beauty & Personal Care Products, and Fashion. Inactive categories are prevented from being selected for new studio registrations or filters, while preserving all existing studio registrations.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 self-start md:self-auto">
+                  <button
+                    onClick={handleResetCategories}
+                    className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-stone-200 text-xs font-semibold transition flex items-center gap-2 cursor-pointer border border-white/10"
+                    title="Reset all categories to default platform configuration"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Reset to Defaults</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Category Taxonomy Metric Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <div className="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
+                  <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Total Categories</span>
+                  <span className="text-xl font-bold font-serif text-[#26152d] mt-1 block">
+                    {categoriesList.length}
+                  </span>
+                  <span className="text-[11px] text-stone-500 mt-0.5 block">Configured taxonomy</span>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
+                  <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block">Active Live</span>
+                  <span className="text-xl font-bold font-serif text-emerald-700 mt-1 block">
+                    {categoriesList.filter((c) => c.isActive && !c.isFutureOptional).length}
+                  </span>
+                  <span className="text-[11px] text-stone-500 mt-0.5 block">Publicly browseable</span>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
+                  <span className="text-[10px] font-bold text-[#695684] uppercase tracking-wider block">Bookable Services</span>
+                  <span className="text-xl font-bold font-serif text-[#695684] mt-1 block">
+                    {categoriesList.filter((c) => c.type === 'SERVICE').length}
+                  </span>
+                  <span className="text-[11px] text-stone-500 mt-0.5 block">Hair & Beauty Studios</span>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
+                  <span className="text-[10px] font-bold text-pink-600 uppercase tracking-wider block">Product Collections</span>
+                  <span className="text-xl font-bold font-serif text-pink-700 mt-1 block">
+                    {categoriesList.filter((c) => c.type === 'PRODUCT').length}
+                  </span>
+                  <span className="text-[11px] text-stone-500 mt-0.5 block">Apothecary & Fashion</span>
+                </div>
+
+                <div className="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
+                  <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider block">Roadmap Staged</span>
+                  <span className="text-xl font-bold font-serif text-amber-700 mt-1 block">
+                    {categoriesList.filter((c) => c.isFutureOptional).length}
+                  </span>
+                  <span className="text-[11px] text-stone-500 mt-0.5 block">Tattoo, Bridal, Teeth</span>
+                </div>
+              </div>
+
+              {/* Filter & Search Bar */}
+              <div className="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {/* Search */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-3 text-stone-400" />
+                    <input
+                      type="text"
+                      placeholder="Search category name, slug or keyword..."
+                      value={categorySearch}
+                      onChange={(e) => setCategorySearch(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                    />
+                  </div>
+
+                  {/* Group Filter */}
+                  <div>
+                    <select
+                      value={categoryGroupFilter}
+                      onChange={(e) => setCategoryGroupFilter(e.target.value)}
+                      className="w-full py-2 px-3 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                    >
+                      <option value="all">All Groups (4 Parent Groups)</option>
+                      <option value="Hair & Styling">Hair & Styling</option>
+                      <option value="Beauty Services">Beauty Services</option>
+                      <option value="Beauty & Personal Care Products">Beauty & Personal Care Products</option>
+                      <option value="Fashion & Accessories">Fashion & Accessories</option>
+                    </select>
+                  </div>
+
+                  {/* Type Filter */}
+                  <div>
+                    <select
+                      value={categoryTypeFilter}
+                      onChange={(e) => setCategoryTypeFilter(e.target.value)}
+                      className="w-full py-2 px-3 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                    >
+                      <option value="all">All Types (Services & Products)</option>
+                      <option value="SERVICE">SERVICE (Bookable Studio Treatments)</option>
+                      <option value="PRODUCT">PRODUCT (Shopping & Retail Drops)</option>
+                    </select>
+                  </div>
+
+                  {/* Status Filter */}
+                  <div>
+                    <select
+                      value={categoryStatusFilter}
+                      onChange={(e) => setCategoryStatusFilter(e.target.value)}
+                      className="w-full py-2 px-3 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                    >
+                      <option value="all">All Statuses (Active & Inactive)</option>
+                      <option value="active">Active Only</option>
+                      <option value="inactive">Inactive Only</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Categories Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-stone-200 bg-stone-50/70 text-stone-600 font-bold uppercase tracking-wider text-[10px]">
+                        <th className="py-3 px-4">Category & Stable Slug</th>
+                        <th className="py-3 px-4">Parent Group</th>
+                        <th className="py-3 px-4">Type</th>
+                        <th className="py-3 px-4">Live Studios</th>
+                        <th className="py-3 px-4">Catalog Items</th>
+                        <th className="py-3 px-4">Description</th>
+                        <th className="py-3 px-4 text-right">Status & Activation</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-stone-100">
+                      {categoriesList
+                        .filter((cat) => {
+                          if (categoryGroupFilter !== 'all' && cat.group !== categoryGroupFilter) return false;
+                          if (categoryTypeFilter !== 'all' && cat.type !== categoryTypeFilter) return false;
+                          if (categoryStatusFilter === 'active' && !cat.isActive) return false;
+                          if (categoryStatusFilter === 'inactive' && cat.isActive) return false;
+
+                          if (categorySearch.trim() !== '') {
+                            const q = categorySearch.toLowerCase();
+                            const matchName = cat.name.toLowerCase().includes(q);
+                            const matchId = cat.id.toLowerCase().includes(q);
+                            const matchDesc = cat.shortDescription.toLowerCase().includes(q);
+                            const matchGroup = cat.group.toLowerCase().includes(q);
+                            const matchKw = cat.keywords?.some((k) => k.toLowerCase().includes(q));
+                            if (!matchName && !matchId && !matchDesc && !matchGroup && !matchKw) return false;
+                          }
+
+                          return true;
+                        })
+                        .map((cat) => {
+                          const studioCount = categoryMetrics.studioCounts[cat.id] || 0;
+                          const productCount = categoryMetrics.productCounts[cat.id] || 0;
+
+                          return (
+                            <tr key={cat.id} className="hover:bg-stone-50/60 transition-colors">
+                              {/* Category Name & Slug */}
+                              <td className="py-3.5 px-4">
+                                <div className="flex items-center gap-3">
+                                  <img
+                                    src={cat.image}
+                                    alt={cat.name}
+                                    className="w-10 h-10 rounded-xl object-cover border border-stone-200 flex-shrink-0"
+                                  />
+                                  <div>
+                                    <div className="font-serif font-bold text-sm text-[#26152d] flex items-center gap-1.5">
+                                      <span>{cat.name}</span>
+                                      {cat.isFutureOptional && (
+                                        <span className="text-[9px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded border border-amber-300">
+                                          Roadmap
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="text-[11px] font-mono text-stone-500 mt-0.5">
+                                      slug: <span className="text-[#695684]">{cat.id}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Parent Group */}
+                              <td className="py-3.5 px-4 whitespace-nowrap">
+                                <span className="inline-block px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-stone-100 text-stone-800">
+                                  {cat.group}
+                                </span>
+                              </td>
+
+                              {/* Type: SERVICE vs PRODUCT */}
+                              <td className="py-3.5 px-4 whitespace-nowrap">
+                                <span
+                                  className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                    cat.type === 'SERVICE'
+                                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                      : 'bg-purple-100 text-purple-800 border border-purple-300'
+                                  }`}
+                                >
+                                  {cat.type === 'SERVICE' ? (
+                                    <>
+                                      <Scissors className="w-3 h-3 text-emerald-700" />
+                                      <span>Service</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <ShoppingBag className="w-3 h-3 text-purple-700" />
+                                      <span>Product</span>
+                                    </>
+                                  )}
+                                </span>
+                              </td>
+
+                              {/* Live Studios Count */}
+                              <td className="py-3.5 px-4 whitespace-nowrap">
+                                <span className="font-semibold text-stone-800">
+                                  {studioCount} {studioCount === 1 ? 'studio' : 'studios'}
+                                </span>
+                              </td>
+
+                              {/* Catalog Products Count */}
+                              <td className="py-3.5 px-4 whitespace-nowrap">
+                                <span className="font-semibold text-stone-800">
+                                  {productCount} {productCount === 1 ? 'item' : 'items'}
+                                </span>
+                              </td>
+
+                              {/* Short Description */}
+                              <td className="py-3.5 px-4 text-stone-600 max-w-xs truncate">
+                                <span title={cat.shortDescription}>{cat.shortDescription}</span>
+                              </td>
+
+                              {/* Status & Toggle Switch */}
+                              <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                                <div className="inline-flex items-center gap-3">
+                                  <span
+                                    className={`text-[11px] font-bold uppercase tracking-wider ${
+                                      cat.isActive ? 'text-emerald-700' : 'text-stone-400'
+                                    }`}
+                                  >
+                                    {cat.isActive ? 'Active' : 'Inactive'}
+                                  </span>
+
+                                  <button
+                                    onClick={() => handleToggleCategoryActive(cat.id, cat.isActive)}
+                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+                                      cat.isActive ? 'bg-emerald-600' : 'bg-stone-300'
+                                    }`}
+                                    title={cat.isActive ? 'Click to deactivate category' : 'Click to activate category'}
+                                  >
+                                    <span
+                                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-xs ${
+                                        cat.isActive ? 'translate-x-6' : 'translate-x-1'
+                                      }`}
+                                    />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Backend REST API Contract Documentation Card */}
+              <div className="bg-stone-900 text-stone-100 p-6 rounded-3xl border border-stone-800 space-y-4">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold uppercase tracking-wider">
+                    INTEGRATION CONTRACTS (JAVA SPRING BOOT & MYSQL)
+                  </span>
+                </div>
+                <h3 className="font-serif text-lg font-bold text-white">
+                  Proposed Backend Category REST Endpoints
+                </h3>
+                <p className="text-xs text-stone-400 max-w-3xl leading-relaxed">
+                  These contracts define the recommended Spring Boot REST controllers for serving the taxonomy. Category identifiers use stable immutable slugs (e.g., <code className="text-amber-300 font-mono">hair-styling</code>, <code className="text-amber-300 font-mono">skincare-facials</code>, <code className="text-amber-300 font-mono">makeup-cosmetics</code>) ensuring display name improvements never break historical database foreign keys or past bookings.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+                  <div className="p-3 bg-black/40 rounded-xl border border-stone-800 space-y-1">
+                    <span className="text-emerald-400 font-bold block">GET /api/public/categories</span>
+                    <span className="text-stone-400 text-[11px] block">Returns all active categories grouped by the 4 main parent groups.</span>
+                  </div>
+
+                  <div className="p-3 bg-black/40 rounded-xl border border-stone-800 space-y-1">
+                    <span className="text-emerald-400 font-bold block">GET /api/public/categories/&#123;slug&#125;</span>
+                    <span className="text-stone-400 text-[11px] block">Returns category details, description, metadata, and service/product type.</span>
+                  </div>
+
+                  <div className="p-3 bg-black/40 rounded-xl border border-stone-800 space-y-1">
+                    <span className="text-blue-400 font-bold block">GET /api/public/studios?category=&#123;slug&#125;</span>
+                    <span className="text-stone-400 text-[11px] block">Filters verified studios by specific service category slug.</span>
+                  </div>
+
+                  <div className="p-3 bg-black/40 rounded-xl border border-stone-800 space-y-1">
+                    <span className="text-blue-400 font-bold block">GET /api/public/products?category=&#123;slug&#125;</span>
+                    <span className="text-stone-400 text-[11px] block">Filters curated apothecary and fashion drops by product category slug.</span>
+                  </div>
+
+                  <div className="p-3 bg-black/40 rounded-xl border border-stone-800 space-y-1">
+                    <span className="text-amber-400 font-bold block">GET /api/admin/categories</span>
+                    <span className="text-stone-400 text-[11px] block">Admin-secured endpoint returning all categories with studio & product metrics.</span>
+                  </div>
+
+                  <div className="p-3 bg-black/40 rounded-xl border border-stone-800 space-y-1">
+                    <span className="text-amber-400 font-bold block">PATCH /api/admin/categories/&#123;id&#125;/status</span>
+                    <span className="text-stone-400 text-[11px] block">Admin endpoint to toggle activation. Inactive categories are rejected on new registrations.</span>
                   </div>
                 </div>
               </div>

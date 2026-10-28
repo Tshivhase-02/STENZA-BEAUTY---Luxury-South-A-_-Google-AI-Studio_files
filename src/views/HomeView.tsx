@@ -29,11 +29,21 @@ import {
   Layers,
   Phone,
   MessageCircle,
-  X
+  X,
+  ShoppingBag,
+  Sparkle
 } from 'lucide-react';
+import { categoryService } from '../services/categoryService';
+import { CategoryGroup, CategoryType, StenzaCategory } from '../data/categoryData';
 
 interface HomeViewProps {
-  onNavigate: (view: string, providerId?: string, authMode?: 'login' | 'register') => void;
+  onNavigate: (
+    view: string, 
+    providerId?: string, 
+    authMode?: 'login' | 'register',
+    categoryId?: string,
+    type?: 'SERVICE' | 'PRODUCT'
+  ) => void;
   onOpenBookingModal: (providerId?: string, serviceId?: string) => void;
   selectedCity: string;
   onOpenLocationModal: () => void;
@@ -282,6 +292,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   // FAQ Expand state (Tracks which index is open)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  // Category filter state for landing page
+  const [categoryTypeFilter, setCategoryTypeFilter] = useState<'all' | 'SERVICE' | 'PRODUCT'>('all');
+  const [categoryGroupFilter, setCategoryGroupFilter] = useState<string>('all');
 
   // Dynamically sourced featured studios from Admin Advertising Management
   const activeFeaturedAdminStudios = adminService.getActiveApprovedFeaturedStudios();
@@ -694,52 +708,176 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* 3. EXPLORE BEAUTY CATEGORIES */}
+      {/* 3. EXPLORE BEAUTY, PERSONAL CARE & FASHION CATEGORIES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#b86b86] bg-pink-50 px-3 py-1 rounded-full">
-            Browse by Specialty
+        <div className="text-center max-w-3xl mx-auto mb-8 space-y-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#695684] bg-[#695684]/10 px-3 py-1 rounded-full">
+            Improved Directory & Collections
           </span>
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#26152d]">
-            Explore Beauty Categories
+            Explore Curated Categories
           </h2>
           <p className="text-xs sm:text-sm text-stone-600">
-            From precision Russian manicures to African afro-textured hair and clinical skincare facials.
+            Book certified South African beauty artisans and stylists or shop curated botanical apothecary, hair care, and designer fashion.
           </p>
         </div>
 
-        {/* 9 Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {LANDING_CATEGORIES.map((cat) => (
-            <div
-              key={cat.id}
-              onClick={() => onNavigate('discover')}
-              className="group relative rounded-3xl overflow-hidden aspect-16/10 cursor-pointer shadow-xs hover:shadow-lg transition-all duration-300 border border-stone-200/80 bg-stone-900"
+        {/* Filter Controls: Type Toggle + Group Selector */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-white p-3 rounded-2xl border border-stone-200/80 shadow-2xs">
+          {/* Service vs Product Toggle */}
+          <div className="flex items-center bg-[#f6f3ee] p-1 rounded-xl text-xs font-semibold w-full sm:w-auto">
+            <button
+              onClick={() => { setCategoryTypeFilter('all'); setCategoryGroupFilter('all'); }}
+              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                categoryTypeFilter === 'all'
+                  ? 'bg-white text-[#26152d] shadow-2xs font-bold'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
             >
-              <img
-                src={cat.image}
-                alt={cat.name}
-                className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 opacity-85"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+              All Categories
+            </button>
+            <button
+              onClick={() => { setCategoryTypeFilter('SERVICE'); setCategoryGroupFilter('all'); }}
+              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
+                categoryTypeFilter === 'SERVICE'
+                  ? 'bg-[#26152d] text-white shadow-2xs font-bold'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              <Scissors className="w-3.5 h-3.5 text-emerald-300" />
+              <span>Book Services</span>
+            </button>
+            <button
+              onClick={() => { setCategoryTypeFilter('PRODUCT'); setCategoryGroupFilter('all'); }}
+              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
+                categoryTypeFilter === 'PRODUCT'
+                  ? 'bg-[#695684] text-white shadow-2xs font-bold'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-pink-200" />
+              <span>Shop Products</span>
+            </button>
+          </div>
 
-              <div className="absolute bottom-5 left-5 right-5 text-white">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#d4af37] block mb-1">
-                  {cat.count}
-                </span>
-                <h3 className="font-serif text-xl font-bold group-hover:text-pink-200 transition-colors">
-                  {cat.name}
-                </h3>
-                <p className="text-xs text-stone-300 mt-0.5 line-clamp-1">
-                  {cat.subtitle}
-                </p>
-              </div>
+          {/* 4 Main Parent Groups Filter */}
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none text-xs">
+            <button
+              onClick={() => setCategoryGroupFilter('all')}
+              className={`px-3 py-1.5 rounded-xl border text-xs whitespace-nowrap transition cursor-pointer ${
+                categoryGroupFilter === 'all'
+                  ? 'bg-[#26152d] text-white border-[#26152d] font-semibold'
+                  : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'
+              }`}
+            >
+              All Groups
+            </button>
+            {(['Hair & Styling', 'Beauty Services', 'Beauty & Personal Care Products', 'Fashion & Accessories'] as CategoryGroup[])
+              .filter(group => {
+                if (categoryTypeFilter === 'SERVICE') {
+                  return group === 'Hair & Styling' || group === 'Beauty Services';
+                }
+                if (categoryTypeFilter === 'PRODUCT') {
+                  return group === 'Beauty & Personal Care Products' || group === 'Fashion & Accessories';
+                }
+                return true;
+              })
+              .map((grp) => (
+                <button
+                  key={grp}
+                  onClick={() => setCategoryGroupFilter(grp)}
+                  className={`px-3 py-1.5 rounded-xl border text-xs whitespace-nowrap transition cursor-pointer ${
+                    categoryGroupFilter === grp
+                      ? 'bg-[#695684] text-white border-[#695684] font-semibold shadow-2xs'
+                      : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'
+                  }`}
+                >
+                  {grp}
+                </button>
+              ))}
+          </div>
+        </div>
 
-              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowRight className="w-4 h-4" />
+        {/* Dynamic Category Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {categoryService
+            .getActiveCategories()
+            .filter((c) => {
+              if (categoryTypeFilter !== 'all' && c.type !== categoryTypeFilter) return false;
+              if (categoryGroupFilter !== 'all' && c.group !== categoryGroupFilter) return false;
+              return true;
+            })
+            .map((cat) => (
+              <div
+                key={cat.id}
+                onClick={() => onNavigate('discover', undefined, undefined, cat.id, cat.type)}
+                className="group relative rounded-2xl overflow-hidden aspect-4/3 cursor-pointer shadow-xs hover:shadow-lg transition-all duration-300 border border-stone-200/80 bg-stone-900 flex flex-col justify-between p-4"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    onNavigate('discover', undefined, undefined, cat.id, cat.type);
+                  }
+                }}
+              >
+                {/* Background Image */}
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
+
+                {/* Top Row: Group Badge & Type Pill */}
+                <div className="relative z-10 flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-white/90 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/10 truncate max-w-[150px]">
+                    {cat.group}
+                  </span>
+                  <span
+                    className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full backdrop-blur-md ${
+                      cat.type === 'SERVICE'
+                        ? 'bg-emerald-500/80 text-white'
+                        : 'bg-[#695684]/90 text-white'
+                    }`}
+                  >
+                    {cat.type === 'SERVICE' ? 'Service' : 'Product'}
+                  </span>
+                </div>
+
+                {/* Bottom Row: Count, Title, Description */}
+                <div className="relative z-10 text-white mt-auto">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#d4af37]">
+                      {cat.itemCountText}
+                    </span>
+                    <div className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <h3 className="font-serif text-lg sm:text-xl font-bold group-hover:text-pink-200 transition-colors leading-snug">
+                    {cat.name}
+                  </h3>
+                  <p className="text-[11px] text-stone-300 mt-1 line-clamp-2 leading-relaxed">
+                    {cat.shortDescription}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+        </div>
+
+        {/* View All & Category Info Footer */}
+        <div className="mt-8 pt-6 border-t border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-600">
+          <p className="flex items-center gap-1.5 text-stone-500 text-center sm:text-left">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span>All categories are monitored for quality and South African regulatory compliance.</span>
+          </p>
+          <button
+            onClick={() => onNavigate('discover')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#26152d] hover:bg-[#3d2348] text-white font-semibold transition cursor-pointer shadow-xs"
+          >
+            <span>View All in Directory & Apothecary</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </section>
 

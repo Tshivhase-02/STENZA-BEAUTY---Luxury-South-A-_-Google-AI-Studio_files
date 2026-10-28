@@ -30,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocationModal 
             </div>
 
             <p className="text-xs text-[#cfc7bc] leading-relaxed max-w-sm">
-              South Africa’s premier beauty services marketplace connecting customers with independent beauty professionals, salons, hairstylists, nail technicians, makeup artists, lash technicians, and barbers across Gauteng, Western Cape, and KwaZulu-Natal.
+             South Africa’s Beauty & Wellness Marketplace Discover and connect with independent beauty professionals, salons, hairstylists, nail technicians, makeup artists, lash artists, and barbers across all nine provinces of South Africa.
             </p>
 
             {/* Social Media Links */}
@@ -113,7 +113,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocationModal 
               </li>
               <li>
                 <button onClick={() => onNavigate('how-it-works')} className="hover:text-white transition-colors cursor-pointer text-left">
-                  How It Works
+                 Your Guide to STENZA
+
                 </button>
               </li>
               <li>
@@ -191,11 +192,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocationModal 
                   Terms and Conditions
                 </button>
               </li>
-              <li>
-                <button onClick={() => onNavigate('how-it-works')} className="hover:text-white transition-colors cursor-pointer text-left">
-                  Privacy Policy & POPIA Act
-                </button>
-              </li>
+            
               <li>
                 <span className="text-[11px] text-stone-400 block pt-1">
                   Republic of South Africa Compliance

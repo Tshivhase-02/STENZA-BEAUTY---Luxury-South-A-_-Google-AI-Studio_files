@@ -697,6 +697,7 @@ export const INITIAL_BOOKINGS: Booking[] = [
 ];
 
 export const CURATED_PRODUCTS: BeautyProduct[] = [
+  // Skincare Products
   {
     id: 'prod-1',
     name: 'Marula Gold Botanical Facial Elixir',
@@ -705,55 +706,261 @@ export const CURATED_PRODUCTS: BeautyProduct[] = [
     rating: 4.96,
     reviewsCount: 142,
     image: 'https://images.unsplash.com/photo-1608248597359-545a90e386e6?auto=format&fit=crop&w=600&q=80',
-    category: 'Skincare',
+    category: 'skincare-products',
     description: 'Cold-pressed wild harvested Limpopo marula oil with vitamin C & CoQ10 for radiant dewy glow.',
     badge: 'Award Winner'
   },
   {
     id: 'prod-2',
-    name: 'Kalahari Melon Radiance Body Butter',
-    brand: 'STENZA Naturals',
-    price: 420,
-    rating: 4.92,
-    reviewsCount: 88,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
-    category: 'Body Care',
-    description: 'Rich whipped hydration infused with Kalahari melon seed extract and organic shea.',
-    badge: 'Best Seller'
-  },
-  {
-    id: 'prod-3',
     name: 'Cape Chamomile Calming Mist',
     brand: 'Botanica Botanica',
     price: 350,
     rating: 4.88,
     reviewsCount: 64,
     image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
-    category: 'Skincare',
+    category: 'skincare-products',
     description: 'Hydrosol spray steam-distilled from Fynbos flowers to immediately cool flushed post-treatment skin.'
   },
   {
-    id: 'prod-4',
-    name: 'Baobab Restorative Hair & Scalp Soufflé',
-    brand: 'Mzansi Crowns',
-    price: 550,
-    rating: 4.98,
-    reviewsCount: 210,
-    image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=600&q=80',
-    category: 'Haircare',
-    description: 'Intense moisture sealant formulation enriched with baobab proteins and essential mint leaves.',
-    badge: 'Salon Grade'
-  },
-  {
-    id: 'prod-5',
+    id: 'prod-3',
     name: 'Rooibos Infused Micro-Peel Scrub',
     brand: 'Cape Botanicals',
     price: 390,
     rating: 4.90,
     reviewsCount: 95,
     image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=600&q=80',
-    category: 'Skincare',
+    category: 'skincare-products',
     description: 'Ultra-fine enzymatic physical exfoliator with red bush antioxidants to resurface skin texture.'
+  },
+
+  // Makeup & Cosmetics
+  {
+    id: 'prod-4',
+    name: 'Kalahari Sunset Velvet Lip Glaze',
+    brand: 'Mzansi Glamour',
+    price: 320,
+    rating: 4.94,
+    reviewsCount: 78,
+    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    category: 'makeup-cosmetics',
+    description: 'Ultra-pigmented hydrating lip gloss with golden shimmer inspired by Kalahari desert sunsets.',
+    badge: 'Best Seller'
+  },
+  {
+    id: 'prod-5',
+    name: 'Melanin Match HD Setting Powder',
+    brand: 'STENZA Artistry',
+    price: 460,
+    rating: 4.97,
+    reviewsCount: 112,
+    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80',
+    category: 'makeup-cosmetics',
+    description: 'Flashback-free micro-milled translucent powder formulated specifically for warm and deep skin undertones.'
+  },
+
+  // Hair Care Products
+  {
+    id: 'prod-6',
+    name: 'Baobab Restorative Hair & Scalp Soufflé',
+    brand: 'Mzansi Crowns',
+    price: 550,
+    rating: 4.98,
+    reviewsCount: 210,
+    image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=600&q=80',
+    category: 'hair-care-products',
+    description: 'Intense moisture sealant formulation enriched with baobab proteins and essential mint leaves.',
+    badge: 'Salon Grade'
+  },
+  {
+    id: 'prod-7',
+    name: 'Organic Chebe Growth & Edge Drops',
+    brand: 'AfroBotanix Lab',
+    price: 380,
+    rating: 4.91,
+    reviewsCount: 135,
+    image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=600&q=80',
+    category: 'hair-care-products',
+    description: 'Stimulating hair oil with authentic Chebe seed infusion, peppermint oil, and rosemary extract.'
+  },
+
+  // Wigs & Hair Extensions
+  {
+    id: 'prod-8',
+    name: 'Raw Cambodian HD Lace Frontal Wig (26")',
+    brand: 'Crown Luxe Hair',
+    price: 4850,
+    rating: 4.99,
+    reviewsCount: 56,
+    image: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=600&q=80',
+    category: 'wigs-hair-extensions',
+    description: 'Unprocessed single-donor raw hair with invisible HD lace and pre-plucked natural hairline.',
+    badge: 'Luxury Tier'
+  },
+  {
+    id: 'prod-9',
+    name: 'Deep Wave Virgin Hair Bundles (3-Pack)',
+    brand: 'Crown Luxe Hair',
+    price: 2950,
+    rating: 4.93,
+    reviewsCount: 42,
+    image: 'https://images.unsplash.com/photo-1522337094345-a044afc6d0d6?auto=format&fit=crop&w=600&q=80',
+    category: 'wigs-hair-extensions',
+    description: '100% cuticle-intact virgin deep wave bundles that bleach effortlessly up to 613 blonde.'
+  },
+
+  // Fragrances & Body Care
+  {
+    id: 'prod-10',
+    name: 'Kalahari Melon Radiance Body Butter',
+    brand: 'STENZA Naturals',
+    price: 420,
+    rating: 4.92,
+    reviewsCount: 88,
+    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    category: 'fragrances-body-care',
+    description: 'Rich whipped hydration infused with Kalahari melon seed extract and organic shea.',
+    badge: 'Best Seller'
+  },
+  {
+    id: 'prod-11',
+    name: 'Cape Fynbos Nectar Eau de Parfum (100ml)',
+    brand: 'Artisan Perfumery SA',
+    price: 1250,
+    rating: 4.96,
+    reviewsCount: 49,
+    image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80',
+    category: 'fragrances-body-care',
+    description: 'Handcrafted signature scent capturing indigenous wild heather, pink pepper, and warm vanilla sandalwood.'
+  },
+
+  // Herbal & Wellness Products
+  {
+    id: 'prod-12',
+    name: 'Wild Buchu & Honeybush Detox Elixir',
+    brand: 'Cape Herbalist',
+    price: 280,
+    rating: 4.89,
+    reviewsCount: 67,
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80',
+    category: 'herbal-wellness-products',
+    description: 'Organic wellness tea blend of wild mountain buchu and sweet honeybush for full-body cellular detox.',
+    badge: 'Organic'
+  },
+  {
+    id: 'prod-13',
+    name: 'African Ginger Sore Muscle Relief Balm',
+    brand: 'Roots & Leaves SA',
+    price: 340,
+    rating: 4.95,
+    reviewsCount: 82,
+    image: 'https://images.unsplash.com/photo-1512290903048-7935c400429d?auto=format&fit=crop&w=600&q=80',
+    category: 'herbal-wellness-products',
+    description: 'Deep penetrating warming balm infused with wild African ginger and eucalyptus for spa-level muscle recovery.'
+  },
+
+  // Beauty Tools & Equipment
+  {
+    id: 'prod-14',
+    name: 'Pro-Glide Titanium Silk Press Iron',
+    brand: 'STENZA Pro Tools',
+    price: 1850,
+    rating: 4.98,
+    reviewsCount: 104,
+    image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=600&q=80',
+    category: 'beauty-tools-equipment',
+    description: 'Precision digital temperature flat iron engineered for 4C afro-hair silk presses with zero heat damage.',
+    badge: 'Pro Choice'
+  },
+
+  // Activewear & Gym Wear
+  {
+    id: 'prod-15',
+    name: 'Sculpt & Contour High-Waisted Seamless Leggings',
+    brand: 'STENZA Active',
+    price: 790,
+    rating: 4.95,
+    reviewsCount: 91,
+    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=600&q=80',
+    category: 'activewear-gym-wear',
+    description: 'Squat-proof, compression ribbed knit with ergonomic booty-contouring silhouette and breathable moisture-wicking tech.',
+    badge: 'Trending'
+  },
+  {
+    id: 'prod-16',
+    name: 'PowerFlex Zip-Front Sports Bra',
+    brand: 'STENZA Active',
+    price: 490,
+    rating: 4.88,
+    reviewsCount: 53,
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=80',
+    category: 'activewear-gym-wear',
+    description: 'High-impact support sports bra featuring reinforced lockable front zip and cross-back ventilation straps.'
+  },
+
+  // Fashion Accessories
+  {
+    id: 'prod-17',
+    name: 'Handcrafted Contemporary Zulu Bead Choker',
+    brand: 'Indoni Studio',
+    price: 650,
+    rating: 4.97,
+    reviewsCount: 47,
+    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80',
+    category: 'fashion-accessories',
+    description: 'Modern artisanal neckpiece crafted by master KwaZulu-Natal beadworkers combining brass and midnight glass beads.',
+    badge: 'Artisan Crafted'
+  },
+  {
+    id: 'prod-18',
+    name: 'Sandton Oversized Tortoiseshell Sunglasses',
+    brand: 'Luxe Africa Eyewear',
+    price: 920,
+    rating: 4.90,
+    reviewsCount: 38,
+    image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=600&q=80',
+    category: 'fashion-accessories',
+    description: 'UV400 polarized acetate frames with Italian hardware and rich honey-amber tortoise patterns.'
+  },
+
+  // Shoes & Footwear
+  {
+    id: 'prod-19',
+    name: 'Handcrafted Genuine Leather Strappy Mules',
+    brand: 'Mzansi Sole',
+    price: 1450,
+    rating: 4.92,
+    reviewsCount: 34,
+    image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=600&q=80',
+    category: 'shoes-footwear',
+    description: 'Buttery soft vegetable-tanned leather kitten heels with memory foam insole for all-day elegance.',
+    badge: 'Handmade'
+  },
+
+  // Clothing & Fashion
+  {
+    id: 'prod-20',
+    name: 'Sunset Glow Silk-Satin Kimono Robe',
+    brand: 'STENZA Atelier',
+    price: 1100,
+    rating: 4.96,
+    reviewsCount: 52,
+    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=600&q=80',
+    category: 'clothing-fashion',
+    description: 'Flowing lounge robe with wide kimono sleeves in vibrant blush copper satin, ideal for pre-event glam prep.'
+  },
+
+  // Shapewear & Lingerie
+  {
+    id: 'prod-21',
+    name: 'Hourglass Seamless Full Bodysuit Shaper',
+    brand: 'Curvaceous Africa',
+    price: 780,
+    rating: 4.94,
+    reviewsCount: 68,
+    image: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=600&q=80',
+    category: 'shapewear-lingerie',
+    description: 'Invisible micro-mesh open-bust body shaper providing 360-degree firm waist contouring without digging in.',
+    badge: 'Top Rated'
   }
 ];
 
