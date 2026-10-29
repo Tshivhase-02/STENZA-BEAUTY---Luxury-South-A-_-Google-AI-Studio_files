@@ -437,7 +437,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <span className="font-medium text-[#26152d]">{createdBooking.serviceName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Artisan / Studio</span>
+                <span className="text-gray-500">Artisan / Beauty Shop</span>
                 <span className="font-medium text-[#26152d]">{provider.name} ({provider.suburb})</span>
               </div>
               <div className="flex justify-between">
@@ -530,10 +530,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
             {/* Content Form */}
             <div className="mt-4 space-y-4 max-h-[64vh] overflow-y-auto pr-1">
-              {/* Studio Selection */}
+              {/* Beauty Shop Selection */}
               <div>
                 <label className="block text-xs font-semibold text-[#26152d] mb-1.5">
-                  Select Provider / Studio
+                  Select Beauty Shop
                 </label>
                 <select
                   value={providerId}
@@ -589,7 +589,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
               </div>
 
-              {/* In-Studio vs Mobile Toggle */}
+              {/* At Beauty Shop vs Mobile Toggle */}
               <div>
                 <label className="block text-xs font-semibold text-[#26152d] mb-1.5">
                   Appointment Location
@@ -605,7 +605,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     }`}
                   >
                     <span className="material-symbols-outlined text-[16px]">storefront</span>
-                    <span>In-Studio</span>
+                    <span>At Beauty Shop</span>
                   </button>
 
                   <button
@@ -630,7 +630,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
                 {!provider.offersMobile && (
                   <p className="text-[11px] text-gray-400 mt-1">
-                    * This artisan currently offers appointments at their studio suite only.
+                    * This artisan currently offers appointments at their beauty shop only.
                   </p>
                 )}
               </div>

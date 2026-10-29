@@ -1,7 +1,7 @@
 export interface ArtisanDocument {
   id: string;
   title: string;
-  type: 'Trade Certificate' | 'CIPC Registration' | 'South African ID' | 'Health & Hygiene Permit' | 'Liability Insurance';
+  type: 'Trade Certificate' | 'CIPC Registration' | 'South African ID' | 'Passport' | 'Health & Hygiene Permit' | 'Liability Insurance' | 'Diploma' | 'Other';
   fileName: string;
   fileSize: string;
   uploadDate: string;
@@ -26,7 +26,9 @@ export interface ArtisanApplication {
   applicantName: string;
   email: string;
   phone: string;
+  idDocType?: 'SA_ID' | 'PASSPORT';
   idNumber: string;
+  shopType?: string;
   businessName: string;
   category: string;
   experienceYears: number;
@@ -41,6 +43,7 @@ export interface ArtisanApplication {
   instagram: string;
   website?: string;
   documents: ArtisanDocument[];
+  faceVerificationMethod?: 'camera' | 'alternative_manual';
   workingHours?: OperatingDay[];
   termsAccepted: boolean;
   popiaConsent: boolean;

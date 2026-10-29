@@ -165,11 +165,11 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#e8a3b8]">
-                  Studio Configuration
+                  Beauty Shop Configuration
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-serif font-bold text-white">
-                Edit Studio Profile & Branding
+                Edit Beauty Shop Profile & Branding
               </h1>
             </div>
           </div>
@@ -200,7 +200,7 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
           <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between shadow-xs animate-in fade-in duration-200">
             <div className="flex items-center gap-2.5">
               <Check className="w-5 h-5 text-emerald-600" />
-              <span className="text-sm font-semibold">Studio Profile saved successfully! Client view updated.</span>
+              <span className="text-sm font-semibold">Beauty Shop Profile saved successfully! Client view updated.</span>
             </div>
             <button
               onClick={() => onNavigate('studio_preview')}
@@ -224,7 +224,7 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
-                  Studio / Business Name *
+                  Beauty Shop / Business Name *
                 </label>
                 <input
                   type="text"
@@ -284,7 +284,7 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
 
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
-                  Studio Headline (Tagline) *
+                  Beauty Shop Headline (Tagline) *
                 </label>
                 <input
                   type="text"
@@ -297,7 +297,7 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
 
               <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
-                  Comprehensive Studio Biography & Credentials *
+                  Comprehensive Beauty Shop Biography & Credentials *
                 </label>
                 <textarea
                   rows={4}

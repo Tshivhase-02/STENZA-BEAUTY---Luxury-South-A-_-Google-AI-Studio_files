@@ -488,40 +488,6 @@ export default function App() {
           onSelectArtisanPreset={handleSelectArtisanPreset}
           onLogoutAdmin={handleAdminLogout}
         />
-
-        {/* Discreet Quick Portal Switcher Dock (Bottom-Left) */}
-        <aside aria-label="Portal Navigation Dock" className="fixed bottom-6 left-6 z-40 hidden sm:flex items-center gap-1.5 p-1.5 bg-[#1b0d21]/95 backdrop-blur-md text-white rounded-full border border-emerald-500/40 shadow-2xl text-[11px]">
-          <span className="text-[10px] text-stone-400 pl-2.5 pr-1 font-bold uppercase tracking-wider">
-            Portal:
-          </span>
-          <button
-            onClick={() => handleNavigate('home')}
-            className="px-3 py-1 rounded-full text-stone-300 hover:text-white hover:bg-white/10 transition cursor-pointer flex items-center gap-1 font-medium"
-            title="Switch to Customer Marketplace"
-          >
-            <span>🌸 User Page</span>
-          </button>
-          <button
-            onClick={() => handleNavigate('artisan_dashboard')}
-            className="px-3 py-1 rounded-full text-stone-300 hover:text-white hover:bg-white/10 transition cursor-pointer flex items-center gap-1 font-medium"
-            title="Switch to Artisan Studio Suite"
-          >
-            <span>✂️ Artisan Suite</span>
-          </button>
-          <button
-            onClick={() => handleNavigate('admin_review')}
-            className="px-3 py-1 rounded-full bg-emerald-600 text-white font-bold transition shadow-xs flex items-center gap-1 cursor-default"
-            title="Currently in Admin Portal"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-200" />
-            <span>🛡️ Admin Portal</span>
-            {pendingAppsCount > 0 && (
-              <span className="bg-amber-400 text-black text-[9px] font-bold px-1.5 py-0.2 rounded-full">
-                {pendingAppsCount}
-              </span>
-            )}
-          </button>
-        </aside>
       </div>
     );
   }

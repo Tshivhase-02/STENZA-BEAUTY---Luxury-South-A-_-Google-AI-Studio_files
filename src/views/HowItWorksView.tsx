@@ -31,7 +31,7 @@ export const HowItWorksView: React.FC<HowItWorksViewProps> = ({
             The STENZA Standard
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#26152d]">
-            How Mzansi Luxury Beauty Works
+            Your Guide to STENZA
           </h1>
           <p className="text-xs sm:text-base text-gray-600 leading-relaxed">
             Whether you are booking a couture BIAB set in Rosebank or scaling your independent salon business in Camps Bay, STENZA provides seamless discovery, transparent scheduling, and South African escrow security.

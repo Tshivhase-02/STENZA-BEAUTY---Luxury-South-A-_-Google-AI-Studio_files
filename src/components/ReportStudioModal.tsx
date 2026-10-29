@@ -56,8 +56,8 @@ const REPORT_REASONS: { category: ReportCategory; label: string; desc: string }[
   },
   {
     category: 'fake_studio',
-    label: 'Fake studio or suspicious activity',
-    desc: 'Studio does not physically exist, stolen imagery, or duplicate unverified listing.'
+    label: 'Fake beauty shop or suspicious activity',
+    desc: 'Beauty shop does not physically exist, stolen imagery, or duplicate unverified listing.'
   },
   {
     category: 'other',
@@ -226,10 +226,10 @@ export const ReportStudioModal: React.FC<ReportStudioModalProps> = ({
 
           <h2 className="text-xl font-serif font-bold text-white flex items-center gap-2">
             <Flag className="w-5 h-5 text-rose-400" />
-            <span>Report Studio or Safety Concern</span>
+            <span>Report Beauty Shop or Safety Concern</span>
           </h2>
           <p className="text-xs text-stone-300 mt-1">
-            Target Studio: <strong className="text-white">{studioName}</strong>
+            Target Beauty Shop: <strong className="text-white">{studioName}</strong>
           </p>
         </div>
 
@@ -307,7 +307,7 @@ export const ReportStudioModal: React.FC<ReportStudioModalProps> = ({
                   <span className="font-mono font-bold text-base text-[#b86b86]">{submittedReport.id}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-stone-500">Reported Studio:</span>
+                  <span className="text-stone-500">Reported Beauty Shop:</span>
                   <span className="font-semibold text-stone-800">{submittedReport.studioName}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
@@ -327,7 +327,7 @@ export const ReportStudioModal: React.FC<ReportStudioModalProps> = ({
               </div>
 
               <p className="text-xs text-stone-600 leading-relaxed">
-                Thank you for helping keep the STENZA luxury beauty community verified and honest. A compliance officer will review your report, audit the studio's pricing/records, and notify you of findings.
+                Thank you for helping keep the STENZA luxury beauty community verified and honest. A compliance officer will review your report, audit the beauty shop's pricing/records, and notify you of findings.
               </p>
 
               <div className="pt-2 space-y-2">
@@ -350,7 +350,7 @@ export const ReportStudioModal: React.FC<ReportStudioModalProps> = ({
                   onClick={handleResetAndClose}
                   className="w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold transition cursor-pointer"
                 >
-                  Return to Studio Profile
+                  Return to Beauty Shop Profile
                 </button>
               </div>
             </div>
@@ -428,7 +428,7 @@ export const ReportStudioModal: React.FC<ReportStudioModalProps> = ({
                     onChange={(e) => setBookedThroughStenza(e.target.checked)}
                     className="accent-[#b86b86] rounded w-4 h-4"
                   />
-                  <span>I booked or paid for an appointment with this studio through STENZA BEAUTY</span>
+                  <span>I booked or paid for an appointment with this beauty shop through STENZA BEAUTY</span>
                 </label>
 
                 {bookedThroughStenza && (

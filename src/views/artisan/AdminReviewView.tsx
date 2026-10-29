@@ -570,8 +570,8 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
   // Nav Items Configuration
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3, badge: null },
-    { id: 'studios', label: 'Studio Management', icon: Building, badge: studios.length },
-    { id: 'approvals', label: 'Studio Approvals', icon: ShieldCheck, badge: pendingApps.length > 0 ? pendingApps.length : null, badgeAlert: true },
+    { id: 'studios', label: 'Beauty Shop Management', icon: Building, badge: studios.length },
+    { id: 'approvals', label: 'Beauty Shop Approvals', icon: ShieldCheck, badge: pendingApps.length > 0 ? pendingApps.length : null, badgeAlert: true },
     { id: 'users_artisans', label: 'Users & Artisans', icon: Users, badge: null },
     { id: 'bookings', label: 'Bookings', icon: CalendarCheck, badge: null },
     { id: 'reports', label: 'Reports & Complaints', icon: Flag, badge: analytics.openReports > 0 ? analytics.openReports : null, badgeAlert: true },
@@ -694,21 +694,15 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 pt-1">
+          {onLogoutAdmin && (
             <button
-              onClick={() => onNavigate('home')}
-              className="flex-1 py-1.5 px-2 bg-white/5 hover:bg-white/10 text-stone-300 hover:text-white rounded-lg text-[11px] font-medium text-center transition cursor-pointer flex items-center justify-center gap-1"
+              onClick={onLogoutAdmin}
+              className="w-full mt-2 py-1.5 px-2 bg-white/5 hover:bg-rose-500/20 text-stone-300 hover:text-rose-200 rounded-lg text-[11px] font-medium text-center transition cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <ArrowLeft className="w-3 h-3" />
-              <span>User Page</span>
+              <Lock className="w-3 h-3" />
+              <span>Sign Out of Admin</span>
             </button>
-            <button
-              onClick={() => onNavigate('artisan_dashboard')}
-              className="flex-1 py-1.5 px-2 bg-white/5 hover:bg-white/10 text-stone-300 hover:text-white rounded-lg text-[11px] font-medium text-center transition cursor-pointer"
-            >
-              Artisan Suite
-            </button>
-          </div>
+          )}
         </div>
       </aside>
 
@@ -1043,14 +1037,14 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-stone-100">
                   <div>
                     <h2 className="text-base font-serif font-bold text-[#26152d]">
-                      Studio Directory & Compliance
+                      Beauty Shop Directory & Compliance
                     </h2>
                     <p className="text-xs text-stone-500">
-                      Manage registered beauty studios across South Africa.
+                      Manage registered beauty shops across South Africa.
                     </p>
                   </div>
                   <span className="text-xs font-semibold text-stone-600 bg-stone-100 px-3 py-1 rounded-lg self-start sm:self-auto">
-                    {filteredStudios.length} studios found
+                    {filteredStudios.length} beauty shops found
                   </span>
                 </div>
 

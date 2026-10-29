@@ -102,7 +102,7 @@ export const ApplicationSubmittedView: React.FC<ApplicationSubmittedViewProps> =
               </h3>
               <p className="text-xs sm:text-sm text-amber-800 mt-1 leading-relaxed">
                 In accordance with STENZA Beauty Marketplace standards and South African municipal hygiene regulations, 
-                <strong className="font-semibold text-stone-900"> pending artisan studios cannot be published to the public catalog</strong> until an administrator verifies your CIPC registration, trade qualifications, and identity document.
+                <strong className="font-semibold text-stone-900"> pending artisan beauty shops cannot be published to the public catalog</strong> until an administrator verifies your identity credentials and face verification dossier.
               </p>
             </div>
           </div>
@@ -122,9 +122,9 @@ export const ApplicationSubmittedView: React.FC<ApplicationSubmittedViewProps> =
                 1
               </div>
               <div>
-                <h4 className="text-sm font-bold text-stone-900">Document & Accreditation Audit (Within 24 Hours)</h4>
+                <h4 className="text-sm font-bold text-stone-900">Identity & Face Verification Audit (Within 24 Hours)</h4>
                 <p className="text-xs sm:text-sm text-stone-600 mt-1 leading-relaxed">
-                  Our verification officers inspect your uploaded trade diplomas ({application.documents.length} documents attached), CIPC company active status, and municipal hygiene certificates.
+                  Our verification officers review your submitted identity document, face verification scan, and any optional credentials provided ({application.documents.length} attached).
                 </p>
               </div>
             </div>
@@ -135,7 +135,7 @@ export const ApplicationSubmittedView: React.FC<ApplicationSubmittedViewProps> =
                 2
               </div>
               <div>
-                <h4 className="text-sm font-bold text-stone-900">Telephone / WhatsApp Studio Onboarding Call</h4>
+                <h4 className="text-sm font-bold text-stone-900">Telephone / WhatsApp Beauty Shop Onboarding Call</h4>
                 <p className="text-xs sm:text-sm text-stone-600 mt-1 leading-relaxed">
                   A STENZA Artisan Concierge may reach out via <span className="font-medium text-stone-800">{application.phone}</span> to confirm your house-call boundaries ({application.serviceRadius}) and service pricing.
                 </p>
@@ -148,9 +148,9 @@ export const ApplicationSubmittedView: React.FC<ApplicationSubmittedViewProps> =
                 3
               </div>
               <div>
-                <h4 className="text-sm font-bold text-stone-900">Full Studio Marketplace Activation</h4>
+                <h4 className="text-sm font-bold text-stone-900">Full Beauty Shop Marketplace Activation</h4>
                 <p className="text-xs sm:text-sm text-stone-600 mt-1 leading-relaxed">
-                  Once your status changes to <span className="text-emerald-700 font-semibold">Approved</span>, your Studio Profile editor unlocks the <span className="font-medium text-stone-800">"Publish Studio"</span> toggle, welcoming clients from Sandton, Rosebank, and Pretoria.
+                  Once your status changes to <span className="text-emerald-700 font-semibold">Approved</span>, your Beauty Shop Profile editor unlocks the <span className="font-medium text-stone-800">"Publish Beauty Shop"</span> toggle, welcoming clients from Sandton, Rosebank, and Pretoria.
                 </p>
               </div>
             </div>
@@ -194,7 +194,7 @@ export const ApplicationSubmittedView: React.FC<ApplicationSubmittedViewProps> =
               className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-stone-100 text-stone-800 rounded-xl font-medium text-sm hover:bg-stone-200 transition-all cursor-pointer"
             >
               <Eye className="w-4 h-4 text-stone-600" />
-              <span>Preview Studio (Draft)</span>
+              <span>Preview Beauty Shop (Draft)</span>
             </button>
           </div>
 

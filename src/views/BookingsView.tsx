@@ -509,7 +509,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                                   className="py-1.5 px-3 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold flex items-center gap-1 transition-colors"
                                 >
                                   <span className="material-symbols-outlined text-[14px]">chat</span>
-                                  <span>WhatsApp Studio</span>
+                                  <span>WhatsApp Beauty Shop</span>
                                 </a>
 
                                 <button
@@ -662,7 +662,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                 <span className="text-xs text-stone-500">Only your submitted records are shown</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#1b0d21]">
-                Your Studio Reports & Trust Investigations
+                Your Beauty Shop Reports & Trust Investigations
               </h2>
               <p className="text-xs text-stone-600 leading-relaxed">
                 Track real-time investigation progress, compliance team findings, and official resolution decisions for reports you lodged against partner salons.
@@ -739,7 +739,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                 })}
                 className="py-2.5 px-4 rounded-xl bg-[#1b0d21] hover:bg-[#2c1437] text-white text-xs font-bold transition cursor-pointer"
               >
-                File a Studio Concern
+                File a Beauty Shop Concern
               </button>
             </div>
           ) : (
@@ -784,7 +784,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                     {/* Studio & Reason Summary */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <div className="text-[11px] text-stone-400 font-bold uppercase tracking-wider">Reported Studio</div>
+                        <div className="text-[11px] text-stone-400 font-bold uppercase tracking-wider">Reported Beauty Shop</div>
                         <div className="font-serif text-base font-bold text-[#1b0d21] mt-0.5 flex items-center gap-1.5">
                           <Building className="w-4 h-4 text-[#d4af37]" />
                           <span>{report.studioName}</span>

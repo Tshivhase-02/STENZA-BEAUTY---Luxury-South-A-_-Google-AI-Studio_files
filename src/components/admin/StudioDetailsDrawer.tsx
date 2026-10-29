@@ -63,7 +63,7 @@ export const StudioDetailsDrawer: React.FC<StudioDetailsDrawerProps> = ({
 
             <div className="flex items-center gap-2 mb-2">
               <span className="text-[10px] font-bold tracking-widest uppercase bg-emerald-700 text-white px-2 py-0.5 rounded">
-                STUDIO RECORD
+                BEAUTY SHOP RECORD
               </span>
               <span className="text-xs text-stone-400 font-mono">ID: {studio.id}</span>
               <span className="text-stone-500">•</span>

@@ -431,7 +431,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#26152d]">
             {activeTab === 'services'
-              ? 'Discover Verified Beauty Artisans & Studios'
+              ? 'Discover Verified Beauty Artisans & Beauty Shops'
               : 'Shop Curated Beauty, Wellness & Fashion'}
           </h1>
           <p className="text-xs text-stone-600 mt-1 max-w-2xl">
@@ -470,7 +470,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
             }`}
           >
             <Scissors className="w-4 h-4 text-emerald-300" />
-            <span>Book Services ({PROVIDERS.length} Studios)</span>
+            <span>Book Services ({PROVIDERS.length} Beauty Shops)</span>
           </button>
 
           <button
@@ -794,7 +794,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                     >
                       <option value="All">All Venue Setups</option>
                       <option value="Salon">Luxury Salon Suite</option>
-                      <option value="Independent">Independent Studio</option>
+                      <option value="Independent">Independent Beauty Shop</option>
                     </select>
                   </div>
                 </div>
@@ -1018,7 +1018,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
               <strong className="text-[#26152d] font-bold">
                 {activeTab === 'services' ? filteredProviders.length : filteredProducts.length}
               </strong>{' '}
-              {activeTab === 'services' ? 'verified studios' : 'curated products'}
+              {activeTab === 'services' ? 'verified beauty shops' : 'curated products'}
               {activeTab === 'services' && selectedServiceCategory !== 'all' && (
                 <span>
                   {' '}in <strong>{getCategoryDisplayName(selectedServiceCategory)}</strong>
@@ -1082,7 +1082,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                     <span className="material-symbols-outlined text-[32px]">search_off</span>
                   </div>
                   <h3 className="font-serif text-lg font-bold text-[#26152d]">
-                    No verified studios match these criteria
+                    No verified beauty shops match these criteria
                   </h3>
                   <p className="text-xs text-stone-500 max-w-sm mx-auto">
                     Try clearing your category filter or adjusting your starting price to view more available artisans.
@@ -1192,7 +1192,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                               onClick={() => onNavigate('profile', pro.id)}
                               className="py-2 px-3.5 rounded-xl border border-[#d8d3ca] hover:border-[#695684] text-xs font-semibold text-[#26152d] transition cursor-pointer"
                             >
-                              Studio
+                              Beauty Shop
                             </button>
                             <button
                               onClick={() => onOpenBookingModal(pro.id)}

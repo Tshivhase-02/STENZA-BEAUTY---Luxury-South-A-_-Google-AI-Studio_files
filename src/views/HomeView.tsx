@@ -64,7 +64,7 @@ const LANDING_CATEGORIES = [
     name: 'Nails',
     subtitle: 'BIAB Overlays, Russian Manicures & Gel-X',
     image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80',
-    count: '980+ Studios'
+    count: '980+ Beauty Shops'
   },
   {
     id: 'makeup',
@@ -117,121 +117,22 @@ const LANDING_CATEGORIES = [
   }
 ];
 
-// Popular services with dedicated artisan-uploaded photos (distinct from generic studio covers)
-const POPULAR_SERVICES_DATA = [
-  {
-    id: 'pop-1',
-    name: 'Knotless Goddess Braids (Mid-Back)',
-    studioId: 'sovereign-crown-salon',
-    studioName: 'Sovereign Crown Salon',
-    studioLocation: 'Sandton, Johannesburg',
-    price: 1450,
-    duration: '180 min',
-    rating: 4.97,
-    reviewCount: 128,
-    image: 'https://images.unsplash.com/photo-1584297091622-af8e5bd9cbf9?auto=format&fit=crop&w=600&q=80',
-    category: 'Hair and Hairstyles',
-    description: 'Tension-free parting with organic shea butter hydration. Lightweight human hair wavy curls incorporated throughout for a lightweight bohemian silhouette.'
-  },
-  {
-    id: 'pop-2',
-    name: 'BIAB Builder Gel Overlay & Dry Cuticle Prep',
-    studioId: 'luxe-nail-studio',
-    studioName: 'Luxe Nail Studio',
-    studioLocation: 'Rosebank, Johannesburg',
-    price: 650,
-    duration: '90 min',
-    rating: 4.99,
-    reviewCount: 194,
-    image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80',
-    category: 'Nails',
-    description: 'High-precision dry e-file diamond manicure followed by strengthening apex builder gel overlay to restore weak nails without toxic chemicals.'
-  },
-  {
-    id: 'pop-3',
-    name: 'Master Russian Couture Manicure',
-    studioId: 'luxe-nail-studio',
-    studioName: 'Luxe Nail Studio',
-    studioLocation: 'Rosebank, Johannesburg',
-    price: 520,
-    duration: '75 min',
-    rating: 4.98,
-    reviewCount: 142,
-    image: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80',
-    category: 'Nails',
-    description: 'Meticulous dry skin smoothing, diamond bit cuticle cleaning, nourishing peptide bath, and high-shine protective glass lacquer.'
-  },
-  {
-    id: 'pop-4',
-    name: 'Surgical Dermaplaning & Brightening Peel',
-    studioId: 'velvet-glow-aesthetics',
-    studioName: 'Velvet Glow Aesthetics',
-    studioLocation: 'Camps Bay, Cape Town',
-    price: 890,
-    duration: '60 min',
-    rating: 4.99,
-    reviewCount: 96,
-    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80',
-    category: 'Skincare and Facials',
-    description: 'Medical-grade blade exfoliation to gently eliminate dead surface cells and peach fuzz, followed by brightening mandelic glow infusion.'
-  },
-  {
-    id: 'pop-5',
-    name: 'Signature Glow Hydra-Facial & LED Canopy',
-    studioId: 'velvet-glow-aesthetics',
-    studioName: 'Velvet Glow Aesthetics',
-    studioLocation: 'Camps Bay, Cape Town',
-    price: 1200,
-    duration: '75 min',
-    rating: 4.98,
-    reviewCount: 112,
-    image: 'https://images.unsplash.com/photo-1512290900672-1f5518b62c05?auto=format&fit=crop&w=600&q=80',
-    category: 'Skincare and Facials',
-    description: 'Triple vortex suction extraction with personalized salicylic-hyaluronic acid boosters and medical LED canopy for radiant collagen activation.'
-  },
-  {
-    id: 'pop-6',
-    name: 'Gentleman Precision Razor Fade & Beard Sculpt',
-    studioId: 'monarch-blade-parlour',
-    studioName: 'Monarch Blade Parlour',
-    studioLocation: 'Menlyn, Pretoria',
-    price: 380,
-    duration: '45 min',
-    rating: 4.96,
-    reviewCount: 88,
-    image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=80',
-    category: 'Barbering',
-    description: 'Skin taper fade with eucalyptus hot towel wrap, traditional straight-edge razor line work, and cold pressed argan oil beard sculpting.'
-  },
-  {
-    id: 'pop-7',
-    name: 'Couture Bridal Glam Makeup & Skin Prep',
-    studioId: 'lumina-glam-atelier',
-    studioName: 'Lumina Glam Atelier',
-    studioLocation: 'Umhlanga, Durban',
-    price: 950,
-    duration: '90 min',
-    rating: 4.97,
-    reviewCount: 74,
-    image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80',
-    category: 'Makeup',
-    description: 'Long-wearing waterproof airbrush foundation, customized mink individual lash clusters, and soft radiant sculpting perfected for high-definition photography.'
-  },
-  {
-    id: 'pop-8',
-    name: 'Apres Gel-X Sculptural Extensions (Full Set)',
-    studioId: 'luxe-nail-studio',
-    studioName: 'Luxe Nail Studio',
-    studioLocation: 'Rosebank, Johannesburg',
-    price: 850,
-    duration: '105 min',
-    rating: 4.99,
-    reviewCount: 168,
-    image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=600&q=80',
-    category: 'Nails',
-    description: 'Full-cover soft gel tips custom matched to nail beds. Zero acrylic damage, ultra-lightweight wear, and personalized almond or stiletto shaping.'
-  }
-];
+// Dynamic Available Service Model
+export interface AvailableServiceCard {
+  id: string;
+  serviceId: string;
+  name: string;
+  category: string;
+  duration: string;
+  price: number;
+  description: string;
+  studioId: string;
+  studioName: string;
+  studioLocation: string;
+  rating: number;
+  reviewCount: number;
+  image: string;
+}
 
 // Verified Completed-Appointment Reviews (Realistic sample content)
 const SAMPLE_REVIEWS = [
@@ -288,7 +189,48 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const [searchLocation, setSearchLocation] = useState('');
   
   // Service quick detail modal
-  const [activeServiceDetail, setActiveServiceDetail] = useState<typeof POPULAR_SERVICES_DATA[0] | null>(null);
+  const [activeServiceDetail, setActiveServiceDetail] = useState<AvailableServiceCard | null>(null);
+
+  // Dynamically sourced genuine available services from approved, active Beauty Shops
+  const availableServices = React.useMemo<AvailableServiceCard[]>(() => {
+    const list: AvailableServiceCard[] = [];
+
+    PROVIDERS.forEach((pro) => {
+      const adminRecord = adminService.getStudioById(pro.id);
+      // Exclude suspended, disabled, deleted, or rejected beauty shops
+      if (
+        adminRecord &&
+        (adminRecord.isDeleted ||
+          adminRecord.operationalStatus === 'suspended' ||
+          adminRecord.operationalStatus === 'disabled' ||
+          adminRecord.approvalStatus === 'rejected')
+      ) {
+        return;
+      }
+
+      (pro.services || []).forEach((s) => {
+        if (s.isActive !== false) {
+          list.push({
+            id: `${pro.id}-${s.id}`,
+            serviceId: s.id,
+            name: s.name,
+            category: s.category || pro.categories?.[0] || 'Beauty',
+            duration: s.duration,
+            price: s.price,
+            description: s.description,
+            studioId: pro.id,
+            studioName: pro.name,
+            studioLocation: `${pro.suburb}, ${pro.city}`,
+            rating: pro.rating,
+            reviewCount: pro.reviewCount,
+            image: pro.coverImage || pro.gallery?.[0] || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80',
+          });
+        }
+      });
+    });
+
+    return list;
+  }, []);
 
   // FAQ Expand state (Tracks which index is open)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -355,23 +297,23 @@ export const HomeView: React.FC<HomeViewProps> = ({
     },
     {
       q: 'How do I find services near me?',
-      a: 'You can use the location selector in the hero search or filter studios by metropolitan hub (Johannesburg, Cape Town, Durban, Pretoria) and specific suburbs like Sandton, Rosebank, Camps Bay, or Menlyn.'
+      a: 'You can use the location selector in the hero search or filter beauty shops by metropolitan hub (Johannesburg, Cape Town, Durban, Pretoria) and specific suburbs like Sandton, Rosebank, Camps Bay, or Menlyn.'
     },
     {
       q: 'Can I choose a specific beauty professional?',
-      a: 'Yes. Every studio and independent artisan has an individual profile showing their lead artist, trade accreditations, years of experience, specific services, and portfolio photographs.'
+      a: 'Yes. Every beauty shop and independent artisan has an individual profile showing their lead artist, accreditations, years of experience, specific services, and portfolio photographs.'
     },
     {
       q: 'How do I become a registered beauty professional on STENZA?',
-      a: 'Click "Register Your Studio" in the navigation or recruitment section to access our 6-step artisan registration form. You will provide your business details, trade qualifications, and operating hours.'
+      a: 'Click "Register Your Beauty Shop" in the navigation or recruitment section to access our artisan registration form. You will provide your business details, specialty, and operating hours.'
     },
     {
-      q: 'How does studio approval work?',
-      a: 'To safeguard client safety and hygiene standards, all artisan applications remain pending until a STENZA administrator reviews the submitted credentials, CIPC active registration, and municipal hygiene certificates.'
+      q: 'How does Beauty Shop approval work?',
+      a: 'To safeguard client safety and hygiene standards, all artisan applications remain pending until a STENZA administrator reviews the submitted profile and identity credentials.'
     },
     {
       q: 'Can artisans offer mobile house calls?',
-      a: 'Yes. Artisans can enable house calls in their studio settings, configure their travel radius, and specify a transparent travel fee in South African Rand (ZAR) which is clearly shown to clients.'
+      a: 'Yes. Artisans can enable house calls in their beauty shop settings, configure their travel radius, and specify a transparent travel fee in South African Rand (ZAR) which is clearly shown to clients.'
     },
     {
       q: 'How can I leave a review?',
@@ -449,23 +391,25 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </div>
                 </div>
 
-                {/* Popular Search Tags */}
-                <div className="flex items-center gap-2 pt-1 text-xs text-stone-500 overflow-x-auto pb-1">
-                  <span className="font-semibold text-stone-700 shrink-0">Popular:</span>
-                  {['Knotless Braids', 'BIAB Nails', 'Dermaplaning', 'Hydra-Facial', 'Fade & Beard', 'Bridal Glam'].map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => {
-                        setSearchService(tag);
-                        onNavigate('discover');
-                      }}
-                      className="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-[11px] font-medium shrink-0 transition cursor-pointer"
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
+                {/* Available Search Tags */}
+                {availableServices.length > 0 && (
+                  <div className="flex items-center gap-2 pt-1 text-xs text-stone-500 overflow-x-auto pb-1">
+                    <span className="font-semibold text-stone-700 shrink-0">Available:</span>
+                    {Array.from(new Set(availableServices.map((s) => s.name))).slice(0, 6).map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          setSearchService(tag);
+                          onNavigate('discover');
+                        }}
+                        className="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-[11px] font-medium shrink-0 transition cursor-pointer"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </form>
 
               {/* Two Calls to Action */}
@@ -475,7 +419,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   className="px-6 py-3.5 bg-[#b86b86] hover:bg-[#a25974] text-white text-xs font-bold rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer"
                 >
                   <Compass className="w-4 h-4" />
-                  <span>Explore Studios</span>
+                  <span>Explore Beauty Shops</span>
                 </button>
 
                 <button
@@ -487,7 +431,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 </button>
 
                 <span className="text-[11px] text-stone-500">
-                  ✨ Browse studios, prices & portfolios without registering.
+                  ✨ Browse beauty shops, prices & portfolios without registering.
                 </span>
               </div>
             </div>
@@ -541,7 +485,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#26152d]">
-              Discover Top Beauty Studios
+              Discover Top Beauty Shops
             </h2>
             <p className="text-xs sm:text-sm text-stone-600 mt-1">
               Explore talented professionals and find the right beauty experience for you.
@@ -552,7 +496,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             onClick={() => onNavigate('discover')}
             className="text-xs font-bold text-[#b86b86] hover:text-[#914660] flex items-center gap-1 cursor-pointer self-start sm:self-auto"
           >
-            <span>View All Studios</span>
+            <span>View All Beauty Shops</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -628,7 +572,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     isLoggedIn ? 'flex-1' : 'w-full'
                   }`}
                 >
-                  View Studio
+                  View Beauty Shop
                 </button>
                 {isLoggedIn && (
                   <button
@@ -676,7 +620,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                 <div className="flex items-center gap-2 text-xs">
                   <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2 py-0.5 rounded">
-                    Introductory Studio • Accepting Initial Bookings
+                    Introductory Beauty Shop • Accepting Initial Bookings
                   </span>
                 </div>
 
@@ -693,7 +637,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   isLoggedIn ? 'flex-1' : 'w-full'
                 }`}
               >
-                View Studio
+                View Beauty Shop
               </button>
               {isLoggedIn && (
                 <button
@@ -881,19 +825,19 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* 4. POPULAR SERVICES */}
+      {/* 4. AVAILABLE SERVICES */}
       <section className="bg-stone-100/60 py-16 border-y border-stone-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#b86b86] bg-pink-50 px-2 py-0.5 rounded">
-                Client Favorites
+                Accredited Treatments
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#26152d] mt-1">
-                Popular Beauty Services
+                Available Services
               </h2>
               <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-                Handcrafted treatment results with real artisan-uploaded photos and transparent South African Rand pricing.
+                Explore treatments genuinely offered by verified and active South African Beauty Shops.
               </p>
             </div>
 
@@ -906,79 +850,97 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </button>
           </div>
 
-          {/* Service Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {POPULAR_SERVICES_DATA.map((srv) => (
-              <div
-                key={srv.id}
-                className="bg-white rounded-3xl border border-stone-200/90 shadow-2xs hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col justify-between group"
+          {/* Service Cards Grid or Empty State */}
+          {availableServices.length === 0 ? (
+            <div className="bg-white rounded-3xl p-12 text-center border border-stone-200/80 max-w-md mx-auto space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mx-auto text-stone-400">
+                <Sparkles className="w-6 h-6 text-[#b86b86]" />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-stone-900">No Services Currently Available</h3>
+              <p className="text-xs text-stone-500 leading-relaxed">
+                There are currently no active beauty services listed for booking in this selection. Please browse all beauty shops or explore treatment categories.
+              </p>
+              <button
+                onClick={() => onNavigate('discover')}
+                className="mt-2 py-2.5 px-6 rounded-xl bg-[#26152d] text-white text-xs font-bold hover:bg-[#39263f] transition"
               >
-                <div>
-                  {/* Service-Specific Image */}
-                  <div className="relative aspect-4/3 bg-stone-900 overflow-hidden">
-                    <img
-                      src={srv.image}
-                      alt={srv.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                    
-                    <span className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-xs text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
-                      {srv.category}
-                    </span>
-
-                    <span className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-xs text-[#26152d] text-xs font-bold px-2 py-0.5 rounded-lg shadow-xs">
-                      R{srv.price}
-                    </span>
-                  </div>
-
-                  {/* Body */}
-                  <div className="p-4 space-y-2">
-                    <h3 className="font-serif text-sm font-bold text-[#26152d] group-hover:text-[#b86b86] transition-colors line-clamp-1">
-                      {srv.name}
-                    </h3>
-
-                    <p className="text-[11px] text-stone-500 font-medium truncate">
-                      {srv.studioName} • {srv.studioLocation}
-                    </p>
-
-                    <div className="flex items-center justify-between text-xs pt-1">
-                      <span className="flex items-center gap-1 text-stone-600 font-medium text-[11px]">
-                        <Clock className="w-3.5 h-3.5 text-stone-400" /> {srv.duration}
+                Explore Beauty Shops
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {availableServices.slice(0, 8).map((srv) => (
+                <div
+                  key={srv.id}
+                  className="bg-white rounded-3xl border border-stone-200/90 shadow-2xs hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col justify-between group"
+                >
+                  <div>
+                    {/* Service-Specific Image */}
+                    <div className="relative aspect-4/3 bg-stone-900 overflow-hidden">
+                      <img
+                        src={srv.image}
+                        alt={srv.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                      
+                      <span className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-xs text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
+                        {srv.category}
                       </span>
-                      <span className="flex items-center gap-1 text-amber-800 font-bold text-[11px]">
-                        <Star className="w-3 h-3 fill-[#d4af37] text-[#d4af37]" /> {srv.rating} ({srv.reviewCount})
+
+                      <span className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-xs text-[#26152d] text-xs font-bold px-2 py-0.5 rounded-lg shadow-xs">
+                        R{srv.price}
                       </span>
                     </div>
 
-                    <p className="text-[11px] text-stone-600 line-clamp-2 leading-relaxed pt-1">
-                      {srv.description}
-                    </p>
+                    {/* Body */}
+                    <div className="p-4 space-y-2">
+                      <h3 className="font-serif text-sm font-bold text-[#26152d] group-hover:text-[#b86b86] transition-colors line-clamp-1">
+                        {srv.name}
+                      </h3>
+
+                      <p className="text-[11px] text-stone-500 font-medium truncate">
+                        {srv.studioName} • {srv.studioLocation}
+                      </p>
+
+                      <div className="flex items-center justify-between text-xs pt-1">
+                        <span className="flex items-center gap-1 text-stone-600 font-medium text-[11px]">
+                          <Clock className="w-3.5 h-3.5 text-stone-400" /> {srv.duration}
+                        </span>
+                        <span className="flex items-center gap-1 text-amber-800 font-bold text-[11px]">
+                          <Star className="w-3 h-3 fill-[#d4af37] text-[#d4af37]" /> {srv.rating} ({srv.reviewCount})
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] text-stone-600 line-clamp-2 leading-relaxed pt-1">
+                        {srv.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="p-4 pt-2 border-t border-stone-100 flex items-center gap-2">
+                    <button
+                      onClick={() => setActiveServiceDetail(srv)}
+                      className={`py-2 rounded-xl border border-stone-200 hover:bg-stone-50 text-stone-700 text-xs font-bold transition text-center cursor-pointer ${
+                        isLoggedIn ? 'flex-1' : 'w-full'
+                      }`}
+                    >
+                      View Details
+                    </button>
+                    {isLoggedIn && (
+                      <button
+                        onClick={() => handleBookClick(srv.studioId)}
+                        className="flex-1 py-2 rounded-xl bg-[#26152d] hover:bg-[#39263f] text-white text-xs font-bold transition text-center shadow-xs cursor-pointer"
+                      >
+                        Book Now
+                      </button>
+                    )}
                   </div>
                 </div>
-
-                {/* Actions */}
-                <div className="p-4 pt-2 border-t border-stone-100 flex items-center gap-2">
-                  <button
-                    onClick={() => setActiveServiceDetail(srv)}
-                    className={`py-2 rounded-xl border border-stone-200 hover:bg-stone-50 text-stone-700 text-xs font-bold transition text-center cursor-pointer ${
-                      isLoggedIn ? 'flex-1' : 'w-full'
-                    }`}
-                  >
-                    View Details
-                  </button>
-                  {isLoggedIn && (
-                    <button
-                      onClick={() => handleBookClick(srv.studioId)}
-                      className="flex-1 py-2 rounded-xl bg-[#26152d] hover:bg-[#39263f] text-white text-xs font-bold transition text-center shadow-xs cursor-pointer"
-                    >
-                      Book Now
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -1077,7 +1039,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* 6. HOW IT WORKS */}
+      {/* 6. YOUR GUIDE TO STENZA */}
       <section className="bg-[#26152d] text-white py-18">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14 space-y-2">
@@ -1085,7 +1047,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               Seamless 4-Step Process
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white">
-              How It Works
+              Your Guide to STENZA
             </h2>
             <p className="text-xs sm:text-sm text-stone-300">
               Booking your next beauty service in Johannesburg, Cape Town, or Durban takes under two minutes.
@@ -1100,7 +1062,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </div>
               <h3 className="font-serif text-lg font-bold text-white">Discover</h3>
               <p className="text-xs text-stone-300 leading-relaxed">
-                Search for a beauty service or studio by treatment category, city, or neighborhood.
+                Search for a beauty service or beauty shop by treatment category, city, or neighborhood.
               </p>
             </div>
 
@@ -1144,7 +1106,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="px-8 py-3.5 bg-[#b86b86] hover:bg-[#a25974] text-white font-bold text-xs rounded-xl transition shadow-md cursor-pointer inline-flex items-center gap-2"
             >
               <Compass className="w-4 h-4" />
-              <span>Explore Studios</span>
+              <span>Explore Beauty Shops</span>
             </button>
           </div>
         </div>
@@ -1252,11 +1214,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 className="px-8 py-3.5 bg-[#b86b86] hover:bg-[#a25974] text-white font-bold text-xs rounded-xl transition shadow-lg flex items-center gap-2 cursor-pointer"
               >
                 <Scissors className="w-4 h-4" />
-                <span>Register Your Studio</span>
+                <span>Register Your Beauty Shop</span>
               </button>
 
               <p className="text-[11px] text-stone-400">
-                * Applications are subject to administrator approval before studios become publicly visible.
+                * Applications are subject to administrator approval before beauty shops become publicly visible.
               </p>
             </div>
           </div>
@@ -1273,7 +1235,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             Frequently Asked Questions
           </h2>
           <p className="text-xs sm:text-sm text-stone-600">
-            Everything you need to know about browsing, booking, and studio registrations on STENZA.
+            Everything you need to know about browsing, booking, and beauty shop registrations on STENZA.
           </p>
         </div>
 
@@ -1331,7 +1293,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="px-8 py-3.5 bg-[#26152d] hover:bg-[#39263f] text-white text-xs font-bold rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer"
             >
               <Compass className="w-4 h-4" />
-              <span>Explore Studios</span>
+              <span>Explore Beauty Shops</span>
             </button>
 
             <button
@@ -1380,7 +1342,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div className="space-y-4 text-xs sm:text-sm">
               <div className="flex items-center justify-between p-3.5 bg-stone-50 rounded-xl border border-stone-200">
                 <div>
-                  <span className="text-[10px] text-stone-500 uppercase font-bold block">Artisan Studio</span>
+                  <span className="text-[10px] text-stone-500 uppercase font-bold block">Artisan Beauty Shop</span>
                   <span className="font-bold text-stone-900">{activeServiceDetail.studioName}</span>
                 </div>
                 <div className="text-right">

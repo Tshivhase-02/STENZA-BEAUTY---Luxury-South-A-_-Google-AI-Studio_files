@@ -442,7 +442,7 @@ export const ServicesManagementView: React.FC<ServicesManagementViewProps> = ({
               className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
             >
               <Eye className="w-4 h-4 text-pink-300" />
-              <span>Studio Preview</span>
+              <span>Beauty Shop Preview</span>
             </button>
             <button
               onClick={() => setActiveModal('catalog')}

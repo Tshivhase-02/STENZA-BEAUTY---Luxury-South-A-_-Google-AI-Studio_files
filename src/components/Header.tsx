@@ -124,7 +124,7 @@ export const Header: React.FC<HeaderProps> = ({
                 currentView === 'discover' ? 'text-[#b86b86] font-semibold' : 'text-[#26152d]'
               }`}
             >
-              Explore Studios
+              Explore Beauty Shops
               {currentView === 'discover' && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#b86b86] rounded-full"></span>
               )}
@@ -289,7 +289,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
             >
             
-              Explore Studios
+              Explore Beauty Shops
             </button>
 
             <button
@@ -364,7 +364,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <span className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-[#b86b86]">storefront</span>
-                <span>Artisan Studio Suite</span>
+                <span>Artisan Suite</span>
               </span>
               <span className="text-[10px] bg-pink-200 text-[#7c535c] px-1.5 py-0.5 rounded font-mono font-bold">
                 Artisan

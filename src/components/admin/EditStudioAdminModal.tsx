@@ -81,7 +81,7 @@ export const EditStudioAdminModal: React.FC<EditStudioAdminModalProps> = ({
             <span>Edit Administrative Listing Info</span>
           </h2>
           <p className="text-xs text-stone-300 mt-1">
-            Studio: <strong className="text-white">{studio.businessName}</strong> ({studio.id})
+            Beauty Shop: <strong className="text-white">{studio.businessName}</strong> ({studio.id})
           </p>
         </div>
 

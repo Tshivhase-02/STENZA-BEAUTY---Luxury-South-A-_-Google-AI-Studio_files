@@ -214,7 +214,7 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
               className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
             >
               <Share2 className="w-3.5 h-3.5" />
-              <span>{copiedLink ? 'Copied Link!' : 'Share Studio'}</span>
+              <span>{copiedLink ? 'Copied Link!' : 'Share Beauty Shop'}</span>
             </button>
 
             {/* Publish / Locked Publish CTA */}
@@ -228,7 +228,7 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
                 }`}
               >
                 <CheckCircle2 className="w-4 h-4" />
-                <span>{studio.isPublished ? 'Unpublish Studio' : 'Publish Studio Live'}</span>
+                <span>{studio.isPublished ? 'Unpublish Beauty Shop' : 'Publish Beauty Shop Live'}</span>
               </button>
             ) : (
               <button
@@ -237,7 +237,7 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
                 title="Application is pending administrator approval"
               >
                 <Lock className="w-4 h-4 text-amber-400" />
-                <span>Publish Studio (Locked)</span>
+                <span>Publish Beauty Shop (Locked)</span>
               </button>
             )}
 
@@ -245,7 +245,7 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
               onClick={() => onNavigate('artisan_dashboard')}
               className="px-3.5 py-1.5 bg-[#b86b86] hover:bg-[#a25974] text-white rounded-lg text-xs font-semibold transition cursor-pointer"
             >
-              Return to Studio Suite
+              Return to Artisan Suite
             </button>
           </div>
         </div>
@@ -258,7 +258,7 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
             <div className="flex items-center gap-2 font-medium">
               <Lock className="w-4 h-4 text-amber-700 shrink-0" />
               <span>
-                <strong>Application Status: Pending Admin Approval.</strong> This studio preview is currently in draft. Clients cannot discover or book your studio until a STENZA compliance administrator verifies your documents.
+                <strong>Application Status: Pending Admin Approval.</strong> This beauty shop preview is currently in draft. Clients cannot discover or book your beauty shop until a STENZA compliance administrator verifies your dossier.
               </span>
             </div>
             <button

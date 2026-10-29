@@ -32,7 +32,7 @@ export const LandingPagePreviewModal: React.FC<LandingPagePreviewModalProps> = (
                 LIVE STOREFRONT PREVIEW
               </span>
               <h2 className="text-base font-serif font-bold text-white mt-0.5">
-                Public Landing Page • Featured Studios Showcase
+                Public Landing Page • Featured Beauty Shops Showcase
               </h2>
             </div>
           </div>
@@ -65,10 +65,10 @@ export const LandingPagePreviewModal: React.FC<LandingPagePreviewModalProps> = (
                 <span>Hand-Selected & Verified Excellence</span>
               </div>
               <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#26152d]">
-                Featured Beauty Studios in South Africa
+                Featured Beauty Shops in South Africa
               </h3>
               <p className="text-xs sm:text-sm text-stone-500 mt-1">
-                Currently displaying {featuredStudios.length} approved studios selected by STENZA Administrators.
+                Currently displaying {featuredStudios.length} approved beauty shops selected by STENZA Administrators.
               </p>
             </div>
 
@@ -81,9 +81,9 @@ export const LandingPagePreviewModal: React.FC<LandingPagePreviewModalProps> = (
           {featuredStudios.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-stone-200 p-8 space-y-3">
               <Sparkles className="w-10 h-10 text-stone-300 mx-auto" />
-              <h4 className="font-serif text-lg font-bold text-stone-700">No Featured Studios Selected</h4>
+              <h4 className="font-serif text-lg font-bold text-stone-700">No Featured Beauty Shops Selected</h4>
               <p className="text-xs text-stone-500 max-w-sm mx-auto">
-                Toggle "Feature on Landing Page" in the Landing Page Promotions manager to highlight verified studios here.
+                Toggle "Feature on Landing Page" in the Landing Page Promotions manager to highlight verified beauty shops here.
               </p>
             </div>
           ) : (

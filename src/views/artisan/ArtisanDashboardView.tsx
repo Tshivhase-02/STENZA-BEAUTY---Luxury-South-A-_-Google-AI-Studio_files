@@ -60,7 +60,7 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#b86b86]/30 text-[#e8a3b8] border border-[#b86b86]/50 uppercase tracking-wider">
-                Artisan Studio Suite
+                Artisan Suite
               </span>
               <span className="text-xs text-stone-400 font-mono">Ref: {application.id}</span>
             </div>
@@ -79,7 +79,7 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
               className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-medium flex items-center gap-2 transition cursor-pointer"
             >
               <Eye className="w-4 h-4 text-pink-300" />
-              <span>Studio Preview</span>
+              <span>Beauty Shop Preview</span>
             </button>
             <button
               onClick={() => onNavigate('studio_profile_editor')}
@@ -167,19 +167,19 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-emerald-800 mt-1 leading-relaxed">
-                  Congratulations! Your studio is accredited. You can now toggle your studio status to <strong className="font-semibold text-emerald-950">Live Marketplace Active</strong> and receive bookings directly from Johannesburg and Pretoria clients.
+                  Congratulations! Your beauty shop is accredited. You can now toggle your listing status to <strong className="font-semibold text-emerald-950">Live Marketplace Active</strong> and receive bookings directly from Johannesburg and Pretoria clients.
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-xs font-medium text-emerald-800">
-                Studio Status: <strong className={studio.isPublished ? "text-emerald-700" : "text-stone-500"}>{studio.isPublished ? "Published (Live)" : "Draft"}</strong>
+                Beauty Shop Status: <strong className={studio.isPublished ? "text-emerald-700" : "text-stone-500"}>{studio.isPublished ? "Published (Live)" : "Draft"}</strong>
               </span>
               <button
                 onClick={() => onNavigate('studio_preview')}
                 className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition cursor-pointer"
               >
-                Manage Studio Live Status
+                Manage Beauty Shop Live Status
               </button>
             </div>
           </div>
@@ -190,13 +190,13 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-[#26152d]">Studio Profile Readiness</h3>
+                <h3 className="text-base font-bold text-[#26152d]">Beauty Shop Profile Readiness</h3>
                 <span className="text-xs font-bold text-[#b86b86] bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-200">
                   {completionPercent}% Completed
                 </span>
               </div>
               <p className="text-xs text-stone-500 mt-0.5">
-                Complete all studio sections to rank higher on the client discovery catalog.
+                Complete all beauty shop profile sections to rank higher on the client discovery catalog.
               </p>
             </div>
             <button
@@ -237,10 +237,10 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Studio Management Quick Shortcuts */}
+        {/* Beauty Shop Management Quick Shortcuts */}
         <div className="mb-8">
           <h2 className="text-lg font-serif font-bold text-[#26152d] mb-4">
-            Studio Management Modules
+            Beauty Shop Management Modules
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -254,7 +254,7 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
                   <Building className="w-5 h-5" />
                 </div>
                 <h4 className="text-sm font-bold text-stone-900 group-hover:text-[#b86b86] transition-colors">
-                  Studio Profile Editor
+                  Beauty Shop Profile Editor
                 </h4>
                 <p className="text-xs text-stone-500 mt-1 leading-relaxed">
                   Update business name, bio, founder credentials, photo gallery, logo and social handles.

@@ -217,7 +217,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 { id: 'services', label: 'Treatment Menu', icon: 'spa' },
                 { id: 'loyalty', label: `Loyalty Points (${loyaltySummary.totalPointsEarned} pts)`, icon: 'diamond' },
                 { id: 'portfolio', label: `Portfolio (${provider.gallery.length})`, icon: 'photo_library' },
-                { id: 'about', label: 'Artisan Bio & Studio', icon: 'info' },
+                { id: 'about', label: 'Artisan Bio & Beauty Shop', icon: 'info' },
                 { id: 'reviews', label: `Reviews (${provider.reviewCount})`, icon: 'reviews' },
               ].map((tab) => (
                 <button
@@ -533,7 +533,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 {/* Amenities */}
                 <div className="bg-white p-6 rounded-2xl border border-[#e5e0d8] space-y-3">
                   <h4 className="font-serif text-base font-bold text-[#26152d]">
-                    Studio Amenities & Hospitality
+                    Beauty Shop Amenities & Hospitality
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {provider.amenities.map((item) => (
@@ -885,7 +885,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   className="text-[11px] text-rose-600 hover:text-rose-800 font-semibold inline-flex items-center gap-1 cursor-pointer hover:underline transition"
                 >
                   <span className="material-symbols-outlined text-[14px]">flag</span>
-                  <span>Report this studio or pricing concern</span>
+                  <span>Report this beauty shop or pricing concern</span>
                 </button>
               </div>
             </div>
