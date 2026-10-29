@@ -15,8 +15,18 @@ import {
   UploadCloud,
   CheckCircle2,
   Trash2,
-  Plus
+  Plus,
+  MapPin,
+  ShieldCheck,
+  Building,
+  Navigation
 } from 'lucide-react';
+import { 
+  SOUTH_AFRICAN_PROVINCES, 
+  getTownsForProvince, 
+  getSuburbsForTown, 
+  formatStudioDisplayLocation 
+} from '../../data/saLocationsData';
 
 interface ArtisanRegistrationViewProps {
   onApplicationSubmitted: (app: ArtisanApplication) => void;
@@ -57,13 +67,49 @@ export const ArtisanRegistrationView: React.FC<ArtisanRegistrationViewProps> = (
   const [instagram, setInstagram] = useState('@nompu_dermallab');
   const [website, setWebsite] = useState('https://www.nompudermal.co.za');
 
-  // Step 3: Location & House Calls
-  const [city, setCity] = useState('Johannesburg');
-  const [suburb, setSuburb] = useState('Sandton Central');
-  const [address, setAddress] = useState('Suite 204, Sandton City Atrium, 83 Rivonia Rd, Sandton, 2196');
+  // Step 3: Location & House Calls (All 9 South African Provinces)
+  const [province, setProvince] = useState<string>('Gauteng');
+  const [city, setCity] = useState<string>('Johannesburg');
+  const [suburb, setSuburb] = useState<string>('Sandton Central');
+  const [address, setAddress] = useState<string>('Suite 204, Sandton City Atrium, 83 Rivonia Rd, Sandton, 2196');
+  const [isCustomTown, setIsCustomTown] = useState<boolean>(false);
+  const [isCustomSuburb, setIsCustomSuburb] = useState<boolean>(false);
   const [offersHouseCalls, setOffersHouseCalls] = useState(true);
   const [serviceRadius, setServiceRadius] = useState('Sandton, Morningside, Bryanston & Hyde Park (15km)');
   const [travelFee, setTravelFee] = useState<number>(200);
+
+  // Cascading location handlers
+  const handleProvinceSelect = (selectedProv: string) => {
+    setProvince(selectedProv);
+    setCity('');
+    setSuburb('');
+    setIsCustomTown(false);
+    setIsCustomSuburb(false);
+  };
+
+  const handleCitySelect = (selectedCity: string) => {
+    if (selectedCity === '__custom__') {
+      setIsCustomTown(true);
+      setCity('');
+      setSuburb('');
+      setIsCustomSuburb(true);
+    } else {
+      setIsCustomTown(false);
+      setCity(selectedCity);
+      setSuburb('');
+      setIsCustomSuburb(false);
+    }
+  };
+
+  const handleSuburbSelect = (selectedSub: string) => {
+    if (selectedSub === '__custom__') {
+      setIsCustomSuburb(true);
+      setSuburb('');
+    } else {
+      setIsCustomSuburb(false);
+      setSuburb(selectedSub);
+    }
+  };
 
   // Step 4: Dedicated Working Days & Hours
   const [workingSchedule, setWorkingSchedule] = useState<OperatingDay[]>(DEFAULT_WEEKLY_SCHEDULE);
@@ -181,8 +227,9 @@ export const ArtisanRegistrationView: React.FC<ArtisanRegistrationViewProps> = (
       if (!businessName.trim()) errs.businessName = 'Business or studio name is required';
       if (!bio.trim() || bio.length < 20) errs.bio = 'Please provide a descriptive bio (at least 20 characters)';
     } else if (step === 3) {
-      if (!address.trim()) errs.address = 'Studio physical address is required';
-      if (!suburb.trim()) errs.suburb = 'Suburb is required';
+      if (!province.trim()) errs.province = 'Please select a South African province';
+      if (!city.trim()) errs.city = 'Town or city is required';
+      if (!suburb.trim()) errs.suburb = 'Suburb or area is required';
     } else if (step === 4) {
       // Validate working schedule
       const anyOpen = workingSchedule.some((d) => d.isOpen);
@@ -267,9 +314,10 @@ export const ArtisanRegistrationView: React.FC<ArtisanRegistrationViewProps> = (
       businessName,
       category,
       experienceYears,
-      city,
-      suburb,
-      address,
+      province: province.trim(),
+      city: city.trim(),
+      suburb: suburb.trim(),
+      address: address.trim(),
       offersHouseCalls,
       serviceRadius: offersHouseCalls ? serviceRadius : '',
       travelFee: offersHouseCalls ? travelFee : 0,
@@ -564,63 +612,200 @@ export const ArtisanRegistrationView: React.FC<ArtisanRegistrationViewProps> = (
         {currentStep === 3 && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#b86b86] bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-200">
+                  SOUTH AFRICAN STUDIO LOCATION
+                </span>
+              </div>
               <h3 className="font-serif text-xl font-bold text-[#26152d]">
                 Step 3: Studio Location & Mobile House Calls
               </h3>
-              <p className="text-xs text-gray-500 mt-1">
-                Define where clients will visit you and whether you provide on-site treatments at residences.
+              <p className="text-xs text-stone-600 mt-1">
+                Provide your studio's province, town/city, and suburb. Clients across all nine South African provinces will discover your services based on this verified location.
               </p>
             </div>
 
+            {/* Live Location Preview Chip */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#26152d] to-[#39263f] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0 text-[#d4af37]">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-stone-300 font-bold block">
+                    Public Studio Location Display
+                  </span>
+                  <span className="text-xs sm:text-sm font-semibold text-white">
+                    {formatStudioDisplayLocation(province, city, suburb)}
+                  </span>
+                </div>
+              </div>
+              <span className="text-[10px] text-stone-300 bg-white/10 px-2.5 py-1 rounded-lg self-start sm:self-auto">
+                Republic of South Africa
+              </span>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#26152d] mb-1">
-                  Metropolitan Hub *
-                </label>
-                <select
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] bg-white outline-none"
-                >
-                  <option value="Johannesburg">Johannesburg (Sandton, Rosebank, Hyde Park)</option>
-                  <option value="Cape Town">Cape Town (Camps Bay, Waterfront, Constantia)</option>
-                  <option value="Pretoria">Pretoria (Menlyn Maine, Brooklyn, Waterkloof)</option>
-                  <option value="Durban">Durban (Umhlanga Rocks, Morningside)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#26152d] mb-1">
-                  Suburb / Precinct *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={suburb}
-                  onChange={(e) => setSuburb(e.target.value)}
-                  placeholder="e.g. Sandton Central"
-                  className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] outline-none"
-                />
-                {errors.suburb && (
-                  <p className="text-xs text-rose-500 mt-1">{errors.suburb}</p>
-                )}
-              </div>
-
+              {/* 1. PROVINCE (All 9 Provinces) */}
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-[#26152d] mb-1">
-                  Studio Street Address & Suite *
+                  1. Province *
                 </label>
+                <select
+                  value={province}
+                  onChange={(e) => handleProvinceSelect(e.target.value)}
+                  className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] bg-white outline-none cursor-pointer"
+                >
+                  <option value="">-- Select South African Province --</option>
+                  {SOUTH_AFRICAN_PROVINCES.map((prov) => (
+                    <option key={prov} value={prov}>
+                      {prov}
+                    </option>
+                  ))}
+                </select>
+                {errors.province && (
+                  <p className="text-xs text-rose-500 mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>{errors.province}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* 2. TOWN / CITY */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-[#26152d]">
+                    2. Town or City *
+                  </label>
+                  {province && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCustomTown(!isCustomTown);
+                        if (!isCustomTown) {
+                          setCity('');
+                          setSuburb('');
+                        }
+                      }}
+                      className="text-[11px] text-[#b86b86] hover:underline font-medium cursor-pointer"
+                    >
+                      {isCustomTown ? '← Choose from suggested towns' : '+ Enter custom town / city'}
+                    </button>
+                  )}
+                </div>
+
+                {isCustomTown ? (
+                  <input
+                    type="text"
+                    required
+                    value={city}
+                    onChange={(e) => {
+                      setCity(e.target.value);
+                      setSuburb('');
+                    }}
+                    placeholder="e.g. Thohoyandou, Polokwane, Tzaneen..."
+                    className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] bg-white outline-none"
+                  />
+                ) : (
+                  <select
+                    value={city}
+                    onChange={(e) => handleCitySelect(e.target.value)}
+                    disabled={!province}
+                    className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] bg-white outline-none disabled:bg-stone-100 disabled:text-stone-400 cursor-pointer"
+                  >
+                    <option value="">{province ? `-- Select Town/City in ${province} --` : '-- Select province first --'}</option>
+                    {getTownsForProvince(province).map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                    <option value="__custom__">+ Enter another town / city...</option>
+                  </select>
+                )}
+                {errors.city && (
+                  <p className="text-xs text-rose-500 mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>{errors.city}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* 3. SUBURB / AREA */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-[#26152d]">
+                    3. Suburb or Area *
+                  </label>
+                  {city && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCustomSuburb(!isCustomSuburb);
+                        if (!isCustomSuburb) setSuburb('');
+                      }}
+                      className="text-[11px] text-[#b86b86] hover:underline font-medium cursor-pointer"
+                    >
+                      {isCustomSuburb ? '← Choose from suggested suburbs' : '+ Enter custom suburb'}
+                    </button>
+                  )}
+                </div>
+
+                {isCustomSuburb || getSuburbsForTown(province, city).length === 0 ? (
+                  <input
+                    type="text"
+                    required
+                    value={suburb}
+                    onChange={(e) => setSuburb(e.target.value)}
+                    placeholder="e.g. Bendor, Sibasa, Sandton Central, Walmer..."
+                    className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] bg-white outline-none"
+                  />
+                ) : (
+                  <select
+                    value={suburb}
+                    onChange={(e) => handleSuburbSelect(e.target.value)}
+                    disabled={!city}
+                    className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] bg-white outline-none disabled:bg-stone-100 disabled:text-stone-400 cursor-pointer"
+                  >
+                    <option value="">{city ? `-- Select Suburb in ${city} --` : '-- Select town first --'}</option>
+                    {getSuburbsForTown(province, city).map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                    <option value="__custom__">+ Enter another suburb / area...</option>
+                  </select>
+                )}
+                {errors.suburb && (
+                  <p className="text-xs text-rose-500 mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>{errors.suburb}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* 4. STREET ADDRESS (Optional with Privacy Guidance) */}
+              <div className="sm:col-span-2">
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-[#26152d]">
+                    4. Street Address & Suite (Optional for in-studio visits)
+                  </label>
+                  <span className="text-[10px] text-stone-400 uppercase font-semibold">Protected</span>
+                </div>
                 <input
                   type="text"
-                  required
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="e.g. Suite 204, Sandton City Atrium, 83 Rivonia Rd, Sandton, 2196"
-                  className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] outline-none"
+                  placeholder="e.g. Suite 204, Sandton City Atrium, 83 Rivonia Rd, Sandton, 2196 (Optional)"
+                  className="w-full text-xs sm:text-sm p-3 border border-stone-300 rounded-xl focus:border-[#b86b86] bg-white outline-none"
                 />
-                {errors.address && (
-                  <p className="text-xs text-rose-500 mt-1">{errors.address}</p>
-                )}
+
+                {/* Privacy Guidance Notice */}
+                <div className="mt-2 p-3 bg-amber-50/70 rounded-xl border border-amber-200/60 flex items-start gap-2.5 text-xs text-amber-900">
+                  <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                  <p className="leading-relaxed text-[11px]">
+                    <strong>Privacy Assurance:</strong> Residential street addresses are never shown on public search cards. Only your town and suburb (e.g. <span className="font-semibold">{formatStudioDisplayLocation(province, city, suburb)}</span>) appear to prospective clients. Exact physical building directions are only dispatched once a client's booking is confirmed.
+                  </p>
+                </div>
               </div>
             </div>
 

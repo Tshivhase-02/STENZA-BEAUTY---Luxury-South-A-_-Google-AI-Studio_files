@@ -3,6 +3,7 @@ import { PROVIDERS, Provider, ServiceItem, Booking } from '../data/beautyData';
 import { calculateLoyaltySummary, AVAILABLE_REWARDS } from '../data/loyaltyData';
 import { ReportStudioModal } from '../components/ReportStudioModal';
 import { adminService } from '../services/adminService';
+import { formatStudioDisplayLocation } from '../data/saLocationsData';
 
 interface ProfileViewProps {
   providerId: string;
@@ -31,7 +32,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 }) => {
   const provider: Provider = PROVIDERS.find((p) => p.id === providerId) || PROVIDERS[0];
 
-  const [selectedServiceId, setSelectedServiceId] = useState<string>(provider.services[0]?.id || '');
+  // Only display active services
+  const availableServices = (provider.services || []).filter((s: any) => s.isActive !== false);
+
+  const [selectedServiceId, setSelectedServiceId] = useState<string>(availableServices[0]?.id || provider.services[0]?.id || '');
   const [selectedDate, setSelectedDate] = useState('Tomorrow, 25 Oct');
   const [selectedTime, setSelectedTime] = useState('14:00');
   const [serviceMode, setServiceMode] = useState<'in-studio' | 'mobile'>('in-studio');
@@ -46,7 +50,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const isUnderReview = adminStudio?.operationalStatus === 'under_review';
 
   const activeService: ServiceItem | undefined =
-    provider.services.find((s) => s.id === selectedServiceId) || provider.services[0];
+    availableServices.find((s) => s.id === selectedServiceId) || availableServices[0] || provider.services[0];
 
   // Loyalty calculations
   const loyaltySummary = calculateLoyaltySummary(bookings, redeemedPoints);
@@ -244,7 +248,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 </div>
 
                 <div className="space-y-3">
-                  {provider.services.map((service) => {
+                  {availableServices.map((service) => {
                     const isSelected = selectedServiceId === service.id;
                     const ptsEarnable = Math.floor(service.price / 10);
                     return (
@@ -543,15 +547,28 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
                 {/* Location & Operating Hours */}
                 <div className="bg-white p-6 rounded-2xl border border-[#e5e0d8] space-y-4">
-                  <h4 className="font-serif text-base font-bold text-[#26152d]">
-                    Location & Operating Hours
-                  </h4>
-                  <div className="text-xs text-gray-700 flex items-start gap-2">
-                    <span className="material-symbols-outlined text-[18px] text-[#695684] mt-0.5">location_on</span>
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-serif text-base font-bold text-[#26152d]">
+                      Location & Operating Hours
+                    </h4>
+                    <span className="text-[11px] font-semibold text-[#b86b86] px-2.5 py-0.5 rounded-full bg-pink-50 border border-pink-200">
+                      {formatStudioDisplayLocation(provider.province, provider.city, provider.suburb)}
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-gray-700 flex items-start gap-2.5">
+                    <span className="material-symbols-outlined text-[18px] text-[#b86b86] mt-0.5">location_on</span>
                     <div>
-                      <p className="font-semibold text-[#26152d]">{provider.address}</p>
-                      <p className="text-gray-500 text-[11px] mt-0.5">
-                        Located inside The Keyes Art Mile with dedicated underground guest parking.
+                      <p className="font-semibold text-[#26152d]">
+                        {formatStudioDisplayLocation(provider.province, provider.city, provider.suburb)}
+                      </p>
+                      {provider.address && (
+                        <p className="text-stone-600 text-xs mt-1">
+                          Directions: {provider.address}
+                        </p>
+                      )}
+                      <p className="text-stone-400 text-[11px] mt-1 italic">
+                        Exact GPS suite navigation and gate access pin dispatched to confirmed client bookings.
                       </p>
                     </div>
                   </div>

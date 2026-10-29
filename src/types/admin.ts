@@ -44,6 +44,7 @@ export interface AdminStudio {
   phone: string; // Visible only to authorised administrators
   idNumber?: string; // South African ID / Passport
   category: string;
+  province?: string;
   city: string;
   suburb: string;
   address: string;

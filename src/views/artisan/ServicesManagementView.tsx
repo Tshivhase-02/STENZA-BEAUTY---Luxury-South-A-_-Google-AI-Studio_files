@@ -19,11 +19,14 @@ import {
   UploadCloud,
   Image as ImageIcon,
   Star,
-  CheckCircle,
   RotateCw,
   SlidersHorizontal,
   Info
 } from 'lucide-react';
+import { 
+  STANDARD_SERVICES_CATALOG, 
+  StandardServiceItem 
+} from '../../data/servicesCatalogData';
 
 interface ServicesManagementViewProps {
   studio: StudioProfile;
@@ -65,9 +68,34 @@ export const ServicesManagementView: React.FC<ServicesManagementViewProps> = ({
   const [filterCategory, setFilterCategory] = useState<string>('all');
   
   // Modals state
-  const [activeModal, setActiveModal] = useState<'add' | 'edit' | 'manage_photos' | 'delete_confirm' | null>(null);
+  const [activeModal, setActiveModal] = useState<'add' | 'edit' | 'manage_photos' | 'delete_confirm' | 'catalog' | null>(null);
   const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
   const [deleteConfirmTarget, setDeleteConfirmTarget] = useState<StudioService | null>(null);
+  const [catalogSearch, setCatalogSearch] = useState('');
+  const [catalogCategoryFilter, setCatalogCategoryFilter] = useState('all');
+
+  const handleSelectCatalogItem = (item: StandardServiceItem) => {
+    setFormName(item.name);
+    setFormCategory(item.category);
+    setFormDescription(item.description);
+    setFormPrice(item.defaultPrice);
+    setFormDiscountedPrice('');
+    setFormDuration(item.defaultDuration);
+    setFormImages([
+      'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80'
+    ]);
+    setFormCoverIndex(0);
+    setFormIsActive(true);
+    setFormIsPopular(false);
+    setFormError('');
+    setImageErrorMessage(null);
+    setImageUploadProgress(null);
+    setEditingServiceId(null);
+    setReplaceTargetIndex(null);
+    setActiveModal('add');
+    showToast(`Loaded "${item.name}" from catalog into new service form.`);
+  };
 
   // Form states for Add / Edit
   const [formName, setFormName] = useState('');
@@ -408,7 +436,7 @@ export const ServicesManagementView: React.FC<ServicesManagementViewProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
             <button
               onClick={() => onNavigate('studio_preview')}
               className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
@@ -417,11 +445,18 @@ export const ServicesManagementView: React.FC<ServicesManagementViewProps> = ({
               <span>Studio Preview</span>
             </button>
             <button
+              onClick={() => setActiveModal('catalog')}
+              className="px-3.5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-pink-300" />
+              <span>Standard Catalog</span>
+            </button>
+            <button
               onClick={handleOpenAddModal}
-              className="px-5 py-2.5 bg-[#b86b86] hover:bg-[#a25974] text-white rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow-md"
+              className="px-4 py-2.5 bg-[#b86b86] hover:bg-[#a25974] text-white rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer shadow-md"
             >
               <Plus className="w-4 h-4" />
-              <span>Add New Service</span>
+              <span>Add Custom Service</span>
             </button>
           </div>
         </div>
@@ -1005,6 +1040,132 @@ export const ServicesManagementView: React.FC<ServicesManagementViewProps> = ({
                 className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-xs"
               >
                 Delete Service
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Standard Service Catalog Modal */}
+      {activeModal === 'catalog' && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-stone-200 animate-in fade-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-stone-100 flex items-center justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-50 border border-pink-200 text-[10px] font-bold text-[#b86b86] uppercase tracking-wider mb-1">
+                  <Sparkles className="w-3 h-3" />
+                  <span>Marketplace Verified Catalog</span>
+                </div>
+                <h3 className="text-lg font-serif font-bold text-[#26152d]">
+                  Add from Standard Services Catalog
+                </h3>
+                <p className="text-xs text-stone-500 mt-0.5">
+                  Select a standardized service template. All pricing, durations, and details can be tailored to your studio.
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="p-2 text-stone-400 hover:text-stone-700 rounded-xl hover:bg-stone-100 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Filter and Search */}
+            <div className="p-4 bg-stone-50/70 border-b border-stone-200 flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                placeholder="Search standard services (e.g. Braids, Nails, Barbering)..."
+                value={catalogSearch}
+                onChange={(e) => setCatalogSearch(e.target.value)}
+                className="flex-1 text-xs px-3.5 py-2 bg-white border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+              />
+              <div className="flex items-center gap-1 overflow-x-auto">
+                {['all', 'Hair Styling & Braids', 'Nail Care & Art', 'Lashes & Brows', 'Makeup & Aesthetics', 'Skincare & Facials', 'Barbering & Grooming'].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setCatalogCategoryFilter(cat)}
+                    className={`px-2.5 py-1.5 rounded-lg text-[11px] whitespace-nowrap cursor-pointer transition ${
+                      catalogCategoryFilter === cat
+                        ? 'bg-[#26152d] text-white font-bold'
+                        : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-100'
+                    }`}
+                  >
+                    {cat === 'all' ? 'All Categories' : cat.split(' ')[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Catalog List */}
+            <div className="p-6 overflow-y-auto space-y-3 flex-1">
+              {STANDARD_SERVICES_CATALOG
+                .filter((item) => {
+                  const matchesCat = catalogCategoryFilter === 'all' || item.category === catalogCategoryFilter;
+                  const matchesSearch = !catalogSearch.trim() || 
+                    item.name.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+                    item.description.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+                    item.category.toLowerCase().includes(catalogSearch.toLowerCase());
+                  return matchesCat && matchesSearch;
+                })
+                .map((item) => {
+                  const alreadyAdded = services.some((s) => s.name.toLowerCase() === item.name.toLowerCase());
+                  return (
+                    <div
+                      key={item.id}
+                      className="p-4 rounded-xl border border-stone-200 hover:border-[#b86b86] bg-white transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs hover:shadow-xs"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <h4 className="text-sm font-bold text-stone-900">{item.name}</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 font-semibold text-stone-600">
+                            {item.category}
+                          </span>
+                          {alreadyAdded && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                              Already on your menu
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-stone-500 line-clamp-2">{item.description}</p>
+                        <div className="flex items-center gap-4 mt-2 text-xs font-semibold text-stone-700">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5 text-stone-400" />
+                            Typical: {item.defaultDuration}
+                          </span>
+                          <span className="text-[#b86b86] font-bold">
+                            Avg. Investment: R{item.defaultPrice}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCatalogItem(item)}
+                          className="px-4 py-2 bg-[#26152d] hover:bg-[#382142] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                        >
+                          <Plus className="w-3.5 h-3.5 text-pink-300" />
+                          <span>Use Template</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-stone-100 bg-stone-50/50 flex items-center justify-between">
+              <span className="text-xs text-stone-500">
+                Services in standard catalog directly sync with customer filters and search tags.
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveModal(null)}
+                className="px-4 py-2 text-xs font-semibold text-stone-600 hover:bg-stone-200/60 rounded-xl transition cursor-pointer"
+              >
+                Close
               </button>
             </div>
           </div>

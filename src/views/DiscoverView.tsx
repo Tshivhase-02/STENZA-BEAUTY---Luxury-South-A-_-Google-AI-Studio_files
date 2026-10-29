@@ -22,8 +22,21 @@ import {
   MapPin, 
   Clock, 
   CheckCircle2, 
-  ShoppingBasket 
+  ShoppingBasket,
+  X,
+  Tag,
+  Filter
 } from 'lucide-react';
+import { 
+  POPULAR_SERVICE_SHORTCUTS, 
+  PopularServiceShortcut 
+} from '../data/servicesCatalogData';
+import { 
+  SOUTH_AFRICAN_PROVINCES, 
+  getTownsForProvince, 
+  getSuburbsForTown, 
+  formatStudioDisplayLocation 
+} from '../data/saLocationsData';
 
 interface DiscoverViewProps {
   onNavigate: (
@@ -66,6 +79,18 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
     initialTab === 'products' && initialCategory ? initialCategory : 'all'
   );
 
+  // Structured Location Filters (9 SA Provinces, Town, Suburb)
+  const [selectedProvince, setSelectedProvince] = useState<string>('all');
+  const [selectedTown, setSelectedTown] = useState<string>('all');
+  const [selectedSuburb, setSelectedSuburb] = useState<string>('all');
+
+  // Service-Specific Filter & Popular Service Shortcut
+  const [selectedSpecificService, setSelectedSpecificService] = useState<string>('all');
+  const [selectedPopularShortcut, setSelectedPopularShortcut] = useState<string>('all');
+
+  // Mobile Filter Drawer Toggle
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState<boolean>(false);
+
   // Sync when initialCategory or initialTab changes
   useEffect(() => {
     if (initialTab) {
@@ -93,6 +118,43 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
   const serviceCategories = useMemo(() => categoryService.getServiceCategories(), []);
   const productCategories = useMemo(() => categoryService.getProductCategories(), []);
 
+  // Available Towns based on selected province
+  const availableTowns = useMemo(() => {
+    if (selectedProvince !== 'all') {
+      return getTownsForProvince(selectedProvince);
+    }
+    const towns = new Set<string>();
+    PROVIDERS.forEach((p) => {
+      if (p.city) towns.add(p.city);
+    });
+    return Array.from(towns).sort();
+  }, [selectedProvince]);
+
+  // Available Suburbs based on selected town
+  const availableSuburbs = useMemo(() => {
+    if (selectedTown !== 'all') {
+      return getSuburbsForTown(selectedTown);
+    }
+    const subs = new Set<string>();
+    PROVIDERS.forEach((p) => {
+      if (p.suburb) subs.add(p.suburb);
+    });
+    return Array.from(subs).sort();
+  }, [selectedTown]);
+
+  // Available unique specific services across registered studios
+  const availableSpecificServices = useMemo(() => {
+    const srvSet = new Set<string>();
+    PROVIDERS.forEach((p) => {
+      p.services.forEach((s) => {
+        if (s.isActive !== false) {
+          srvSet.add(s.name);
+        }
+      });
+    });
+    return Array.from(srvSet).sort();
+  }, []);
+
   // Filtered Providers (Book Services)
   const filteredProviders = useMemo(() => {
     return PROVIDERS.filter((pro) => {
@@ -106,6 +168,58 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
           adminRecord.approvalStatus === 'rejected')
       ) {
         return false;
+      }
+
+      // Province filter
+      if (selectedProvince !== 'all') {
+        const prov = (pro.province || '').toLowerCase();
+        if (prov !== selectedProvince.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // Town / City filter
+      if (selectedTown !== 'all') {
+        const town = (pro.city || '').toLowerCase();
+        if (town !== selectedTown.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // Suburb filter
+      if (selectedSuburb !== 'all') {
+        const sub = (pro.suburb || '').toLowerCase();
+        if (sub !== selectedSuburb.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // Popular service shortcut filter
+      if (selectedPopularShortcut !== 'all') {
+        const shortcut = POPULAR_SERVICE_SHORTCUTS.find((s) => s.id === selectedPopularShortcut);
+        if (shortcut) {
+          const q = shortcut.query.toLowerCase();
+          const offersShortcut = pro.services.some(
+            (s) =>
+              s.isActive !== false &&
+              (s.name.toLowerCase().includes(q) ||
+                s.category.toLowerCase().includes(q) ||
+                (s.description && s.description.toLowerCase().includes(q)))
+          );
+          if (!offersShortcut) {
+            return false;
+          }
+        }
+      }
+
+      // Specific service dropdown filter
+      if (selectedSpecificService !== 'all') {
+        const offersSpecific = pro.services.some(
+          (s) => s.isActive !== false && s.name.toLowerCase() === selectedSpecificService.toLowerCase()
+        );
+        if (!offersSpecific) {
+          return false;
+        }
       }
 
       // Group filter
@@ -129,8 +243,9 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
           }) ||
           pro.services.some(
             (s) =>
-              mapLegacyCategoryToSlug(s.category) === selectedServiceCategory ||
-              s.category.toLowerCase().includes(selectedServiceCategory.toLowerCase())
+              s.isActive !== false &&
+              (mapLegacyCategoryToSlug(s.category) === selectedServiceCategory ||
+                s.category.toLowerCase().includes(selectedServiceCategory.toLowerCase()))
           );
 
         if (!matchesCat) return false;
@@ -156,15 +271,51 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         return false;
       }
 
-      // Keyword
+      // Compound and smart keyword search
       if (searchKeyword.trim() !== '') {
-        const q = searchKeyword.toLowerCase();
-        const matchesName = pro.name.toLowerCase().includes(q);
-        const matchesFounder = pro.founder.toLowerCase().includes(q);
-        const matchesSuburb = pro.suburb.toLowerCase().includes(q);
-        const matchesService = pro.services.some((s) => s.name.toLowerCase().includes(q));
-        if (!matchesName && !matchesFounder && !matchesSuburb && !matchesService) {
-          return false;
+        const rawQ = searchKeyword.toLowerCase().trim();
+
+        // Check if query is compound with " in " e.g., "braids in thohoyandou", "nails in polokwane"
+        if (rawQ.includes(' in ')) {
+          const parts = rawQ.split(' in ');
+          const serviceQuery = parts[0]?.trim() || '';
+          const locationQuery = parts[1]?.trim() || '';
+
+          const locMatches =
+            (pro.province || '').toLowerCase().includes(locationQuery) ||
+            pro.city.toLowerCase().includes(locationQuery) ||
+            pro.suburb.toLowerCase().includes(locationQuery);
+
+          const svcMatches = pro.services.some(
+            (s) =>
+              s.isActive !== false &&
+              (s.name.toLowerCase().includes(serviceQuery) ||
+                s.category.toLowerCase().includes(serviceQuery) ||
+                (s.description && s.description.toLowerCase().includes(serviceQuery)))
+          );
+
+          if (!locMatches || !svcMatches) {
+            return false;
+          }
+        } else {
+          // Single search keyword
+          const matchesName = pro.name.toLowerCase().includes(rawQ);
+          const matchesFounder = pro.founder.toLowerCase().includes(rawQ);
+          const matchesLoc =
+            (pro.province || '').toLowerCase().includes(rawQ) ||
+            pro.city.toLowerCase().includes(rawQ) ||
+            pro.suburb.toLowerCase().includes(rawQ);
+          const matchesService = pro.services.some(
+            (s) =>
+              s.isActive !== false &&
+              (s.name.toLowerCase().includes(rawQ) ||
+                s.category.toLowerCase().includes(rawQ) ||
+                (s.description && s.description.toLowerCase().includes(rawQ)))
+          );
+
+          if (!matchesName && !matchesFounder && !matchesLoc && !matchesService) {
+            return false;
+          }
         }
       }
 
@@ -180,6 +331,11 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
     selectedGroup,
     selectedServiceCategory,
     selectedProviderType,
+    selectedProvince,
+    selectedTown,
+    selectedSuburb,
+    selectedPopularShortcut,
+    selectedSpecificService,
     onlyMobile,
     maxPrice,
     minRating,
@@ -247,6 +403,11 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
     setSelectedServiceCategory('all');
     setSelectedProductCategory('all');
     setSelectedProviderType('All');
+    setSelectedProvince('all');
+    setSelectedTown('all');
+    setSelectedSuburb('all');
+    setSelectedSpecificService('all');
+    setSelectedPopularShortcut('all');
     setMaxPrice(activeTab === 'services' ? 2500 : 5000);
     setMinRating(0);
     setOnlyMobile(false);
@@ -382,7 +543,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
             {/* Keyword Search */}
             <div>
               <label className="block text-xs font-semibold text-[#26152d] mb-1.5">
-                {activeTab === 'services' ? 'Keyword, Specialist or Suburb' : 'Search Products or Brands'}
+                {activeTab === 'services' ? 'Keyword, Specialist, or Service' : 'Search Products or Brands'}
               </label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[18px]">
@@ -390,13 +551,129 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                 </span>
                 <input
                   type="text"
-                  placeholder={activeTab === 'services' ? 'e.g. Silk press, BIAB, Sandton...' : 'e.g. Marula, lace wig, leggings...'}
+                  placeholder={activeTab === 'services' ? 'e.g. "braids in Thohoyandou", "nails in Polokwane"' : 'e.g. Marula, lace wig, leggings...'}
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-[#f6f3ee] border border-transparent focus:border-[#695684] rounded-xl outline-none"
+                  className="w-full pl-9 pr-3 py-2 text-xs bg-[#f6f3ee] border border-transparent focus:border-[#b86b86] rounded-xl outline-hidden"
                 />
               </div>
+              {activeTab === 'services' && (
+                <p className="text-[10px] text-stone-400 mt-1">
+                  Tip: Try compound search like <span className="text-[#b86b86] font-semibold">"braids in Thohoyandou"</span>
+                </p>
+              )}
             </div>
+
+            {/* Structured Artisan Location Filters */}
+            {activeTab === 'services' && (
+              <div className="space-y-3 pt-2 border-t border-[#f0ede6]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-[#26152d] flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-[#b86b86]" />
+                    <span>Location Filters</span>
+                  </span>
+                  {(selectedProvince !== 'all' || selectedTown !== 'all' || selectedSuburb !== 'all') && (
+                    <button
+                      onClick={() => {
+                        setSelectedProvince('all');
+                        setSelectedTown('all');
+                        setSelectedSuburb('all');
+                      }}
+                      className="text-[10px] text-[#b86b86] hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+
+                {/* Province (All 9) */}
+                <div>
+                  <label className="block text-[11px] font-medium text-stone-500 mb-1">
+                    Province (9 SA Provinces)
+                  </label>
+                  <select
+                    value={selectedProvince}
+                    onChange={(e) => {
+                      setSelectedProvince(e.target.value);
+                      setSelectedTown('all');
+                      setSelectedSuburb('all');
+                    }}
+                    className="w-full p-2 bg-[#f6f3ee] border border-[#d8d3ca] rounded-xl text-xs font-medium text-[#26152d] outline-hidden focus:border-[#b86b86]"
+                  >
+                    <option value="all">All 9 SA Provinces</option>
+                    {SOUTH_AFRICAN_PROVINCES.map((prov) => (
+                      <option key={prov} value={prov}>{prov}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Town or City */}
+                <div>
+                  <label className="block text-[11px] font-medium text-stone-500 mb-1">
+                    Town or City
+                  </label>
+                  <select
+                    value={selectedTown}
+                    onChange={(e) => {
+                      setSelectedTown(e.target.value);
+                      setSelectedSuburb('all');
+                    }}
+                    className="w-full p-2 bg-[#f6f3ee] border border-[#d8d3ca] rounded-xl text-xs font-medium text-[#26152d] outline-hidden focus:border-[#b86b86]"
+                  >
+                    <option value="all">{selectedProvince !== 'all' ? `All Towns in ${selectedProvince}` : 'All Towns / Cities'}</option>
+                    {availableTowns.map((town) => (
+                      <option key={town} value={town}>{town}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Suburb */}
+                <div>
+                  <label className="block text-[11px] font-medium text-stone-500 mb-1">
+                    Suburb or Area
+                  </label>
+                  <select
+                    value={selectedSuburb}
+                    onChange={(e) => setSelectedSuburb(e.target.value)}
+                    className="w-full p-2 bg-[#f6f3ee] border border-[#d8d3ca] rounded-xl text-xs font-medium text-[#26152d] outline-hidden focus:border-[#b86b86]"
+                  >
+                    <option value="all">{selectedTown !== 'all' ? `All Suburbs in ${selectedTown}` : 'All Suburbs'}</option>
+                    {availableSuburbs.map((sub) => (
+                      <option key={sub} value={sub}>{sub}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {/* Specific Service Dropdown Filter */}
+            {activeTab === 'services' && (
+              <div className="pt-2 border-t border-[#f0ede6]">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-[#26152d]">
+                    Specific Offered Service
+                  </label>
+                  {selectedSpecificService !== 'all' && (
+                    <button
+                      onClick={() => setSelectedSpecificService('all')}
+                      className="text-[10px] text-[#b86b86] hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <select
+                  value={selectedSpecificService}
+                  onChange={(e) => setSelectedSpecificService(e.target.value)}
+                  className="w-full p-2 bg-[#f6f3ee] border border-[#d8d3ca] rounded-xl text-xs font-medium text-[#26152d] outline-hidden focus:border-[#b86b86]"
+                >
+                  <option value="all">All Specific Services</option>
+                  {availableSpecificServices.map((srv) => (
+                    <option key={srv} value={srv}>{srv}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Category selection */}
             <div>
@@ -554,6 +831,186 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
 
         {/* Results Area */}
         <div className="lg:col-span-3 space-y-6">
+          {/* Popular Services Section (Services tab only) */}
+          {activeTab === 'services' && (
+            <div className="bg-white p-5 rounded-2xl border border-[#e5e0d8] shadow-2xs space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-[#b86b86]" />
+                    <h3 className="font-serif font-bold text-sm text-[#26152d]">
+                      Popular Services
+                    </h3>
+                  </div>
+                  <p className="text-[11px] text-stone-500">
+                    Instant shortcuts to in-demand treatments across South Africa
+                  </p>
+                </div>
+                {selectedPopularShortcut !== 'all' && (
+                  <button
+                    onClick={() => setSelectedPopularShortcut('all')}
+                    className="text-xs font-semibold text-[#b86b86] hover:underline self-start sm:self-auto cursor-pointer"
+                  >
+                    Clear shortcut
+                  </button>
+                )}
+              </div>
+
+              {/* Popular Service Chips */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                {POPULAR_SERVICE_SHORTCUTS.map((shortcut) => {
+                  const isSelected = selectedPopularShortcut === shortcut.id;
+                  return (
+                    <button
+                      key={shortcut.id}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          setSelectedPopularShortcut('all');
+                        } else {
+                          setSelectedPopularShortcut(shortcut.id);
+                          setSelectedSpecificService('all');
+                        }
+                      }}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-2xs ${
+                        isSelected
+                          ? 'bg-[#26152d] text-white ring-2 ring-[#b86b86]/50 shadow-xs scale-102 font-bold'
+                          : 'bg-[#faf7f5] hover:bg-[#f3ede8] text-stone-800 border border-stone-200'
+                      }`}
+                    >
+                      <span>{shortcut.name}</span>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-pink-300" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Active Filters Summary Bar */}
+          {(selectedPopularShortcut !== 'all' ||
+            selectedSpecificService !== 'all' ||
+            selectedProvince !== 'all' ||
+            selectedTown !== 'all' ||
+            selectedSuburb !== 'all' ||
+            (activeTab === 'services' && selectedServiceCategory !== 'all') ||
+            (activeTab === 'products' && selectedProductCategory !== 'all') ||
+            searchKeyword.trim() !== '' ||
+            selectedProviderType !== 'All' ||
+            onlyMobile ||
+            minRating > 0) && (
+            <div className="p-3.5 bg-pink-50/60 rounded-2xl border border-pink-200/80 flex items-center justify-between flex-wrap gap-2 text-xs">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-[#26152d] flex items-center gap-1 text-[11px] uppercase tracking-wider">
+                  <Filter className="w-3.5 h-3.5 text-[#b86b86]" />
+                  Active Filters:
+                </span>
+
+                {searchKeyword.trim() !== '' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
+                    Keyword: "{searchKeyword}"
+                    <button onClick={() => setSearchKeyword('')} className="hover:text-rose-600 cursor-pointer">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedPopularShortcut !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#26152d] text-white font-medium">
+                    Shortcut: {POPULAR_SERVICE_SHORTCUTS.find((s) => s.id === selectedPopularShortcut)?.name}
+                    <button onClick={() => setSelectedPopularShortcut('all')} className="hover:text-pink-300 cursor-pointer">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedSpecificService !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
+                    Service: {selectedSpecificService}
+                    <button onClick={() => setSelectedSpecificService('all')} className="hover:text-rose-600 cursor-pointer">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedProvince !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
+                    Province: {selectedProvince}
+                    <button
+                      onClick={() => {
+                        setSelectedProvince('all');
+                        setSelectedTown('all');
+                        setSelectedSuburb('all');
+                      }}
+                      className="hover:text-rose-600 cursor-pointer"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedTown !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
+                    Town: {selectedTown}
+                    <button
+                      onClick={() => {
+                        setSelectedTown('all');
+                        setSelectedSuburb('all');
+                      }}
+                      className="hover:text-rose-600 cursor-pointer"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedSuburb !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
+                    Suburb: {selectedSuburb}
+                    <button onClick={() => setSelectedSuburb('all')} className="hover:text-rose-600 cursor-pointer">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+
+                {activeTab === 'services' && selectedServiceCategory !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
+                    Category: {getCategoryDisplayName(selectedServiceCategory)}
+                    <button onClick={() => setSelectedServiceCategory('all')} className="hover:text-rose-600 cursor-pointer">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+
+                {onlyMobile && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
+                    Mobile House Calls Only
+                    <button onClick={() => setOnlyMobile(false)} className="hover:text-rose-600 cursor-pointer">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+
+                {minRating > 0 && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
+                    Rating: ★ {minRating}+
+                    <button onClick={() => setMinRating(0)} className="hover:text-rose-600 cursor-pointer">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="text-[11px] font-bold text-[#b86b86] hover:underline cursor-pointer shrink-0"
+              >
+                Clear All Filters
+              </button>
+            </div>
+          )}
+
           {/* Controls Bar */}
           <div className="bg-white p-4 rounded-2xl border border-[#e5e0d8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
             <div className="text-xs font-medium text-stone-600">
@@ -675,9 +1132,9 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                       {/* Content Info */}
                       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="material-symbols-outlined text-[16px] text-[#695684]">location_on</span>
-                            <span className="text-xs text-stone-500">{pro.suburb}, {pro.city}</span>
+                          <div className="flex items-center gap-1.5 mb-1 text-xs text-stone-600">
+                            <MapPin className="w-3.5 h-3.5 text-[#b86b86] shrink-0" />
+                            <span className="font-medium truncate">{formatStudioDisplayLocation(pro.province, pro.city, pro.suburb)}</span>
                           </div>
 
                           <h3
@@ -691,8 +1148,25 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                             {pro.headline}
                           </p>
 
+                          {/* Available Services Chips */}
+                          <div className="flex flex-wrap gap-1.5 mt-2.5">
+                            {pro.services.filter(s => s.isActive !== false).slice(0, 3).map((s) => (
+                              <span
+                                key={s.id}
+                                className="text-[10px] font-medium bg-pink-50 text-[#b86b86] border border-pink-100 px-2 py-0.5 rounded-md"
+                              >
+                                {s.name}
+                              </span>
+                            ))}
+                            {pro.services.filter(s => s.isActive !== false).length > 3 && (
+                              <span className="text-[10px] font-medium text-stone-400 self-center">
+                                +{pro.services.filter(s => s.isActive !== false).length - 3} more
+                              </span>
+                            )}
+                          </div>
+
                           {/* Categories Pills */}
-                          <div className="flex flex-wrap gap-1.5 mt-3">
+                          <div className="flex flex-wrap gap-1.5 mt-2">
                             {pro.categories.map((c) => (
                               <span
                                 key={c}
@@ -759,8 +1233,23 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                           </span>
                         </div>
 
-                        <p className="text-xs text-stone-500">{pro.founder} • {pro.suburb}, {pro.city}</p>
+                        <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-stone-500 mb-1">
+                          <MapPin className="w-3.5 h-3.5 text-[#b86b86] shrink-0" />
+                          <span>{pro.founder} • {formatStudioDisplayLocation(pro.province, pro.city, pro.suburb)}</span>
+                        </div>
                         <p className="text-xs text-stone-600 line-clamp-1 mt-1">{pro.headline}</p>
+
+                        {/* Offered Services */}
+                        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mt-2">
+                          {pro.services.filter(s => s.isActive !== false).slice(0, 3).map((s) => (
+                            <span
+                              key={s.id}
+                              className="text-[10px] font-medium bg-pink-50 text-[#b86b86] border border-pink-100 px-2 py-0.5 rounded-md"
+                            >
+                              {s.name}
+                            </span>
+                          ))}
+                        </div>
 
                         <div className="flex items-center justify-center sm:justify-start gap-3 mt-2 text-xs">
                           <span className="font-bold text-amber-600">★ {pro.rating} ({pro.reviewCount} reviews)</span>

@@ -6,6 +6,7 @@ export interface ServiceItem {
   description: string;
   category: string;
   popular?: boolean;
+  isActive?: boolean;
 }
 
 export interface ReviewItem {
@@ -33,6 +34,7 @@ export interface Provider {
   rating: number;
   reviewCount: number;
   completedBookings: number;
+  province?: string;
   city: string;
   suburb: string;
   address: string;
@@ -149,15 +151,35 @@ export const ALL_PROVINCES = [
   },
   {
     province: 'Western Cape',
-    cities: ['Cape Town (Camps Bay, Waterfront, Sea Point)', 'Stellenbosch & Winelands', 'Franschhoek', 'Somerset West']
+    cities: ['Cape Town (Camps Bay, Waterfront, Sea Point)', 'Stellenbosch & Winelands', 'Franschhoek', 'Somerset West', 'George']
   },
   {
     province: 'KwaZulu-Natal',
-    cities: ['Durban (Umhlanga, Morningside)', 'Ballito & Dolphin Coast', 'Pietermaritzburg']
+    cities: ['Durban (Umhlanga, Morningside)', 'Ballito & Dolphin Coast', 'Pietermaritzburg', 'Richards Bay']
   },
   {
-    province: 'Eastern Cape & Others',
-    cities: ['Gqeberha (Port Elizabeth)', 'East London', 'Bloemfontein (Free State)', 'Nelspruit (Mpumalanga)']
+    province: 'Limpopo',
+    cities: ['Polokwane', 'Thohoyandou', 'Tzaneen', 'Mokopane', 'Bela-Bela']
+  },
+  {
+    province: 'Mpumalanga',
+    cities: ['Mbombela (Nelspruit)', 'eMalahleni (Witbank)', 'Secunda', 'White River']
+  },
+  {
+    province: 'Free State',
+    cities: ['Bloemfontein', 'Welkom', 'Sasolburg', 'Bethlehem']
+  },
+  {
+    province: 'Eastern Cape',
+    cities: ['Gqeberha (Port Elizabeth)', 'East London', 'Mthatha', 'Makhanda']
+  },
+  {
+    province: 'North West',
+    cities: ['Rustenburg', 'Potchefstroom', 'Klerksdorp', 'Mahikeng']
+  },
+  {
+    province: 'Northern Cape',
+    cities: ['Kimberley', 'Upington', 'Springbok', 'Kuruman']
   }
 ];
 
@@ -174,6 +196,7 @@ export const PROVIDERS: Provider[] = [
     rating: 4.98,
     reviewCount: 242,
     completedBookings: 890,
+    province: 'Gauteng',
     city: 'Johannesburg',
     suburb: 'Rosebank',
     address: 'Suite 402, The Keyes Art Mile, 19 Keyes Ave, Rosebank, 2196',
@@ -312,6 +335,7 @@ export const PROVIDERS: Provider[] = [
     rating: 4.96,
     reviewCount: 312,
     completedBookings: 1240,
+    province: 'Gauteng',
     city: 'Johannesburg',
     suburb: 'Sandton',
     address: 'Shop 12, Nelson Mandela Square, Sandton Central, 2196',
@@ -381,6 +405,7 @@ export const PROVIDERS: Provider[] = [
     rating: 4.99,
     reviewCount: 188,
     completedBookings: 670,
+    province: 'Western Cape',
     city: 'Cape Town',
     suburb: 'Camps Bay',
     address: 'The Promenade, Victoria Road, Camps Bay, 8005',
@@ -450,6 +475,7 @@ export const PROVIDERS: Provider[] = [
     rating: 4.94,
     reviewCount: 164,
     completedBookings: 540,
+    province: 'KwaZulu-Natal',
     city: 'Durban',
     suburb: 'Umhlanga',
     address: 'Oceans Mall Tower, Lighthouse Rd, Umhlanga Rocks, 4320',
@@ -511,6 +537,7 @@ export const PROVIDERS: Provider[] = [
     rating: 4.97,
     reviewCount: 220,
     completedBookings: 910,
+    province: 'Gauteng',
     city: 'Pretoria',
     suburb: 'Menlyn',
     address: 'Menlyn Maine Central Square, Aramist Ave, Pretoria, 0181',
@@ -572,6 +599,7 @@ export const PROVIDERS: Provider[] = [
     rating: 4.95,
     reviewCount: 145,
     completedBookings: 480,
+    province: 'Western Cape',
     city: 'Cape Town',
     suburb: 'V&A Waterfront',
     address: 'The Silo District, South Arm Rd, Waterfront, 8001',
@@ -617,6 +645,358 @@ export const PROVIDERS: Provider[] = [
     ratingBreakdown: { punctuality: 4.96, cleanliness: 4.99, skill: 4.97, communication: 4.93, ambiance: 4.96 },
     openingHours: [
       { day: 'Monday - Saturday', hours: '09:00 - 17:00' }
+    ]
+  },
+  {
+    id: 'venda-crown-braids',
+    name: 'Venda Crown Hair & Braiding Lounge',
+    founder: 'Mukondeleli Ramabulana',
+    founderTitle: 'Master Braider & Natural Hair Specialist',
+    headline: 'Painless knotless box braids, bohemian curls, wig installation, and scalp steam treatments in Thohoyandou.',
+    badge: 'Limpopo Verified Artisan',
+    avatar: 'https://images.unsplash.com/photo-1584297091622-af8e5bd9cbf9?auto=format&fit=crop&w=600&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1584297091622-af8e5bd9cbf9?auto=format&fit=crop&w=800&q=80',
+    rating: 4.98,
+    reviewCount: 178,
+    completedBookings: 620,
+    province: 'Limpopo',
+    city: 'Thohoyandou',
+    suburb: 'Thohoyandou Central',
+    address: 'Mphephu Drive, Next to Thavhani Mall, Thohoyandou, 0950',
+    providerType: 'Salon',
+    offersMobile: true,
+    mobileCoverage: 'Thohoyandou, Sibasa, Shayandima (Radius 15km)',
+    travelFee: 120,
+    phone: '+27 15 962 4001',
+    whatsapp: '+27 72 849 1192',
+    instagram: '@vendacrown.thohoyandou',
+    bio: 'Mukondeleli has 9 years of specialized experience in protective African braiding, seamless HD wig installations, and botanical hair treatments using pure wild-harvested Limpopo marula oils.',
+    experienceYears: 9,
+    amenities: ['Air Conditioned Studio', 'Pre-Stretched Hair Provided', 'Free High-Speed WiFi', 'Backup Inverter Power', 'Secure Free Parking'],
+    categories: ['Hair and Hairstyles', 'Braids & Protective Styles'],
+    startingPrice: 450,
+    highestPrice: 1400,
+    gallery: [
+      'https://images.unsplash.com/photo-1584297091622-af8e5bd9cbf9?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80'
+    ],
+    services: [
+      {
+        id: 'vc-knotless-braids',
+        name: 'Braids (Knotless & Box Braids)',
+        duration: '180 min',
+        price: 650,
+        description: 'Tension-free, featherweight knotless box braids with seamless scalp finish and marula oil scalp balm.',
+        category: 'Braids',
+        popular: true
+      },
+      {
+        id: 'vc-wig-install',
+        name: 'Wig Installation & HD Lace Melting',
+        duration: '120 min',
+        price: 750,
+        description: 'Cornrow foundation, bleached knot customization, precision HD lace melt, and thermal styling.',
+        category: 'Wig Installation',
+        popular: true
+      },
+      {
+        id: 'vc-hair-treatment',
+        name: 'Hair Treatment (Steam Infusion & Trim)',
+        duration: '60 min',
+        price: 450,
+        description: 'Deep penetrating chebe seed oil steam bath, scalp detox massage, split-end dusting, and protective cornrows.',
+        category: 'Hair Treatment'
+      },
+      {
+        id: 'vc-hair-styling',
+        name: 'Hair Styling & Silk Press',
+        duration: '90 min',
+        price: 550,
+        description: 'Zero heat damage blowout, titanium press, and mirror-shine botanical seal for natural hair.',
+        category: 'Hair Styling'
+      }
+    ],
+    reviews: [
+      {
+        id: 'rev-701',
+        clientName: 'Rabelani Nemutandani',
+        clientAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+        clientLocation: 'Sibasa, Limpopo',
+        rating: 5,
+        date: '2 days ago',
+        treatment: 'Braids (Knotless & Box Braids)',
+        comment: 'Mukondeleli did my knotless braids with zero headache or scalp pulling! The Thohoyandou studio is clean, cool and luxurious.',
+        verified: true,
+        helpfulCount: 24
+      }
+    ],
+    ratingBreakdown: { punctuality: 4.99, cleanliness: 5.0, skill: 4.99, communication: 4.97, ambiance: 4.96 },
+    openingHours: [
+      { day: 'Monday - Saturday', hours: '08:00 - 18:00' },
+      { day: 'Sunday', hours: '09:00 - 15:00' }
+    ]
+  },
+  {
+    id: 'polokwane-nail-couture',
+    name: 'Polokwane Glow & Nail Couture',
+    founder: 'Tumi Mashaba',
+    founderTitle: 'Master Nail Artist & Lash Technician',
+    headline: 'Russian gel nails, sculptural acrylics, luxury callus pedicures, and volume lash extensions in Bendor, Polokwane.',
+    badge: 'Limpopo Top Rated',
+    avatar: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=800&q=80',
+    rating: 4.97,
+    reviewCount: 194,
+    completedBookings: 710,
+    province: 'Limpopo',
+    city: 'Polokwane',
+    suburb: 'Bendor',
+    address: 'Bendor Drive, Cycad Center Precinct, Polokwane, 0699',
+    providerType: 'Salon',
+    offersMobile: true,
+    mobileCoverage: 'Bendor, Flora Park, Welgelegen, Sterpark',
+    travelFee: 100,
+    phone: '+27 15 296 3310',
+    whatsapp: '+27 83 456 7890',
+    instagram: '@polokwanenailcouture',
+    bio: 'Polokwane premier nail bar for clinical dry machine manicures, BIAB strengthening overlays, French ombre acrylic nails, and Russian volume eyelash extensions.',
+    experienceYears: 7,
+    amenities: ['Autoclave Sterilization', 'Espresso & Juice Bar', 'Private Nail Pods', 'Backup Generator', 'Free WiFi'],
+    categories: ['Nails', 'Lashes and Brows'],
+    startingPrice: 380,
+    highestPrice: 1250,
+    gallery: [
+      'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80'
+    ],
+    services: [
+      {
+        id: 'plk-acrylic-nails',
+        name: 'Acrylic Nails (Sculpted Full Set)',
+        duration: '90 min',
+        price: 550,
+        description: 'Flawless apex sculpting, durable French ombre fade or nude acrylic with gel topcoat.',
+        category: 'Nails',
+        popular: true
+      },
+      {
+        id: 'plk-gel-nails',
+        name: 'Gel Nails (BIAB Builder & Dry Prep)',
+        duration: '75 min',
+        price: 480,
+        description: 'E-file cuticle polishing, builder in a bottle reinforcement, and high gloss gel lacquer.',
+        category: 'Nails',
+        popular: true
+      },
+      {
+        id: 'plk-pedicure',
+        name: 'Pedicure (Luxury Callus Peel & Spa)',
+        duration: '60 min',
+        price: 450,
+        description: 'Aromatherapy soak, AHA callus peel smoothing, exfoliating scrub, massage, and long-lasting gel polish.',
+        category: 'Pedicure',
+        popular: true
+      },
+      {
+        id: 'plk-eyelash',
+        name: 'Eyelash Extensions (Volume Set)',
+        duration: '105 min',
+        price: 750,
+        description: 'Fluffy lightweight 3D-5D lash fans customized to your natural lash strength.',
+        category: 'Eyelash Extensions',
+        popular: true
+      },
+      {
+        id: 'plk-nail-art',
+        name: 'Nail Art (Bespoke Hand-Painted Accents)',
+        duration: '30 min',
+        price: 220,
+        description: 'Chrome glaze, 3D drops, French micro-lines, and custom abstract nail art.',
+        category: 'Nails'
+      }
+    ],
+    reviews: [
+      {
+        id: 'rev-801',
+        clientName: 'Mpho Molepo',
+        clientAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+        clientLocation: 'Bendor, Polokwane',
+        rating: 5,
+        date: '3 days ago',
+        treatment: 'Acrylic Nails (Sculpted Full Set)',
+        comment: 'Best nails in Polokwane! Tumi shape and cuticle work are flawless. Will not go anywhere else.',
+        verified: true,
+        helpfulCount: 19
+      }
+    ],
+    ratingBreakdown: { punctuality: 4.98, cleanliness: 5.0, skill: 4.98, communication: 4.96, ambiance: 4.97 },
+    openingHours: [
+      { day: 'Monday - Friday', hours: '08:30 - 17:30' },
+      { day: 'Saturday', hours: '08:30 - 15:00' }
+    ]
+  },
+  {
+    id: 'lowveld-barber-nelspruit',
+    name: 'Lowveld Gentleman Barbering',
+    founder: 'Sibusiso Mabuza',
+    founderTitle: 'Master Barber & Grooming Artisan',
+    headline: 'Razor skin fades, hot towel eucalyptus beard grooming, and scalp massages in Mbombela (Nelspruit).',
+    badge: 'Mpumalanga Verified Artisan',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=800&q=80',
+    rating: 4.96,
+    reviewCount: 152,
+    completedBookings: 580,
+    province: 'Mpumalanga',
+    city: 'Mbombela (Nelspruit)',
+    suburb: 'West Acres',
+    address: 'Sonpark Boulevard, Faurie St, West Acres, Mbombela, 1200',
+    providerType: 'Salon',
+    offersMobile: false,
+    phone: '+27 13 741 2299',
+    whatsapp: '+27 82 341 9901',
+    instagram: '@lowveldbarber.nelspruit',
+    bio: 'Precision gentleman styling, crisp razor lines, hot lather shaves, and beard grooming using African essential oils.',
+    experienceYears: 8,
+    amenities: ['Single Malt Lounge', 'Leather Chairs', 'Complimentary Beverages', 'WiFi', 'Secure Parking'],
+    categories: ['Barbering', 'Hair and Hairstyles'],
+    startingPrice: 260,
+    highestPrice: 750,
+    gallery: [
+      'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=80'
+    ],
+    services: [
+      {
+        id: 'mb-barbering',
+        name: 'Barbering (Precision Razor Fade & Cut)',
+        duration: '45 min',
+        price: 280,
+        description: 'Skin fade, taper or scissor crop with surgical razor hairline outline and scalp wash.',
+        category: 'Barbering',
+        popular: true
+      },
+      {
+        id: 'mb-beard-grooming',
+        name: 'Beard Grooming & Hot Towel Treatment',
+        duration: '35 min',
+        price: 220,
+        description: 'Beard trimming, hot towel compress, straight razor lining, and conditioning argan oil.',
+        category: 'Barbering',
+        popular: true
+      },
+      {
+        id: 'mb-haircut',
+        name: 'Haircut (Gentleman Classic Styling)',
+        duration: '40 min',
+        price: 260,
+        description: 'Tailored scissor cut or clipper styling with styling pomade finish.',
+        category: 'Haircut'
+      }
+    ],
+    reviews: [
+      {
+        id: 'rev-901',
+        clientName: 'Willem Pretorius',
+        clientAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+        clientLocation: 'Nelspruit, MP',
+        rating: 5,
+        date: '4 days ago',
+        treatment: 'Barbering (Precision Razor Fade & Cut)',
+        comment: 'Top quality cut in Mbombela. Sibusiso pays insane attention to detail. Sharpest fade in town.',
+        verified: true,
+        helpfulCount: 11
+      }
+    ],
+    ratingBreakdown: { punctuality: 4.97, cleanliness: 4.98, skill: 4.98, communication: 4.95, ambiance: 4.94 },
+    openingHours: [
+      { day: 'Monday - Saturday', hours: '08:00 - 18:00' }
+    ]
+  },
+  {
+    id: 'bloem-elegance-salon',
+    name: 'Free State Elegance Hair & Bridal Studio',
+    founder: 'Kelebogile Mofokeng',
+    founderTitle: 'Bridal Stylist & Master Makeup Artist',
+    headline: 'Bridal makeup, HD makeup applications, hair styling, and facials in Westdene, Bloemfontein.',
+    badge: 'Free State Verified Artisan',
+    avatar: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80',
+    rating: 4.95,
+    reviewCount: 138,
+    completedBookings: 490,
+    province: 'Free State',
+    city: 'Bloemfontein',
+    suburb: 'Westdene',
+    address: 'Second Ave, Westdene, Bloemfontein, 9301',
+    providerType: 'Salon',
+    offersMobile: true,
+    mobileCoverage: 'Bloemfontein Central, Dan Pienaar, Westdene, Brandwag',
+    travelFee: 150,
+    phone: '+27 51 444 8920',
+    whatsapp: '+27 76 991 2234',
+    instagram: '@bloemelegance.bfn',
+    bio: 'Kelebogile specializes in editorial bridal beauty, red carpet makeup applications, skin-prepping facials, and wedding hair styling.',
+    experienceYears: 8,
+    amenities: ['Bridal Dressing Suite', 'Ring Light Mirrors', 'Complimentary Champagne', 'WiFi', 'Private Parking'],
+    categories: ['Makeup', 'Hair and Hairstyles', 'Skincare and Facials'],
+    startingPrice: 420,
+    highestPrice: 1800,
+    gallery: [
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80'
+    ],
+    services: [
+      {
+        id: 'bfn-bridal-makeup',
+        name: 'Bridal Makeup & Skin Prep',
+        duration: '90 min',
+        price: 1200,
+        description: 'Long-wearing luxury wedding makeup, skin barrier priming, waterproof setting, and mink lash application.',
+        category: 'Makeup',
+        popular: true
+      },
+      {
+        id: 'bfn-makeup-app',
+        name: 'Makeup Application (Glam / Soft Glam)',
+        duration: '60 min',
+        price: 580,
+        description: 'Camera-ready full face makeup with contouring, eyes, and luxury lashes.',
+        category: 'Makeup',
+        popular: true
+      },
+      {
+        id: 'bfn-facials',
+        name: 'Facials (Hydrating Glow & Peel)',
+        duration: '60 min',
+        price: 550,
+        description: 'Enzyme exfoliation, gentle extractions, hyaluronic infusion, and soothing massage.',
+        category: 'Facials'
+      },
+      {
+        id: 'bfn-waxing',
+        name: 'Waxing & Eyebrow Shaping',
+        duration: '35 min',
+        price: 250,
+        description: 'Precision brow waxing, tinting, and upper lip hair removal.',
+        category: 'Waxing'
+      }
+    ],
+    reviews: [
+      {
+        id: 'rev-1001',
+        clientName: 'Anri Van Der Walt',
+        clientAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+        clientLocation: 'Westdene, Bloemfontein',
+        rating: 5,
+        date: '1 week ago',
+        treatment: 'Bridal Makeup & Skin Prep',
+        comment: 'Kelebogile made me feel like royalty on my wedding day. Makeup didn’t budge through all the tears and dancing!',
+        verified: true,
+        helpfulCount: 15
+      }
+    ],
+    ratingBreakdown: { punctuality: 4.96, cleanliness: 4.98, skill: 4.97, communication: 4.95, ambiance: 4.96 },
+    openingHours: [
+      { day: 'Tuesday - Saturday', hours: '08:30 - 17:30' }
     ]
   }
 ];

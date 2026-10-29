@@ -17,8 +17,15 @@ import {
   Sparkles,
   Save,
   MessageCircle,
-  AlertCircle
+  AlertCircle,
+  ShieldCheck
 } from 'lucide-react';
+import { 
+  SOUTH_AFRICAN_PROVINCES, 
+  getTownsForProvince, 
+  getSuburbsForTown, 
+  formatStudioDisplayLocation 
+} from '../../data/saLocationsData';
 
 interface StudioProfileEditorViewProps {
   studio: StudioProfile;
@@ -47,9 +54,48 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
   const [website, setWebsite] = useState(studio.website);
 
   // Location
+  const [province, setProvince] = useState(studio.province || 'Gauteng');
   const [city, setCity] = useState(studio.city);
   const [suburb, setSuburb] = useState(studio.suburb);
   const [address, setAddress] = useState(studio.address);
+  const [isCustomTown, setIsCustomTown] = useState(() => {
+    const towns = getTownsForProvince(studio.province || 'Gauteng');
+    return studio.city ? !towns.includes(studio.city) : false;
+  });
+  const [isCustomSuburb, setIsCustomSuburb] = useState(() => {
+    const subs = getSuburbsForTown(studio.city);
+    return studio.suburb ? !subs.includes(studio.suburb) : false;
+  });
+
+  const handleProvinceChange = (newProv: string) => {
+    setProvince(newProv);
+    const towns = getTownsForProvince(newProv);
+    if (towns.length > 0) {
+      setCity(towns[0]);
+      setIsCustomTown(false);
+      const subs = getSuburbsForTown(towns[0]);
+      setSuburb(subs[0] || '');
+      setIsCustomSuburb(false);
+    } else {
+      setCity('');
+      setSuburb('');
+      setIsCustomTown(true);
+      setIsCustomSuburb(true);
+    }
+  };
+
+  const handleTownChange = (newTown: string) => {
+    setCity(newTown);
+    setIsCustomTown(false);
+    const subs = getSuburbsForTown(newTown);
+    if (subs.length > 0) {
+      setSuburb(subs[0]);
+      setIsCustomSuburb(false);
+    } else {
+      setSuburb('');
+      setIsCustomSuburb(true);
+    }
+  };
 
   // Media
   const [logoUrl, setLogoUrl] = useState(studio.logoUrl);
@@ -87,6 +133,7 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
       email,
       instagram,
       website,
+      province,
       city,
       suburb,
       address,
@@ -343,50 +390,144 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
 
           {/* Section 3: Physical Location */}
           <div className="bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-xs">
-            <div className="flex items-center gap-2 mb-6 pb-4 border-b border-stone-100">
-              <MapPin className="w-5 h-5 text-[#b86b86]" />
-              <h2 className="text-lg font-serif font-bold text-[#26152d]">
-                Physical Studio Location & Directions
-              </h2>
+            <div className="flex items-center justify-between gap-2 mb-6 pb-4 border-b border-stone-100 flex-wrap">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-[#b86b86]" />
+                <h2 className="text-lg font-serif font-bold text-[#26152d]">
+                  Physical Studio Location & Discoverability
+                </h2>
+              </div>
+              {province && city && suburb && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 border border-pink-200 text-xs font-semibold text-[#b86b86]">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Public Display: {formatStudioDisplayLocation(province, city, suburb)}</span>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Province */}
               <div>
                 <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
-                  City / Metro *
+                  Province *
                 </label>
-                <input
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="w-full text-sm px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
-                />
+                <select
+                  value={province}
+                  onChange={(e) => handleProvinceChange(e.target.value)}
+                  className="w-full text-sm px-4 py-2.5 bg-white border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86] font-medium"
+                >
+                  {SOUTH_AFRICAN_PROVINCES.map((prov) => (
+                    <option key={prov} value={prov}>{prov}</option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-stone-500 mt-1">One of 9 South African provinces</p>
               </div>
 
+              {/* Town / City */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider">
+                    Town or City *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCustomTown(!isCustomTown);
+                      if (isCustomTown) {
+                        const towns = getTownsForProvince(province);
+                        setCity(towns[0] || '');
+                      }
+                    }}
+                    className="text-[11px] font-semibold text-[#b86b86] hover:underline cursor-pointer"
+                  >
+                    {isCustomTown ? 'Select from list' : '+ Enter custom town'}
+                  </button>
+                </div>
+                {isCustomTown ? (
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="Enter town or city name"
+                    className="w-full text-sm px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                  />
+                ) : (
+                  <select
+                    value={city}
+                    onChange={(e) => handleTownChange(e.target.value)}
+                    className="w-full text-sm px-4 py-2.5 bg-white border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86] font-medium"
+                  >
+                    {getTownsForProvince(province).map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                )}
+                <p className="text-[11px] text-stone-500 mt-1">Clients search by town or city</p>
+              </div>
+
+              {/* Suburb */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider">
+                    Suburb or Area *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCustomSuburb(!isCustomSuburb);
+                      if (isCustomSuburb) {
+                        const subs = getSuburbsForTown(city);
+                        setSuburb(subs[0] || '');
+                      }
+                    }}
+                    className="text-[11px] font-semibold text-[#b86b86] hover:underline cursor-pointer"
+                  >
+                    {isCustomSuburb ? 'Select from list' : '+ Enter custom suburb'}
+                  </button>
+                </div>
+                {isCustomSuburb || getSuburbsForTown(city).length === 0 ? (
+                  <input
+                    type="text"
+                    value={suburb}
+                    onChange={(e) => setSuburb(e.target.value)}
+                    placeholder="Enter suburb or township/area"
+                    className="w-full text-sm px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
+                  />
+                ) : (
+                  <select
+                    value={suburb}
+                    onChange={(e) => setSuburb(e.target.value)}
+                    className="w-full text-sm px-4 py-2.5 bg-white border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86] font-medium"
+                  >
+                    {getSuburbsForTown(city).map((sub) => (
+                      <option key={sub} value={sub}>{sub}</option>
+                    ))}
+                  </select>
+                )}
+                <p className="text-[11px] text-stone-500 mt-1">Primary neighborhood or business district</p>
+              </div>
+
+              {/* Street Address */}
               <div>
                 <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
-                  Suburb / Precinct *
-                </label>
-                <input
-                  type="text"
-                  value={suburb}
-                  onChange={(e) => setSuburb(e.target.value)}
-                  placeholder="e.g. Rosebank / Sandton Central"
-                  className="w-full text-sm px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">
-                  Full Street Address & Suite Number *
+                  Street Address & Building / Suite (Optional)
                 </label>
                 <input
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="e.g. Suite 402, The Keyes Art Mile, 19 Keyes Ave, Rosebank, 2196"
+                  placeholder="e.g. Unit 4, Rosebank Corner, 191 Jan Smuts Ave"
                   className="w-full text-sm px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-hidden focus:border-[#b86b86]"
                 />
+                <p className="text-[11px] text-stone-500 mt-1">Specific directions for booked clients</p>
+              </div>
+
+              {/* Privacy Notice Banner */}
+              <div className="sm:col-span-2 p-4 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-start gap-3">
+                <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+                <div className="text-xs text-amber-900 leading-relaxed">
+                  <span className="font-bold">Privacy & Security Guarantee:</span> Only your Suburb, Town, and Province are publicly displayed in marketplace search results. Your exact street address or home studio directions are confidential and only sent to verified clients with confirmed appointments.
+                </div>
               </div>
             </div>
           </div>

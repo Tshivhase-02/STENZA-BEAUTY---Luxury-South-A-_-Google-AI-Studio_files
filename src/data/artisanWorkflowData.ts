@@ -30,6 +30,7 @@ export interface ArtisanApplication {
   businessName: string;
   category: string;
   experienceYears: number;
+  province?: string;
   city: string;
   suburb: string;
   address: string;
@@ -81,6 +82,7 @@ export interface StudioProfile {
   email: string;
   instagram: string;
   website: string;
+  province?: string;
   city: string;
   suburb: string;
   address: string;
