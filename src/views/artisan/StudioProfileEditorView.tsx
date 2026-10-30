@@ -188,7 +188,7 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
               className="px-5 py-2 bg-[#b86b86] hover:bg-[#a25974] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-md"
             >
               <Save className="w-4 h-4" />
-              <span>{isSaving ? 'Saving Changes...' : 'Save Profile'}</span>
+              <span>{isSaving ? 'Saving Changes...' : 'Save Changes'}</span>
             </button>
           </div>
         </div>
@@ -200,7 +200,7 @@ export const StudioProfileEditorView: React.FC<StudioProfileEditorViewProps> = (
           <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between shadow-xs animate-in fade-in duration-200">
             <div className="flex items-center gap-2.5">
               <Check className="w-5 h-5 text-emerald-600" />
-              <span className="text-sm font-semibold">Beauty Shop Profile saved successfully! Client view updated.</span>
+              <span className="text-sm font-semibold">Beauty Shop Profile saved successfully! Customer view updated.</span>
             </div>
             <button
               onClick={() => onNavigate('studio_preview')}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { PROVIDERS, Provider, ServiceItem, Booking } from '../data/beautyData';
-import { calculateLoyaltySummary, AVAILABLE_REWARDS } from '../data/loyaltyData';
 import { ReportStudioModal } from '../components/ReportStudioModal';
 import { adminService } from '../services/adminService';
 import { formatStudioDisplayLocation } from '../data/saLocationsData';
@@ -8,10 +7,8 @@ import { formatStudioDisplayLocation } from '../data/saLocationsData';
 interface ProfileViewProps {
   providerId: string;
   onNavigate: (view: string, providerId?: string, authMode?: 'login' | 'register') => void;
-  onOpenBookingModal: (providerId?: string, serviceId?: string, discount?: number) => void;
+  onOpenBookingModal: (providerId?: string, serviceId?: string) => void;
   bookings: Booking[];
-  redeemedPoints: number;
-  onOpenLoyaltyModal: () => void;
   isLoggedIn?: boolean;
   currentUserName?: string;
   currentUserEmail?: string;
@@ -23,8 +20,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onNavigate,
   onOpenBookingModal,
   bookings,
-  redeemedPoints,
-  onOpenLoyaltyModal,
   isLoggedIn = false,
   currentUserName = 'Naledi Mokwena',
   currentUserEmail = 'naledi.mokwena@stenzabeauty.co.za',
@@ -39,9 +34,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [selectedDate, setSelectedDate] = useState('Tomorrow, 25 Oct');
   const [selectedTime, setSelectedTime] = useState('14:00');
   const [serviceMode, setServiceMode] = useState<'in-studio' | 'mobile'>('in-studio');
-  const [activeTab, setActiveTab] = useState<'services' | 'loyalty' | 'portfolio' | 'reviews' | 'about'>('services');
+  const [activeTab, setActiveTab] = useState<'services' | 'portfolio' | 'reviews' | 'about'>('services');
   const [selectedImageModal, setSelectedImageModal] = useState<string | null>(null);
-  const [applyLoyaltyDiscount, setApplyLoyaltyDiscount] = useState<boolean>(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
 
   // Administrative Moderation Status Check
@@ -52,16 +46,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const activeService: ServiceItem | undefined =
     availableServices.find((s) => s.id === selectedServiceId) || availableServices[0] || provider.services[0];
 
-  // Loyalty calculations
-  const loyaltySummary = calculateLoyaltySummary(bookings, redeemedPoints);
-  const pointsToEarn = Math.floor((activeService?.price || 0) / 10);
-  
-  // R100 discount if user has at least 100 points
-  const discountAmount = applyLoyaltyDiscount && loyaltySummary.availablePoints >= 100 ? 100 : 0;
-
   const travelFee = serviceMode === 'mobile' ? (provider.travelFee || 150) : 0;
   const baseRate = (activeService?.price || 0) + travelFee;
-  const totalRate = Math.max(0, baseRate - discountAmount);
+  const totalRate = baseRate;
 
   const dates = [
     { label: 'Today', sub: '24 Oct' },
@@ -95,27 +82,19 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </button>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={onOpenLoyaltyModal}
-              className="px-3 py-1.5 rounded-full bg-[#695684]/90 backdrop-blur-md text-xs font-semibold text-white flex items-center gap-1.5 hover:bg-[#584572] transition-colors shadow-sm"
-            >
-              <span className="material-symbols-outlined text-[16px] text-amber-300">diamond</span>
-              <span>{loyaltySummary.availablePoints} Loyalty Pts</span>
-            </button>
-
             <span className="px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-xs font-semibold text-emerald-300 hidden md:flex items-center gap-1">
               <span className="material-symbols-outlined text-[14px]">verified</span>
               <span>STENZA Escrow Verified</span>
             </span>
 
-            {/* Clearly visible Report Studio button on mobile and desktop */}
+            {/* Clearly visible Report Beauty Shop button on mobile and desktop */}
             <button
               onClick={() => setIsReportModalOpen(true)}
               className="px-3 py-1.5 rounded-full bg-black/40 hover:bg-rose-950/80 hover:text-rose-200 backdrop-blur-md text-xs font-semibold text-stone-200 flex items-center gap-1.5 transition-colors border border-white/10 cursor-pointer"
-              title="Report this studio or safety concern"
+              title="Report this beauty shop or safety concern"
             >
               <span className="material-symbols-outlined text-[15px] text-rose-400">flag</span>
-              <span className="hidden sm:inline">Report Studio</span>
+              <span className="hidden sm:inline">Report Beauty Shop</span>
               <span className="sm:hidden">Report</span>
             </button>
           </div>
@@ -168,62 +147,21 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
       {/* Main Content & Sticky Booking Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        {/* Loyalty Points Tracking Ribbon / Quick Banner in Profile View */}
-        <div className="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#26152d] via-[#39263f] to-[#695684] text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-xs flex items-center justify-center flex-shrink-0 text-amber-300">
-              <span className="material-symbols-outlined text-[28px]">diamond</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] uppercase font-bold tracking-widest text-[#f6d9fb]">
-                  Your STENZA Loyalty Tracker
-                </span>
-                <span className="bg-[#b9a3d6]/30 text-white text-[9px] font-bold px-2 py-0.2 rounded-full">
-                  {loyaltySummary.tier}
-                </span>
-              </div>
-              <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="font-serif text-2xl font-bold">{loyaltySummary.totalPointsEarned}</span>
-                <span className="text-xs text-stone-300 font-medium">Total Points Earned from Completed Bookings</span>
-                <span className="text-xs text-amber-300 font-bold">({loyaltySummary.availablePoints} pts available = R{loyaltySummary.zarValue} credit)</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-            <button
-              onClick={() => setActiveTab('loyalty')}
-              className="py-2 px-3.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
-            >
-              <span className="material-symbols-outlined text-[16px]">receipt_long</span>
-              <span>Points Ledger</span>
-            </button>
-            <button
-              onClick={onOpenLoyaltyModal}
-              className="py-2 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#26152d] text-xs font-bold transition-colors shadow-sm"
-            >
-              Redeem Rewards
-            </button>
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column: Tabs, Services, Bio, Reviews, Loyalty */}
+          {/* Left Column: Tabs, Services, Bio, Reviews */}
           <div className="lg:col-span-8 space-y-8">
             {/* Navigation Tabs */}
             <div className="flex items-center gap-2 border-b border-[#e5e0d8] pb-1 overflow-x-auto">
               {[
                 { id: 'services', label: 'Treatment Menu', icon: 'spa' },
-                { id: 'loyalty', label: `Loyalty Points (${loyaltySummary.totalPointsEarned} pts)`, icon: 'diamond' },
                 { id: 'portfolio', label: `Portfolio (${provider.gallery.length})`, icon: 'photo_library' },
-                { id: 'about', label: 'Artisan Bio & Beauty Shop', icon: 'info' },
+                { id: 'about', label: 'About Beauty Shop', icon: 'info' },
                 { id: 'reviews', label: `Reviews (${provider.reviewCount})`, icon: 'reviews' },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-1.5 py-3 px-4 text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 py-3 px-4 text-xs font-semibold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
                     activeTab === tab.id
                       ? 'bg-[#695684] text-white shadow-xs'
                       : 'text-gray-600 hover:text-[#26152d] hover:bg-[#f6f3ee]'
@@ -279,10 +217,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                             <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                               {service.description}
                             </p>
-                            <div className="pt-1 flex items-center gap-1.5 text-[11px] text-[#695684] font-medium">
-                              <span className="material-symbols-outlined text-[14px]">diamond</span>
-                              <span>Earns <strong>+{ptsEarnable} STENZA Loyalty Points</strong> upon completion</span>
-                            </div>
                           </div>
 
                           <div className="text-right flex-shrink-0">
@@ -294,9 +228,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedServiceId(service.id);
-                                onOpenBookingModal(provider.id, service.id, discountAmount);
+                                onOpenBookingModal(provider.id, service.id);
                               }}
-                              className={`mt-2 py-1.5 px-3.5 rounded-lg text-xs font-semibold transition-colors ${
+                              className={`mt-2 py-1.5 px-3.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                                 isSelected
                                   ? 'bg-[#695684] text-white shadow-xs'
                                   : 'bg-[#f6f3ee] hover:bg-[#ebe8e3] text-[#26152d]'
@@ -313,173 +247,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </div>
             )}
 
-            {/* TAB 2: Loyalty Points Tracking System */}
-            {activeTab === 'loyalty' && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-serif text-xl font-bold text-[#26152d]">
-                    Your Completed Bookings Loyalty Points Tracking
-                  </h3>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Every completed treatment automatically credits 1 STENZA point per R10 spent.
-                  </p>
-                </div>
-
-                {/* Main Stats Card */}
-                <div className="bg-white p-6 rounded-2xl border border-[#e5e0d8] shadow-2xs space-y-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-5 border-b border-[#f0ede6]">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-gray-500">Total Points Earned</span>
-                      <div className="font-serif text-3xl font-bold text-[#695684] mt-1">
-                        {loyaltySummary.totalPointsEarned} <span className="text-xs font-sans text-gray-500 font-normal">pts</span>
-                      </div>
-                      <span className="text-[11px] text-emerald-700 font-semibold">From completed visits</span>
-                    </div>
-
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-gray-500">Available to Spend</span>
-                      <div className="font-serif text-3xl font-bold text-[#26152d] mt-1">
-                        {loyaltySummary.availablePoints} <span className="text-xs font-sans text-gray-500 font-normal">pts</span>
-                      </div>
-                      <span className="text-[11px] text-gray-600 font-medium">= R{loyaltySummary.zarValue} off appointments</span>
-                    </div>
-
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-gray-500">Current Status</span>
-                      <div className="font-serif text-2xl font-bold text-amber-600 mt-1">
-                        {loyaltySummary.tier}
-                      </div>
-                      <span className="text-[11px] text-gray-500">
-                        {loyaltySummary.nextTierPointsNeeded > 0
-                          ? `${loyaltySummary.nextTierPointsNeeded} pts to ${loyaltySummary.nextTierName}`
-                          : 'Elite VIP'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Tier Progress Bar */}
-                  <div>
-                    <div className="flex justify-between text-xs text-gray-600 mb-1.5 font-medium">
-                      <span>Tier Progress ({loyaltySummary.tier})</span>
-                      <span>{Math.round(loyaltySummary.progressPercent)}% to next milestone</span>
-                    </div>
-                    <div className="w-full bg-[#f0ede6] h-2.5 rounded-full overflow-hidden">
-                      <div
-                        className="bg-[#695684] h-full rounded-full transition-all duration-500"
-                        style={{ width: `${loyaltySummary.progressPercent}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Points Ledger from Completed Bookings */}
-                <div className="space-y-3">
-                  <h4 className="font-serif text-base font-bold text-[#26152d]">
-                    Completed Booking Breakdown
-                  </h4>
-
-                  <div className="space-y-2.5">
-                    {loyaltySummary.ledger.map((item) => (
-                      <div
-                        key={item.id}
-                        className="p-4 bg-white rounded-xl border border-[#e5e0d8] flex items-center justify-between shadow-2xs"
-                      >
-                        <div className="flex items-center gap-3.5">
-                          <div
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${
-                              item.type === 'bonus'
-                                ? 'bg-amber-100 text-amber-800'
-                                : item.type === 'redeemed'
-                                ? 'bg-rose-100 text-rose-800'
-                                : 'bg-[#f6d9fb] text-[#39263f]'
-                            }`}
-                          >
-                            <span className="material-symbols-outlined text-[18px]">
-                              {item.type === 'bonus' ? 'stars' : item.type === 'redeemed' ? 'remove_circle' : 'add_task'}
-                            </span>
-                          </div>
-
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h5 className="font-serif text-xs font-bold text-[#26152d]">
-                                {item.title}
-                              </h5>
-                              {item.bookingRef && (
-                                <span className="font-mono text-[9px] bg-gray-100 text-gray-600 px-1.5 py-0.2 rounded">
-                                  {item.bookingRef}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-[11px] text-gray-500 mt-0.5">
-                              {item.subtitle} • {item.date}
-                            </p>
-                            {item.amountZAR && (
-                              <p className="text-[10px] text-gray-400 mt-0.5">
-                                Completed for R{item.amountZAR} (Credited at 1 pt per R10)
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="text-right">
-                          <span
-                            className={`font-serif text-base font-bold ${
-                              item.points > 0 ? 'text-emerald-700' : 'text-rose-600'
-                            }`}
-                          >
-                            {item.points > 0 ? `+${item.points}` : item.points} pts
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Redeem Vouchers Card */}
-                <div className="bg-[#f6f3ee] p-5 rounded-2xl border border-[#e5e0d8] space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-serif text-sm font-bold text-[#26152d]">
-                        Redeemable Loyalty Vouchers
-                      </h4>
-                      <p className="text-xs text-gray-600">
-                        Convert points into instant ZAR booking credits at {provider.name}.
-                      </p>
-                    </div>
-                    <button
-                      onClick={onOpenLoyaltyModal}
-                      className="text-xs font-bold text-[#695684] hover:underline"
-                    >
-                      View All
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    {AVAILABLE_REWARDS.slice(0, 2).map((rew) => (
-                      <div key={rew.id} className="p-3 bg-white rounded-xl border border-[#e5e0d8] flex justify-between items-center">
-                        <div>
-                          <div className="font-bold text-xs text-[#26152d]">{rew.title}</div>
-                          <div className="text-[10px] text-[#695684] font-semibold">{rew.pointsRequired} Points Required</div>
-                        </div>
-                        <button
-                          onClick={onOpenLoyaltyModal}
-                          className="py-1 px-3 rounded-lg bg-[#695684] text-white text-[11px] font-semibold hover:bg-[#584572]"
-                        >
-                          Redeem
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 3: Portfolio */}
+            {/* TAB 2: Portfolio */}
             {activeTab === 'portfolio' && (
               <div className="space-y-6">
                 <div>
                   <h3 className="font-serif text-xl font-bold text-[#26152d]">
-                    Artisan Portfolio & Studio Gallery
+                    Portfolio & Gallery
                   </h3>
                   <p className="text-xs text-gray-500 mt-1">
                     Authentic client treatments photographed at {provider.name}.
@@ -669,10 +442,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 <div className="p-3.5 bg-rose-50 border border-rose-300 rounded-2xl text-xs text-rose-800 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-rose-900">
                     <span className="material-symbols-outlined text-[16px]">warning</span>
-                    <span>Studio Listing Restricted</span>
+                    <span>Beauty Shop Listing Restricted</span>
                   </div>
                   <p className="text-[11px] leading-relaxed">
-                    This studio profile is currently suspended under STENZA Marketplace Moderation policies. New appointments are temporarily paused.
+                    This beauty shop profile is currently suspended under STENZA Marketplace Moderation policies. New appointments are temporarily paused.
                   </p>
                 </div>
               )}
@@ -694,10 +467,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     <div className="text-[10px] uppercase font-bold text-[#7c535c]">Selected Service</div>
                     <div className="font-semibold text-xs text-[#26152d] mt-0.5">{activeService?.name}</div>
                   </div>
-                  <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5">
-                    <span className="material-symbols-outlined text-[12px]">diamond</span>
-                    <span>+{pointsToEarn} pts</span>
-                  </span>
                 </div>
 
                 <div className="flex justify-between items-center mt-2 pt-2 border-t border-[#e5e0d8] text-xs">
@@ -714,14 +483,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <button
                     onClick={() => setServiceMode('in-studio')}
-                    className={`p-2.5 rounded-xl border text-center transition-all ${
+                    className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                       serviceMode === 'in-studio'
                         ? 'border-[#695684] bg-[#695684]/10 font-bold text-[#26152d]'
                         : 'border-[#e5e0d8] text-gray-600 hover:border-gray-400'
                     }`}
                   >
-                    <span>In-Studio</span>
-                    <span className="block text-[10px] font-normal text-gray-500 mt-0.5">Rosebank Suite</span>
+                    <span>In Beauty Shop</span>
+                    <span className="block text-[10px] font-normal text-gray-500 mt-0.5">{provider.suburb || 'Salon Suite'}</span>
                   </button>
 
                   <button
@@ -731,7 +500,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                       serviceMode === 'mobile'
                         ? 'border-[#695684] bg-[#695684]/10 font-bold text-[#26152d]'
                         : 'border-[#e5e0d8] text-gray-600 hover:border-gray-400'
-                    }`}
+                    } ${!provider.offersMobile ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                   >
                     <span>Mobile / Home</span>
                     <span className="block text-[10px] font-normal text-gray-500 mt-0.5">+ R{provider.travelFee} travel</span>
@@ -749,7 +518,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     <button
                       key={d.label}
                       onClick={() => setSelectedDate(`${d.label}, ${d.sub}`)}
-                      className={`flex-shrink-0 px-2.5 py-1.5 rounded-lg text-center border text-xs transition-all ${
+                      className={`flex-shrink-0 px-2.5 py-1.5 rounded-lg text-center border text-xs transition-all cursor-pointer ${
                         selectedDate.includes(d.label)
                           ? 'border-[#695684] bg-[#695684] text-white font-bold'
                           : 'border-[#e5e0d8] text-gray-700 hover:border-gray-400'
@@ -772,7 +541,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     <button
                       key={t}
                       onClick={() => setSelectedTime(t)}
-                      className={`py-1.5 rounded-lg text-xs font-medium border text-center transition-all ${
+                      className={`py-1.5 rounded-lg text-xs font-medium border text-center transition-all cursor-pointer ${
                         selectedTime === t
                           ? 'border-[#695684] bg-[#695684] text-white font-bold'
                           : 'border-[#e5e0d8] text-gray-700 hover:border-[#695684]'
@@ -782,35 +551,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* Loyalty Points Redemption Toggle */}
-              <div className="p-3 bg-[#fcf9f4] rounded-xl border border-[#e5e0d8] space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#26152d]">
-                    <span className="material-symbols-outlined text-[16px] text-amber-500">diamond</span>
-                    <span>Redeem Loyalty Points</span>
-                  </div>
-                  <span className="text-[10px] text-gray-500 font-medium">
-                    Balance: <strong>{loyaltySummary.availablePoints} pts</strong>
-                  </span>
-                </div>
-
-                {loyaltySummary.availablePoints >= 100 ? (
-                  <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer pt-1">
-                    <input
-                      type="checkbox"
-                      checked={applyLoyaltyDiscount}
-                      onChange={(e) => setApplyLoyaltyDiscount(e.target.checked)}
-                      className="accent-[#695684] rounded"
-                    />
-                    <span>Apply 100 points for an instant <strong>-R100 discount</strong></span>
-                  </label>
-                ) : (
-                  <p className="text-[11px] text-gray-500 italic">
-                    Earn {100 - loyaltySummary.availablePoints} more points to unlock instant R100 vouchers.
-                  </p>
-                )}
               </div>
 
               {/* Cost Summary */}
@@ -823,12 +563,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   <div className="flex justify-between text-gray-600">
                     <span>Mobile Call-Out Fee</span>
                     <span>R{travelFee}</span>
-                  </div>
-                )}
-                {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-semibold">
-                    <span>STENZA Loyalty Discount</span>
-                    <span>-R{discountAmount}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-sm text-[#26152d] pt-1.5 border-t border-[#d8d3ca]">
@@ -850,13 +584,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                         if (!isLoggedIn) {
                           onNavigate('auth', undefined, 'login');
                         } else {
-                          onOpenBookingModal(provider.id, selectedServiceId, discountAmount);
+                          onOpenBookingModal(provider.id, selectedServiceId);
                         }
                       }}
                       className="w-full py-3.5 rounded-xl bg-[#695684] hover:bg-[#584572] text-white text-xs font-semibold shadow-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[16px]">calendar_month</span>
-                      <span>Request This Appointment</span>
+                      <span>Request Appointment</span>
                     </button>
 
                     <a
@@ -866,7 +600,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                       className="w-full py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
                     >
                       <span className="material-symbols-outlined text-[16px] text-emerald-600">chat</span>
-                      <span>Instant WhatsApp Artisan Inquiry</span>
+                      <span>WhatsApp Inquiry</span>
                     </a>
                   </>
                 )}

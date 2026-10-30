@@ -141,12 +141,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocationModal 
                   onClick={() => onNavigate('artisan_registration')} 
                   className="text-[#e8a3b8] hover:text-white font-bold transition-colors cursor-pointer text-left"
                 >
-                  ✨ Register Your Beauty Shop
+                  ✨ Register Your Beauty Business
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('artisan_dashboard')} className="hover:text-white transition-colors cursor-pointer text-left">
-                  Artisan Suite
+                  Beauty Professional Dashboard
                 </button>
               </li>
               <li>
@@ -165,7 +165,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLocationModal 
                   className="text-emerald-300 hover:text-emerald-200 transition-colors cursor-pointer text-left flex items-center gap-1.5 font-medium"
                 >
                   <span className="text-emerald-400">🛡️</span>
-                  <span>Admin Portal (Accreditation)</span>
+                  <span>Admin Portal</span>
                 </button>
               </li>
             </ul>

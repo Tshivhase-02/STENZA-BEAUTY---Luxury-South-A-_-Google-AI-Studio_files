@@ -98,7 +98,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
   const travelFee = serviceType === 'mobile' ? (provider.travelFee || 150) : 0;
   const totalPrice = Math.max(0, (currentService?.price || 0) + travelFee - (preselectedDiscount || 0));
-  const pointsToEarn = Math.floor(totalPrice / 10);
 
   const dates = [
     { label: 'Today', sub: '24 Oct' },
@@ -630,7 +629,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
                 {!provider.offersMobile && (
                   <p className="text-[11px] text-gray-400 mt-1">
-                    * This artisan currently offers appointments at their beauty shop only.
+                    * This beauty professional currently offers appointments at their beauty shop only.
                   </p>
                 )}
               </div>
@@ -649,7 +648,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     className="w-full p-2.5 rounded-lg bg-white border border-amber-300 text-xs text-[#26152d] focus:border-[#695684] outline-none"
                   />
                   <span className="text-[10px] text-amber-800 block">
-                    Vetted artisan will arrive 10 minutes prior with sanitized professional setup.
+                    Vetted beauty professional will arrive 10 minutes prior with sanitized professional setup.
                   </span>
                 </div>
               )}
@@ -723,26 +722,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
                 {serviceType === 'mobile' && (
                   <div className="flex justify-between text-gray-600">
-                    <span>Mobile Artisan Travel Fee</span>
+                    <span>Mobile House Call Travel Fee</span>
                     <span>R{travelFee}</span>
-                  </div>
-                )}
-                {preselectedDiscount > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-semibold">
-                    <span>Applied Loyalty Discount Voucher</span>
-                    <span>-R{preselectedDiscount}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-emerald-700 text-[11px]">
                   <span>STENZA ZAR Escrow Guarantee</span>
                   <span>Free</span>
-                </div>
-                <div className="flex justify-between text-amber-700 text-[11px] font-medium">
-                  <span className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[13px]">diamond</span>
-                    <span>Loyalty Points to Earn Upon Completion</span>
-                  </span>
-                  <span>+{pointsToEarn} pts</span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-[#d8d3ca] font-bold text-sm text-[#26152d]">
                   <span>Total Amount</span>

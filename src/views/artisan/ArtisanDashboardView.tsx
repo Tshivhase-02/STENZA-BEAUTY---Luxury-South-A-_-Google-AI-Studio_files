@@ -60,7 +60,7 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#b86b86]/30 text-[#e8a3b8] border border-[#b86b86]/50 uppercase tracking-wider">
-                Artisan Suite
+                Beauty Professional Suite
               </span>
               <span className="text-xs text-stone-400 font-mono">Ref: {application.id}</span>
             </div>
@@ -161,13 +161,13 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-emerald-950">Artisan Accreditation Approved & Verified</h3>
+                  <h3 className="text-sm font-bold text-emerald-950">Beauty Professional Accreditation Approved & Verified</h3>
                   <span className="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded font-mono font-bold">
-                    Official STENZA Artisan
+                    Official STENZA Professional
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-emerald-800 mt-1 leading-relaxed">
-                  Congratulations! Your beauty shop is accredited. You can now toggle your listing status to <strong className="font-semibold text-emerald-950">Live Marketplace Active</strong> and receive bookings directly from Johannesburg and Pretoria clients.
+                  Congratulations! Your beauty shop is accredited. You can now toggle your listing status to <strong className="font-semibold text-emerald-950">Live Marketplace Active</strong> and receive bookings directly from Johannesburg and Pretoria customers.
                 </p>
               </div>
             </div>
@@ -196,7 +196,7 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
                 </span>
               </div>
               <p className="text-xs text-stone-500 mt-0.5">
-                Complete all beauty shop profile sections to rank higher on the client discovery catalog.
+                Complete all beauty shop profile sections to rank higher on the customer discovery directory.
               </p>
             </div>
             <button
@@ -326,7 +326,7 @@ export const ArtisanDashboardView: React.FC<ArtisanDashboardViewProps> = ({
                   {!isApproved && <Lock className="w-3.5 h-3.5 text-stone-400" />}
                 </div>
                 <p className="text-xs text-stone-500 mt-1 leading-relaxed">
-                  See how Johannesburg and Pretoria clients view your studio before publishing live.
+                  See how Johannesburg and Pretoria customers view your beauty shop before publishing live.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-semibold text-[#b86b86]">

@@ -248,7 +248,7 @@ export const ReportStudioModal: React.FC<ReportStudioModalProps> = ({
                   Authentication Required
                 </h3>
                 <p className="text-xs text-stone-600 leading-relaxed max-w-sm mx-auto mt-1">
-                  To protect our accredited beauty artisans against unverified spam and false claims, reports must be submitted by an authenticated STENZA account holder.
+                  To protect our accredited beauty professionals against unverified spam and false claims, reports must be submitted by an authenticated STENZA account holder.
                 </p>
               </div>
 
@@ -271,7 +271,7 @@ export const ReportStudioModal: React.FC<ReportStudioModalProps> = ({
                   }}
                   className="w-full py-3 bg-[#b86b86] hover:bg-[#a25974] text-white rounded-xl text-xs font-bold transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <span>Sign In or Register to Continue</span>
+                  <span>Sign In or Create Account to Continue</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
@@ -530,7 +530,7 @@ export const ReportStudioModal: React.FC<ReportStudioModalProps> = ({
                 <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 text-[11px] text-stone-600 flex items-start gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <span>
-                    <strong>South Africa POPIA Act Notice:</strong> Your identity is kept strictly confidential. The reported studio is never given your private contact details without your consent.
+                    <strong>South Africa POPIA Act Notice:</strong> Your identity is kept strictly confidential. The reported beauty shop is never given your private contact details without your consent.
                   </span>
                 </div>
 

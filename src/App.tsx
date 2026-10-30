@@ -9,7 +9,6 @@ import { Footer } from './components/Footer';
 import { LocationModal } from './components/LocationModal';
 import { BookingModal } from './components/BookingModal';
 import { CartDrawer, CartItem } from './components/CartDrawer';
-import { LoyaltyModal } from './components/LoyaltyModal';
 import { ConciergeChatModal } from './components/ConciergeChatModal';
 import { AdminAccessModal } from './components/AdminAccessModal';
 import { HomeView } from './views/HomeView';
@@ -32,7 +31,6 @@ import { StudioPreviewView } from './views/artisan/StudioPreviewView';
 
 // Data models & Seed Data
 import { INITIAL_BOOKINGS, Booking, BeautyProduct } from './data/beautyData';
-import { calculateLoyaltySummary, LoyaltyReward } from './data/loyaltyData';
 import { adminService } from './services/adminService';
 import { 
   INITIAL_APPLICATIONS, 
@@ -78,11 +76,6 @@ export default function App() {
   const [currentAppId, setCurrentAppId] = useState<string>('STZ-APP-2026-8812');
   const [currentStudioId, setCurrentStudioId] = useState<string>('studio-nompu-dermal');
 
-  // Loyalty points tracking state
-  const [redeemedPoints, setRedeemedPoints] = useState<number>(0);
-  const [bookingDiscount, setBookingDiscount] = useState<number>(0);
-  const [loyaltyModalOpen, setLoyaltyModalOpen] = useState<boolean>(false);
-
   // Gemini AI Concierge chat state
   const [conciergeChatOpen, setConciergeChatOpen] = useState<boolean>(false);
 
@@ -105,8 +98,6 @@ export default function App() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentView, selectedProviderId]);
-
-  const loyaltySummary = calculateLoyaltySummary(bookings, redeemedPoints);
 
   // Get current active artisan application and studio
   const currentApp = applications.find((a) => a.id === currentAppId) || applications[0];
@@ -362,11 +353,10 @@ export default function App() {
     }));
   };
 
-  // Client Booking & Cart Handlers
-  const handleOpenBookingModal = (providerId?: string, serviceId?: string, discount?: number) => {
+  // Customer Booking & Cart Handlers
+  const handleOpenBookingModal = (providerId?: string, serviceId?: string) => {
     setModalProviderId(providerId || selectedProviderId || 'luxe-nail-studio');
     setModalServiceId(serviceId);
-    setBookingDiscount(discount || 0);
     setReviewBooking(null);
     setBookingModalOpen(true);
   };
@@ -398,21 +388,12 @@ export default function App() {
 
   const handleBookingConfirmed = (newBooking: Booking) => {
     setBookings((prev) => [newBooking, ...prev]);
-    if (bookingDiscount > 0) {
-      setRedeemedPoints((prev) => prev + bookingDiscount);
-      setBookingDiscount(0);
-    }
   };
 
   const handleCancelBooking = (bookingId: string) => {
     setBookings((prev) =>
       prev.map((b) => (b.id === bookingId ? { ...b, status: 'cancelled' } : b))
     );
-  };
-
-  const handleRedeemReward = (reward: LoyaltyReward) => {
-    setRedeemedPoints((prev) => prev + reward.pointsRequired);
-    setBookingDiscount(reward.discountZAR);
   };
 
   const handleAddToCart = (product: BeautyProduct) => {
@@ -550,14 +531,12 @@ export default function App() {
           bookings={bookings}
           isLoggedIn={isLoggedIn}
           onLogout={() => setIsLoggedIn(false)}
-          loyaltyPoints={loyaltySummary.availablePoints}
-          onOpenLoyaltyModal={() => setLoyaltyModalOpen(true)}
         />
       )}
 
       {/* Main Connected View Router */}
       <main className="flex-1">
-        {/* Client Marketplace Views */}
+        {/* Customer Marketplace Views */}
         {currentView === 'home' && (
           <HomeView
             onNavigate={handleNavigate}
@@ -576,6 +555,7 @@ export default function App() {
             onOpenLocationModal={() => setLocationModalOpen(true)}
             initialCategory={discoverCategory}
             initialTab={discoverTab}
+            isCategoryView={currentView === 'categories'}
             onAddToCart={handleAddToCart}
           />
         )}
@@ -584,10 +564,8 @@ export default function App() {
           <ProfileView
             providerId={selectedProviderId}
             onNavigate={handleNavigate}
-            onOpenBookingModal={(pId, sId, discount) => handleOpenBookingModal(pId, sId, discount)}
+            onOpenBookingModal={(pId, sId) => handleOpenBookingModal(pId, sId)}
             bookings={bookings}
-            redeemedPoints={redeemedPoints}
-            onOpenLoyaltyModal={() => setLoyaltyModalOpen(true)}
             isLoggedIn={isLoggedIn}
             currentUserName={clientName}
             currentUserEmail="naledi.mokwena@stenzabeauty.co.za"
@@ -602,8 +580,6 @@ export default function App() {
             onOpenBookingModal={(pId, sId) => handleOpenBookingModal(pId, sId)}
             onOpenReviewModal={handleOpenReviewModal}
             onCancelBooking={handleCancelBooking}
-            redeemedPoints={redeemedPoints}
-            onOpenLoyaltyModal={() => setLoyaltyModalOpen(true)}
             isLoggedIn={isLoggedIn}
             currentUserName={clientName}
             currentUserEmail="naledi.mokwena@stenzabeauty.co.za"
@@ -756,7 +732,6 @@ export default function App() {
         }}
         preselectedProviderId={modalProviderId}
         preselectedServiceId={modalServiceId}
-        preselectedDiscount={bookingDiscount}
         onBookingConfirmed={handleBookingConfirmed}
         onNavigateToBookings={() => handleNavigate('bookings')}
         isLoggedIn={isLoggedIn}
@@ -764,14 +739,6 @@ export default function App() {
         bookingToReview={reviewBooking}
         completedBookings={bookings.filter((b) => b.status === 'completed')}
         onSaveReview={handleSaveBookingReview}
-      />
-
-      <LoyaltyModal
-        isOpen={loyaltyModalOpen}
-        onClose={() => setLoyaltyModalOpen(false)}
-        bookings={bookings}
-        redeemedPoints={redeemedPoints}
-        onRedeemReward={handleRedeemReward}
       />
 
       <ConciergeChatModal
@@ -796,22 +763,22 @@ export default function App() {
         onSuccess={handleAdminAuthSuccess}
       />
 
-      {/* Footer: Artisan vs User Page vs Auth (Hidden on Auth/Login page) */}
+      {/* Footer: Beauty Professional vs Customer Page vs Auth (Hidden on Auth/Login page) */}
       {isAuthView ? null : isArtisanView ? (
         <footer className="bg-[#140a19] text-stone-400 border-t border-[#35193f] py-6 px-4 sm:px-6 text-xs">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Scissors className="w-4 h-4 text-[#d4af37]" />
               <span className="text-stone-300 font-medium">
-                STENZA Beauty Artisan Studio Suite • South African Beauty Network
+                STENZA Beauty Professional Suite • South African Beauty Network
               </span>
             </div>
             <div className="flex items-center gap-4 text-[11px]">
-              <button onClick={() => handleNavigate('artisan_dashboard')} className="hover:text-white transition cursor-pointer">Dashboard</button>
+              <button onClick={() => handleNavigate('artisan_dashboard')} className="hover:text-white transition cursor-pointer">Beauty Professional Dashboard</button>
               <button onClick={() => handleNavigate('services_management')} className="hover:text-white transition cursor-pointer">Services</button>
               <button onClick={() => handleNavigate('house_calls_availability')} className="hover:text-white transition cursor-pointer">Operating Hours</button>
               <button onClick={() => handleNavigate('admin_review')} className="text-emerald-400 hover:text-emerald-300 transition font-semibold cursor-pointer">Admin Portal</button>
-              <button onClick={() => handleNavigate('home')} className="text-pink-300 hover:text-white font-semibold transition cursor-pointer">User Marketplace</button>
+              <button onClick={() => handleNavigate('home')} className="text-pink-300 hover:text-white font-semibold transition cursor-pointer">Customer Marketplace</button>
             </div>
           </div>
         </footer>

@@ -51,6 +51,7 @@ interface DiscoverViewProps {
   onOpenLocationModal: () => void;
   initialCategory?: string;
   initialTab?: 'services' | 'products';
+  isCategoryView?: boolean;
   onAddToCart?: (product: BeautyProduct) => void;
 }
 
@@ -61,6 +62,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
   onOpenLocationModal,
   initialCategory,
   initialTab = 'services',
+  isCategoryView = false,
   onAddToCart
 }) => {
   // Discovery Mode: 'services' (Studios/Artisans) or 'products' (Physical items/collections)
@@ -170,24 +172,24 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         return false;
       }
 
-      // Province filter
-      if (selectedProvince !== 'all') {
+      // Province filter (only when not on Category Page)
+      if (!isCategoryView && selectedProvince !== 'all') {
         const prov = (pro.province || '').toLowerCase();
         if (prov !== selectedProvince.toLowerCase()) {
           return false;
         }
       }
 
-      // Town / City filter
-      if (selectedTown !== 'all') {
+      // Town / City filter (only when not on Category Page)
+      if (!isCategoryView && selectedTown !== 'all') {
         const town = (pro.city || '').toLowerCase();
         if (town !== selectedTown.toLowerCase()) {
           return false;
         }
       }
 
-      // Suburb filter
-      if (selectedSuburb !== 'all') {
+      // Suburb filter (only when not on Category Page)
+      if (!isCategoryView && selectedSuburb !== 'all') {
         const sub = (pro.suburb || '').toLowerCase();
         if (sub !== selectedSuburb.toLowerCase()) {
           return false;
@@ -340,7 +342,8 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
     maxPrice,
     minRating,
     sortBy,
-    searchKeyword
+    searchKeyword,
+    isCategoryView
   ]);
 
   // Filtered Products (Shop Products & Fashion)
@@ -426,23 +429,27 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
             <span>Marketplace</span>
             <span>/</span>
             <span className="text-[#26152d] font-semibold">
-              {activeTab === 'services' ? 'Services Directory' : 'Products & Collections'}
+              {isCategoryView ? 'Categories' : (activeTab === 'services' ? 'Beauty Shops Directory' : 'Products & Collections')}
             </span>
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#26152d]">
-            {activeTab === 'services'
-              ? 'Discover Verified Beauty Artisans & Beauty Shops'
+            {isCategoryView
+              ? 'Explore Beauty Categories & Services'
+              : activeTab === 'services'
+              ? 'Explore Beauty Shops'
               : 'Shop Curated Beauty, Wellness & Fashion'}
           </h1>
           <p className="text-xs text-stone-600 mt-1 max-w-2xl">
-            {activeTab === 'services'
+            {isCategoryView
+              ? 'Explore curated hair, nails, skincare, and aesthetics categories with transparent pricing.'
+              : activeTab === 'services'
               ? `Browse accredited beauty professionals in ${selectedCity} with live availability and transparent South African Rand rates.`
               : 'Authentic South African botanical apothecary, clinical formulas, raw wigs, and local designer fashion drops.'}
           </p>
         </div>
 
-        {/* Change City Button (primarily for services) */}
-        {activeTab === 'services' && (
+        {/* Change City Button (hidden on category page) */}
+        {activeTab === 'services' && !isCategoryView && (
           <button
             onClick={onOpenLocationModal}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-[#d8d3ca] hover:border-[#695684] text-xs font-semibold text-[#26152d] shadow-2xs transition-colors self-start md:self-auto cursor-pointer"
@@ -564,8 +571,8 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
               )}
             </div>
 
-            {/* Structured Artisan Location Filters */}
-            {activeTab === 'services' && (
+            {/* Structured Artisan Location Filters (hidden on Category Page) */}
+            {activeTab === 'services' && !isCategoryView && (
               <div className="space-y-3 pt-2 border-t border-[#f0ede6]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-[#26152d] flex items-center gap-1.5">
@@ -890,9 +897,9 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
           {/* Active Filters Summary Bar */}
           {(selectedPopularShortcut !== 'all' ||
             selectedSpecificService !== 'all' ||
-            selectedProvince !== 'all' ||
-            selectedTown !== 'all' ||
-            selectedSuburb !== 'all' ||
+            (!isCategoryView && selectedProvince !== 'all') ||
+            (!isCategoryView && selectedTown !== 'all') ||
+            (!isCategoryView && selectedSuburb !== 'all') ||
             (activeTab === 'services' && selectedServiceCategory !== 'all') ||
             (activeTab === 'products' && selectedProductCategory !== 'all') ||
             searchKeyword.trim() !== '' ||
@@ -933,7 +940,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                   </span>
                 )}
 
-                {selectedProvince !== 'all' && (
+                {!isCategoryView && selectedProvince !== 'all' && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
                     Province: {selectedProvince}
                     <button
@@ -949,7 +956,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                   </span>
                 )}
 
-                {selectedTown !== 'all' && (
+                {!isCategoryView && selectedTown !== 'all' && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
                     Town: {selectedTown}
                     <button
@@ -964,7 +971,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                   </span>
                 )}
 
-                {selectedSuburb !== 'all' && (
+                {!isCategoryView && selectedSuburb !== 'all' && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-stone-200 text-stone-800 font-medium">
                     Suburb: {selectedSuburb}
                     <button onClick={() => setSelectedSuburb('all')} className="hover:text-rose-600 cursor-pointer">
@@ -1192,14 +1199,14 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                               onClick={() => onNavigate('profile', pro.id)}
                               className="py-2 px-3.5 rounded-xl border border-[#d8d3ca] hover:border-[#695684] text-xs font-semibold text-[#26152d] transition cursor-pointer"
                             >
-                              Beauty Shop
+                              View Beauty Shop
                             </button>
                             <button
                               onClick={() => onOpenBookingModal(pro.id)}
                               className="py-2 px-4 rounded-xl bg-[#26152d] hover:bg-[#3d2348] text-white text-xs font-semibold shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                             >
                               <span className="material-symbols-outlined text-[14px]">calendar_month</span>
-                              <span>Book</span>
+                              <span>Request Appointment</span>
                             </button>
                           </div>
                         </div>
@@ -1269,14 +1276,14 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                           onClick={() => onNavigate('profile', pro.id)}
                           className="py-2.5 px-4 rounded-xl border border-[#d8d3ca] hover:border-[#695684] text-xs font-semibold text-[#26152d] transition-colors cursor-pointer"
                         >
-                          Profile
+                          View Beauty Shop
                         </button>
                         <button
                           onClick={() => onOpenBookingModal(pro.id)}
                           className="py-2.5 px-4 rounded-xl bg-[#26152d] hover:bg-[#3d2348] text-white text-xs font-semibold shadow-xs transition-colors flex items-center justify-center gap-1 cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[14px]">calendar_month</span>
-                          Book
+                          <span>Request Appointment</span>
                         </button>
                       </div>
                     </div>

@@ -579,7 +579,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     onClick={() => handleBookClick(studio.id)}
                     className="flex-1 py-2.5 rounded-xl bg-[#b86b86] hover:bg-[#a25974] text-white text-xs font-bold transition text-center shadow-xs cursor-pointer"
                   >
-                    Book Appointment
+                    Request Appointment
                   </button>
                 )}
               </div>
@@ -644,7 +644,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   onClick={() => handleBookClick('luxe-nail-studio')}
                   className="flex-1 py-2.5 rounded-xl bg-[#b86b86] hover:bg-[#a25974] text-white text-xs font-bold transition text-center shadow-xs cursor-pointer"
                 >
-                  Book Appointment
+                  Request Appointment
                 </button>
               )}
             </div>
@@ -933,7 +933,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         onClick={() => handleBookClick(srv.studioId)}
                         className="flex-1 py-2 rounded-xl bg-[#26152d] hover:bg-[#39263f] text-white text-xs font-bold transition text-center shadow-xs cursor-pointer"
                       >
-                        Book Now
+                        Request Appointment
                       </button>
                     )}
                   </div>
@@ -954,7 +954,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             Why Customers Choose STENZA Beauty
           </h2>
           <p className="text-xs sm:text-sm text-stone-600">
-            A modern booking experience designed for discerning South African clients.
+            A modern booking experience designed for discerning South African customers.
           </p>
         </div>
 
@@ -1335,14 +1335,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 className="w-full h-full object-cover"
               />
               <span className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                Artisan Work Sample
+                Portfolio Work Sample
               </span>
             </div>
 
             <div className="space-y-4 text-xs sm:text-sm">
               <div className="flex items-center justify-between p-3.5 bg-stone-50 rounded-xl border border-stone-200">
                 <div>
-                  <span className="text-[10px] text-stone-500 uppercase font-bold block">Artisan Beauty Shop</span>
+                  <span className="text-[10px] text-stone-500 uppercase font-bold block">Beauty Shop</span>
                   <span className="font-bold text-stone-900">{activeServiceDetail.studioName}</span>
                 </div>
                 <div className="text-right">
@@ -1375,7 +1375,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     className="px-6 py-2.5 bg-[#b86b86] hover:bg-[#a25974] text-white font-bold text-xs rounded-xl transition shadow-md cursor-pointer flex items-center gap-2"
                   >
                     <Calendar className="w-4 h-4" />
-                    <span>Book This Service</span>
+                    <span>Request Appointment</span>
                   </button>
                 ) : (
                   <button
@@ -1385,7 +1385,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     }}
                     className="px-4 py-2 text-xs font-semibold text-[#b86b86] hover:text-[#914660] hover:bg-pink-50 rounded-xl transition cursor-pointer flex items-center gap-1"
                   >
-                    <span>Sign in to book</span>
+                    <span>Sign In to Request Appointment</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 )}

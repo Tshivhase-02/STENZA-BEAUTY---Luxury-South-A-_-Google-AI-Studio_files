@@ -12,8 +12,6 @@ interface HeaderProps {
   bookings: Booking[];
   isLoggedIn: boolean;
   onLogout?: () => void;
-  loyaltyPoints?: number;
-  onOpenLoyaltyModal?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -27,36 +25,24 @@ export const Header: React.FC<HeaderProps> = ({
   bookings,
   isLoggedIn,
   onLogout,
-  loyaltyPoints = 215,
-  onOpenLoyaltyModal,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pendingCount = bookings.filter((b) => b.status === 'pending' || b.status === 'upcoming').length;
 
   return (
     <header className="sticky top-0 z-40 bg-[#ffffff]/95 backdrop-blur-md border-b border-[#e5e0d8] transition-all">
-      {/* Top micro-announcement bar with blush-pink, black and gold accents */}
+      {/* Top announcement bar */}
       <div className="bg-[#26152d] text-[#fcf9f4] text-xs py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="inline-block w-2 h-2 rounded-full bg-[#d4af37] animate-pulse"></span>
             <span className="tracking-wide text-[11px] sm:text-xs">
-             South Africa’s Beauty & Wellness Marketplace
+              South Africa’s Beauty & Wellness Marketplace
             </span>
           </div>
 
           <div className="hidden md:flex items-center gap-4 text-[11px] text-[#d4cfc8]">
-            {isLoggedIn && onOpenLoyaltyModal ? (
-              <button
-                onClick={onOpenLoyaltyModal}
-                className="hover:text-amber-300 transition-colors flex items-center gap-1 font-semibold text-amber-200"
-              >
-                <span className="material-symbols-outlined text-[14px]">diamond</span>
-                <span>Loyalty Balance: {loyaltyPoints} pts</span>
-              </button>
-            ) : (
-              <span className="text-[#b86b86] font-semibold">✨ 100% Escrow Protected</span>
-            )}
+            <span className="text-[#b86b86] font-semibold">✨ 100% Escrow Protected • POPIA Compliant</span>
           
             <button
               onClick={() => onNavigate('admin_review')}
@@ -185,7 +171,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div 
                   onClick={() => onNavigate('bookings')}
                   className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 bg-[#f6f3ee] hover:bg-[#ebe8e3] rounded-full cursor-pointer transition-colors border border-[#e5e0d8] shadow-2xs"
-                  title="My Dashboard"
+                  title="Customer Dashboard"
                 >
                   <img
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoBMuyv1m3ZJeonXSXPwSf9fXxjbLsXmfygfObrLMx9cB8CIEn-BPGAUAazFtUHgteMW0-h8xYzh1AvlcYd_Ht8n1wANl4VfUq9Qdf2gCVXKfusgS_BInruAJ2lTrInOCFiexMWfMOu4fTEQB2L5YKlWabC-Jnmvs_5wwrtmlyi2-hbSnAZA2EmQOnAV1OdT6qRdZig0y_Cn7Ui-BU741im3hnDMoJeS4IbH2z-XSG-rpKSkgP-w_r"
@@ -203,30 +189,28 @@ export const Header: React.FC<HeaderProps> = ({
                 {onLogout && (
                   <button
                     onClick={onLogout}
-                    className="text-xs text-gray-500 hover:text-rose-600 font-medium px-2 py-1 transition-colors hidden sm:inline"
+                    className="text-xs text-gray-500 hover:text-rose-600 font-medium px-2 py-1 transition-colors hidden sm:inline cursor-pointer"
                     title="Sign Out"
                   >
-                    Logout
+                    Sign Out
                   </button>
                 )}
               </div>
             ) : (
-              /* Top-Right: Login & Register Buttons (Register is Primary CTA) */
+              /* Top-Right: Sign In & Create Account Buttons */
               <div className="hidden sm:flex items-center gap-2.5">
-                {/* Login Button: white background, dark text, subtle border */}
                 <button
                   onClick={() => onNavigate('auth', undefined, 'login')}
                   className="px-5 py-2 rounded-full bg-white hover:bg-[#fcf9f4] text-[#26152d] border border-[#d8d3ca] hover:border-[#26152d] text-xs font-semibold tracking-wide transition-all duration-200 shadow-2xs cursor-pointer"
                 >
-                  Login
+                  Sign In
                 </button>
 
-                {/* Register Button: blush-pink background, white text, rounded corners (Primary CTA) */}
                 <button
                   onClick={() => onNavigate('auth', undefined, 'register')}
                   className="px-5 py-2 rounded-full bg-[#b86b86] hover:bg-[#a25974] text-white text-xs font-semibold tracking-wide shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
                 >
-                  Register
+                  Create Account
                 </button>
               </div>
             )}
@@ -248,25 +232,25 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Drawer Navigation with Hamburger */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#ffffff] border-b border-[#e5e0d8] px-4 pt-4 pb-6 space-y-4 shadow-lg animate-in slide-in-from-top-2">
-          {/* Top of mobile drawer: Login & Register Buttons (easy to find) */}
+          {/* Top of mobile drawer: Sign In & Create Account Buttons */}
           <div className="grid grid-cols-2 gap-2 pb-3 border-b border-[#f0ede6]">
             <button
               onClick={() => {
                 onNavigate('auth', undefined, 'login');
                 setMobileMenuOpen(false);
               }}
-              className="w-full py-2.5 rounded-full bg-white hover:bg-[#fcf9f4] text-[#26152d] border border-[#d8d3ca] text-xs font-semibold text-center transition-all shadow-2xs"
+              className="w-full py-2.5 rounded-full bg-white hover:bg-[#fcf9f4] text-[#26152d] border border-[#d8d3ca] text-xs font-semibold text-center transition-all shadow-2xs cursor-pointer"
             >
-              Login
+              Sign In
             </button>
             <button
               onClick={() => {
                 onNavigate('auth', undefined, 'register');
                 setMobileMenuOpen(false);
               }}
-              className="w-full py-2.5 rounded-full bg-[#b86b86] hover:bg-[#a25974] text-white text-xs font-semibold text-center transition-all shadow-sm"
+              className="w-full py-2.5 rounded-full bg-[#b86b86] hover:bg-[#a25974] text-white text-xs font-semibold text-center transition-all shadow-sm cursor-pointer"
             >
-              Register
+              Create Account
             </button>
           </div>
 
@@ -274,7 +258,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="space-y-1">
             <button
               onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
+              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors cursor-pointer"
             >
               Home
             </button>
@@ -286,15 +270,14 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               onClick={() => { onNavigate('discover'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
+              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors cursor-pointer"
             >
-            
               Explore Beauty Shops
             </button>
 
             <button
               onClick={() => { onNavigate('offers'); setMobileMenuOpen(false); }}
-              className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
+              className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors cursor-pointer"
             >
               <span>Updates & Offers</span>
               <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full border border-amber-300">
@@ -304,18 +287,17 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => { onNavigate('how-it-works'); setMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
+              className="w-full text-left px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors cursor-pointer"
             >
-             Your Guide to STENZA
+              Your Guide to STENZA
             </button>
-           
 
             {isLoggedIn && (
               <button
                 onClick={() => { onNavigate('bookings'); setMobileMenuOpen(false); }}
-                className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors"
+                className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-[#26152d] hover:bg-[#f6f3ee] rounded-lg transition-colors cursor-pointer"
               >
-                <span>My Bookings & Profile</span>
+                <span>Customer Dashboard</span>
                 <span className="bg-[#b86b86] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
                   {pendingCount} active
                 </span>
@@ -329,7 +311,7 @@ export const Header: React.FC<HeaderProps> = ({
               onOpenLocationModal();
               setMobileMenuOpen(false);
             }}
-            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#f6f3ee] text-xs font-medium text-[#26152d]"
+            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-[#f6f3ee] text-xs font-medium text-[#26152d] cursor-pointer"
           >
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[18px] text-[#b86b86]">location_on</span>
@@ -338,7 +320,7 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-[#b86b86] font-semibold text-[11px]">Change</span>
           </button>
 
-          {/* Dedicated Portal Options for Admins & Artisans */}
+          {/* Dedicated Portal Options for Admins & Beauty Professionals */}
           <div className="pt-2 border-t border-[#e5e0d8] space-y-1.5">
             <button
               onClick={() => {
@@ -349,7 +331,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <span className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-emerald-600">shield_person</span>
-                <span>Admin Accreditation Portal</span>
+                <span>Admin Portal</span>
               </span>
               <span className="text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded font-mono font-bold">
                 Admin
@@ -364,10 +346,10 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <span className="flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-[#b86b86]">storefront</span>
-                <span>Artisan Suite</span>
+                <span>Beauty Professional Dashboard</span>
               </span>
               <span className="text-[10px] bg-pink-200 text-[#7c535c] px-1.5 py-0.5 rounded font-mono font-bold">
-                Artisan
+                Professional
               </span>
             </button>
           </div>

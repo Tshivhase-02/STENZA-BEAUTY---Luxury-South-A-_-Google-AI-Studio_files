@@ -209,7 +209,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
               Beauty starts here.
             </h1>
             <p className="text-xs text-stone-200 mt-1 leading-relaxed drop-shadow-xs">
-              Find a studio. Choose your service. Book your visit.
+              Find a beauty shop. Choose your service. Request your appointment.
             </p>
           </div>
         </div>
@@ -217,7 +217,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
         {/* ================= RIGHT SIDE: Clean, Modern Authentication Portal ================= */}
         <div className="lg:col-span-7 p-6 sm:p-8 lg:p-10 flex flex-col justify-between bg-white">
           <div>
-            {/* Top Navigation Switcher: Sign In vs Create Account vs Artisan Registry */}
+            {/* Top Navigation Switcher: Sign In vs Create Account vs Register Your Beauty Business */}
             <div className="flex items-center justify-between pb-5 mb-5 border-b border-[#e5e0d8] flex-wrap gap-2">
               <div className="flex items-center gap-1 p-1 rounded-2xl bg-[#f6f3ee] text-xs font-semibold text-stone-600">
                 <button
@@ -229,7 +229,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       : 'hover:text-[#26152d]'
                   }`}
                 >
-                  Log in
+                  Sign In
                 </button>
                 <button
                   type="button"
@@ -240,7 +240,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       : 'hover:text-[#26152d]'
                   }`}
                 >
-                  Create account
+                  Create Account
                 </button>
                 <button
                   type="button"
@@ -251,7 +251,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       : 'hover:text-[#26152d]'
                   }`}
                 >
-                  Artisan registry
+                  Register Your Beauty Business
                 </button>
               </div>
 
@@ -273,11 +273,11 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     Welcome back
                   </h2>
                   <p className="text-xs text-stone-500 mt-1">
-                    Sign in to access your appointments and saved studios.
+                    Sign in to access your appointments and saved beauty shops.
                   </p>
                 </div>
 
-                {/* Account Type Selector: Strictly Customer and Artisan Studio (Administrator option removed) */}
+                {/* Account Type Selector: Strictly Customer and Beauty Professional */}
                 <div>
                   <label className="block text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1.5">
                     Account type
@@ -306,7 +306,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       }`}
                     >
                       <Scissors className="w-4 h-4 text-[#b86b86]" />
-                      <span>Artisan Studio</span>
+                      <span>Beauty Professional</span>
                     </button>
                   </div>
                 </div>
@@ -394,7 +394,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       className="w-full py-3 px-6 rounded-xl bg-[#b86b86] hover:bg-[#a25974] text-white text-xs sm:text-sm font-bold tracking-wide shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                     >
                       <span>
-                        {loginRole === 'client' ? 'Log in' : 'Log in to Studio'}
+                        {loginRole === 'client' ? 'Sign In' : 'Sign In as Beauty Professional'}
                       </span>
                       <ArrowRight className="w-4 h-4" />
                     </button>
@@ -451,7 +451,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     onClick={() => setAuthMode('register')}
                     className="font-bold text-[#b86b86] hover:text-[#a25974] hover:underline cursor-pointer"
                   >
-                    Create account
+                    Create Account
                   </button>
                 </div>
               </div>
@@ -576,7 +576,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       type="submit"
                       className="w-full py-3 rounded-xl bg-[#b86b86] hover:bg-[#a25974] text-white text-xs sm:text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span>Create account</span>
+                      <span>Create Account</span>
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -588,22 +588,22 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       onClick={() => setAuthMode('login')}
                       className="font-bold text-[#b86b86] hover:underline cursor-pointer"
                     >
-                      Log in here
+                      Sign In here
                     </button>
                   </div>
                 </form>
               </div>
             )}
 
-            {/* ================= FORM 3: ARTISAN REGISTRATION PROMPT ================= */}
+            {/* ================= FORM 3: BEAUTY PROFESSIONAL REGISTRATION ================= */}
             {authMode === 'pro' && (
               <div className="space-y-4">
                 <div>
                   <h2 className="font-serif text-2xl font-bold text-[#26152d]">
-                    Artisan studio registry
+                    Register Your Beauty Business
                   </h2>
                   <p className="text-xs text-stone-500 mt-1">
-                    Join South Africa's trusted network of independent beauty artists.
+                    Join South Africa's trusted network of verified beauty professionals.
                   </p>
                 </div>
 
@@ -611,16 +611,16 @@ export const AuthView: React.FC<AuthViewProps> = ({
                   <div className="p-3 bg-[#fbf0f4] rounded-xl border border-[#f0d0dc] text-xs text-[#26152d] space-y-1">
                     <div className="font-bold text-[#b86b86] flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" />
-                      <span>Artisan benefits</span>
+                      <span>Beauty professional benefits</span>
                     </div>
                     <p className="text-stone-700 leading-relaxed text-[11px]">
-                      Manage appointments, set your prices and travel fees, and receive verified client bookings.
+                      Manage appointments, set your prices and travel fees, and receive verified customer bookings.
                     </p>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-stone-800 mb-1">
-                      Business or studio name
+                      Beauty shop or business name
                     </label>
                     <input
                       type="text"
@@ -684,7 +684,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       type="submit"
                       className="w-full py-3 rounded-xl bg-[#26152d] hover:bg-[#39263f] text-white text-xs sm:text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span>Register your studio</span>
+                      <span>Register Your Beauty Business</span>
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -699,7 +699,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       }}
                       className="font-bold text-[#b86b86] hover:underline cursor-pointer"
                     >
-                      Log in to Studio
+                      Sign In as Beauty Professional
                     </button>
                   </div>
                 </form>

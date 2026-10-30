@@ -196,7 +196,7 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-pink-500/30 text-pink-200 px-2 py-0.5 rounded border border-pink-400/40">
-                  Client Perspective Preview
+                  Customer Perspective Preview
                 </span>
                 <span className="text-xs text-stone-300">
                   {studio.isPublished ? 'Status: Public Live' : 'Status: Unpublished Draft'}
@@ -245,7 +245,7 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
               onClick={() => onNavigate('artisan_dashboard')}
               className="px-3.5 py-1.5 bg-[#b86b86] hover:bg-[#a25974] text-white rounded-lg text-xs font-semibold transition cursor-pointer"
             >
-              Return to Artisan Suite
+              Return to Professional Dashboard
             </button>
           </div>
         </div>
@@ -631,14 +631,14 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
               <div className="flex items-center gap-2 mb-3">
                 <MapPin className="w-5 h-5 text-[#b86b86]" />
                 <h4 className="text-sm font-bold text-[#26152d] uppercase tracking-wider">
-                  Studio Location
+                  Beauty Shop Location
                 </h4>
               </div>
               <p className="text-xs text-stone-700 leading-relaxed mb-4">
                 {studio.address}
               </p>
               <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 text-center text-xs text-stone-500 font-medium">
-                📍 Secured access premises with client parking available
+                📍 Secured access premises with customer parking available
               </div>
             </div>
           </div>
@@ -928,7 +928,7 @@ export const StudioPreviewView: React.FC<StudioPreviewViewProps> = ({
                     }`}
                   >
                     <CheckCircle2 className="w-4 h-4 text-[#d4af37]" />
-                    <span>Confirm Appointment ({selectedTimeSlot || 'Pick Slot'})</span>
+                    <span>Request Appointment ({selectedTimeSlot || 'Pick Slot'})</span>
                   </button>
                 </div>
               </div>

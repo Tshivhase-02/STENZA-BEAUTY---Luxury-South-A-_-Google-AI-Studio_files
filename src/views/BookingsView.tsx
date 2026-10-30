@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Booking } from '../data/beautyData';
-import { calculateLoyaltySummary } from '../data/loyaltyData';
 import { adminService } from '../services/adminService';
 import { StudioReport, ReportStatus } from '../types/admin';
 import { ReportStudioModal } from '../components/ReportStudioModal';
@@ -27,8 +26,8 @@ interface BookingsViewProps {
   onOpenBookingModal: (providerId?: string, serviceId?: string) => void;
   onOpenReviewModal?: (booking: Booking) => void;
   onCancelBooking: (bookingId: string) => void;
-  redeemedPoints: number;
-  onOpenLoyaltyModal: () => void;
+  redeemedPoints?: number;
+  onOpenLoyaltyModal?: () => void;
   isLoggedIn?: boolean;
   currentUserName?: string;
   currentUserEmail?: string;
@@ -42,8 +41,6 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
   onOpenBookingModal,
   onOpenReviewModal,
   onCancelBooking,
-  redeemedPoints,
-  onOpenLoyaltyModal,
   isLoggedIn = true,
   currentUserName = 'Naledi Mokwena',
   currentUserEmail = 'naledi.mokwena@stenzabeauty.co.za',
@@ -73,8 +70,6 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
     const updated = adminService.getCustomerReports(currentUserEmail);
     setCustomerReports(updated);
   };
-
-  const loyaltySummary = calculateLoyaltySummary(bookings, redeemedPoints);
 
   const filteredBookings = bookings.filter((b) => {
     if (filterTab === 'all') return true;
@@ -146,7 +141,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
         </div>
       )}
 
-      {/* Client Header Card with Loyalty Summary & Section Switcher */}
+      {/* Customer Header Card */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#e5e0d8] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-5 text-center sm:text-left">
           <div className="relative">
@@ -166,11 +161,11 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                 Welcome back, {currentUserName.split(' ')[0]}
               </h1>
               <span className="text-[10px] font-bold bg-[#f6d9fb] text-[#39263f] px-2 py-0.5 rounded-full">
-                {loyaltySummary.tier}
+                Verified Customer
               </span>
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
-              Sandton Central, Johannesburg • Verified Client ({currentUserEmail})
+              Sandton Central, Johannesburg • Verified Customer ({currentUserEmail})
             </p>
 
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 mt-3 text-xs">
@@ -178,13 +173,9 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                 <strong className="text-[#695684]">{bookings.filter(b => b.status === 'completed').length}</strong> Treatments Completed
               </span>
               <span className="text-gray-300">•</span>
-              <button
-                onClick={onOpenLoyaltyModal}
-                className="flex items-center gap-1 text-[#695684] font-bold hover:underline cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[15px] text-amber-500">diamond</span>
-                <span>{loyaltySummary.totalPointsEarned} Total Loyalty Points</span>
-              </button>
+              <span className="text-gray-600">
+                <strong className="text-[#695684]">{bookings.filter(b => b.status === 'upcoming').length}</strong> Upcoming Bookings
+              </span>
             </div>
           </div>
         </div>
@@ -192,18 +183,11 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto">
           <button
-            onClick={onOpenLoyaltyModal}
-            className="py-3 px-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold hover:bg-amber-100 transition-colors flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[18px] text-amber-600">diamond</span>
-            <span>Rewards: {loyaltySummary.availablePoints} pts</span>
-          </button>
-          <button
             onClick={() => onOpenBookingModal()}
             className="py-3 px-5 rounded-xl bg-[#695684] hover:bg-[#584572] text-white text-xs font-semibold shadow-sm transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">add_circle</span>
-            <span>New Appointment</span>
+            <span>Request Appointment</span>
           </button>
         </div>
       </div>
@@ -248,41 +232,13 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
 
         <div className="hidden lg:flex items-center gap-2 text-[11px] text-stone-500 pr-2">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>POPIA Act 4 of 2013 Protected • Confidential Client Privacy</span>
+          <span>POPIA Act 4 of 2013 Protected • Confidential Customer Privacy</span>
         </div>
       </div>
 
       {/* SECTION 1: MY APPOINTMENTS */}
       {activeMainSection === 'appointments' && (
         <div className="space-y-6">
-          {/* Loyalty Points Banner */}
-          <div 
-            onClick={onOpenLoyaltyModal}
-            className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#26152d] via-[#39263f] to-[#695684] text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 cursor-pointer hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center text-amber-300 flex-shrink-0">
-                <span className="material-symbols-outlined text-[24px]">workspace_premium</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold font-serif">STENZA Loyalty Program</span>
-                  <span className="text-[10px] bg-amber-400 text-[#26152d] font-bold px-2 py-0.2 rounded-full">
-                    {loyaltySummary.tier}
-                  </span>
-                </div>
-                <p className="text-xs text-stone-200 mt-0.5">
-                  You have earned <strong className="text-white">{loyaltySummary.totalPointsEarned} points</strong> from completed treatments across South Africa.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#f6d9fb]">
-              <span>View Rewards & Vouchers</span>
-              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-            </div>
-          </div>
-
           {/* Main Grid: Bookings + Support Sidebar */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Left Column: Bookings with Status Tabs */}
@@ -325,19 +281,18 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                     No bookings in this tab
                   </h4>
                   <p className="text-xs text-gray-500 max-w-xs mx-auto">
-                    Ready to pamper yourself? Explore verified studios in Sandton, Rosebank, and Camps Bay.
+                    Ready to pamper yourself? Explore verified beauty shops in Sandton, Rosebank, and Camps Bay.
                   </p>
                   <button
                     onClick={() => onNavigate('discover')}
                     className="py-2 px-4 rounded-xl bg-[#695684] text-white text-xs font-semibold hover:bg-[#584572] cursor-pointer"
                   >
-                    Discover Salons
+                    Explore Beauty Shops
                   </button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {filteredBookings.map((b) => {
-                    const bookingPoints = Math.floor(b.servicePrice / 10);
                     return (
                       <div
                         key={b.id}
@@ -365,7 +320,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                             {b.status === 'pending' && (
                               <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                Pending Studio Confirmation
+                                Pending Beauty Shop Confirmation
                               </span>
                             )}
                             {b.status === 'upcoming' && (
@@ -377,7 +332,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                             {b.status === 'completed' && (
                               <span className="text-[11px] font-semibold bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                                 <span className="material-symbols-outlined text-[13px] text-emerald-600">check</span>
-                                <span>Completed (+{bookingPoints} pts)</span>
+                                <span>Completed</span>
                               </span>
                             )}
                             {b.status === 'cancelled' && (
@@ -410,12 +365,6 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                                 <span className="material-symbols-outlined text-[16px] text-gray-400">schedule</span>
                                 <span>{b.date} • {b.time}</span>
                               </div>
-                              {b.status === 'completed' && (
-                                <div className="flex items-center gap-1 mt-1 text-[11px] text-emerald-700 font-semibold">
-                                  <span className="material-symbols-outlined text-[13px]">diamond</span>
-                                  <span>Earned {bookingPoints} STENZA Loyalty Points</span>
-                                </div>
-                              )}
                               {b.notes && (
                                 <p className="text-[11px] text-gray-500 mt-1 italic">
                                   Note: "{b.notes}"
@@ -437,7 +386,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                                             ))}
                                           </span>
                                           <span className="ml-1 text-[11px] font-bold text-amber-950">
-                                            {b.rating}.0 • Verified Client Feedback
+                                            {b.rating}.0 • Verified Customer Feedback
                                           </span>
                                         </div>
                                         {b.reviewedAt && (
@@ -571,14 +520,6 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
                                 )}
 
                                 <button
-                                  onClick={onOpenLoyaltyModal}
-                                  className="py-1.5 px-3 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                                >
-                                  <span className="material-symbols-outlined text-[14px] text-amber-600">diamond</span>
-                                  <span>+{bookingPoints} pts earned</span>
-                                </button>
-
-                                <button
                                   onClick={() => onOpenBookingModal(b.providerId, b.serviceId)}
                                   className="py-1.5 px-3.5 rounded-lg bg-[#695684] hover:bg-[#584572] text-white font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                                 >
@@ -688,7 +629,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
           <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/90 text-xs text-amber-900 flex items-start gap-3">
             <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
             <div className="text-[11px] leading-relaxed">
-              <strong className="font-semibold text-amber-950">Strict Customer Isolation Guarantee:</strong> Under South African POPIA Act 4 of 2013, only reports submitted under your verified account (<code className="font-mono bg-white/70 px-1 py-0.2 rounded text-[10px]">{currentUserEmail}</code>) are retrievable. In production, this view queries <code className="font-mono font-bold">GET /api/me/reports</code> with JWT credentials; other client records are completely inaccessible.
+              <strong className="font-semibold text-amber-950">Strict Customer Isolation Guarantee:</strong> Under South African POPIA Act 4 of 2013, only reports submitted under your verified account (<code className="font-mono bg-white/70 px-1 py-0.2 rounded text-[10px]">{currentUserEmail}</code>) are retrievable. In production, this view queries <code className="font-mono font-bold">GET /api/me/reports</code> with JWT credentials; other customer records are completely inaccessible.
             </div>
           </div>
 

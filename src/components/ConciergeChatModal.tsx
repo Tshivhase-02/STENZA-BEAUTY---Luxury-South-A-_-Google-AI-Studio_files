@@ -21,7 +21,7 @@ export const ConciergeChatModal: React.FC<ConciergeChatModalProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'assistant',
-      content: `Dumelang! Welcome to the STENZA Mzansi Beauty Concierge. I am your personal luxury beauty and wellness advisor for South Africa. How can I assist you with discovering top studios in ${selectedCity}, finding treatments, or tracking your loyalty points today?`,
+      content: `Dumelang! Welcome to the STENZA Mzansi Beauty Concierge. I am your personal beauty and wellness advisor for South Africa. How can I assist you with discovering verified beauty shops in ${selectedCity}, finding treatments, or requesting appointments today?`,
       timestamp: 'Just now',
     },
   ]);
@@ -113,8 +113,8 @@ export const ConciergeChatModal: React.FC<ConciergeChatModalProps> = ({
   };
 
   const samplePrompts = [
-    'How do I earn STENZA loyalty points on my bookings?',
-    `Find top beauty salons & nail studios in ${selectedCity}`,
+    'How do I request an appointment with a verified beauty shop?',
+    `Find top beauty salons & nail shops in ${selectedCity}`,
     'What is the difference between Russian Manicure & BIAB?',
     'How does South African escrow payment protection work?',
   ];
@@ -257,7 +257,7 @@ export const ConciergeChatModal: React.FC<ConciergeChatModalProps> = ({
           >
             <input
               type="text"
-              placeholder="Ask about salons, loyalty points, or treatments..."
+              placeholder="Ask about beauty shops, appointments, or treatments..."
               value={inputPrompt}
               onChange={(e) => setInputPrompt(e.target.value)}
               disabled={isLoading}
