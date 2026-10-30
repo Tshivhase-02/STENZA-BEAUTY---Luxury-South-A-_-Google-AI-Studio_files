@@ -118,6 +118,25 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
   // Navigation State
   const [activeTab, setActiveTab] = useState<AdminNavTab>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [isDevMode, setIsDevMode] = useState<boolean>(true);
+
+  // Check admin auth configuration
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/admin/auth-config')
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && typeof data.devMode === 'boolean') {
+          setIsDevMode(data.devMode);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setIsDevMode(import.meta.env.DEV);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   
   // Data state from adminService
   const [studios, setStudios] = useState<AdminStudio[]>([]);
@@ -621,6 +640,11 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
                 <span className="text-[10px] text-stone-400 font-medium block">
                   Admin Governance Portal
                 </span>
+                {isDevMode && (
+                  <span className="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                    DEVELOPMENT MODE
+                  </span>
+                )}
               </div>
             </div>
 
@@ -728,6 +752,12 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
                 <span className="text-xs font-bold text-[#26152d] capitalize">
                   {navItems.find((n) => n.id === activeTab)?.label}
                 </span>
+                {isDevMode && (
+                  <span className="ml-1 sm:ml-2 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs inline-flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3 text-amber-600" />
+                    <span>DEVELOPMENT MODE</span>
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -783,6 +813,30 @@ export const AdminReviewView: React.FC<AdminReviewViewProps> = ({
 
         {/* VIEW BODY */}
         <main className="p-4 sm:p-6 flex-1 max-w-7xl w-full mx-auto space-y-6">
+          {/* Prominent Development Mode Notice */}
+          {isDevMode && (
+            <div className="bg-amber-50/90 border border-amber-300 rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-950 shadow-2xs">
+              <div className="flex items-start sm:items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-amber-200/80 text-amber-900 shrink-0 mt-0.5 sm:mt-0">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider text-[10px] bg-amber-300 text-amber-950 border border-amber-400/60">
+                      DEVELOPMENT MODE
+                    </span>
+                    <span className="font-bold text-amber-950 text-xs">Temporary Development Access Active</span>
+                  </div>
+                  <p className="text-[11px] text-amber-800 mt-0.5">
+                    Any non-empty username & password grants access. Existing credentials are not required in development mode.
+                  </p>
+                </div>
+              </div>
+              <div className="text-[11px] font-medium text-amber-800/90 bg-amber-100/60 px-2.5 py-1 rounded-lg border border-amber-200 shrink-0 self-start sm:self-auto">
+                Automatically disabled in production
+              </div>
+            </div>
+          )}
 
           {/* ================= 1. DASHBOARD ================= */}
           {activeTab === 'dashboard' && (

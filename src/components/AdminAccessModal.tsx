@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Eye, EyeOff, X, ArrowLeft, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Eye, EyeOff, X, ArrowLeft, Loader2, AlertTriangle, ShieldCheck } from 'lucide-react';
 
 interface AdminAccessModalProps {
   isOpen: boolean;
@@ -17,6 +17,31 @@ export const AdminAccessModal: React.FC<AdminAccessModalProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDevMode, setIsDevMode] = useState<boolean>(true);
+
+  // Check backend admin auth configuration on open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    let isMounted = true;
+    fetch('/api/admin/auth-config')
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && typeof data.devMode === 'boolean') {
+          setIsDevMode(data.devMode);
+        }
+      })
+      .catch(() => {
+        // Fallback: check frontend environment (disabled in production builds)
+        if (isMounted) {
+          setIsDevMode(import.meta.env.DEV);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -61,7 +86,17 @@ export const AdminAccessModal: React.FC<AdminAccessModalProps> = ({
         setError(data.error || 'Authentication failed. Please verify your credentials.');
       }
     } catch {
-      // Local fallback for offline mode/preview: check against admin access ID pattern
+      // Local fallback for offline mode/preview
+      if (isDevMode) {
+        // In development mode: Allow access using any non-empty credentials
+        setIsSubmitting(false);
+        setUsernameOrEmail('');
+        setPassword('');
+        onSuccess();
+        return;
+      }
+
+      // In production / standard mode: verify against standard admin accounts
       const normalized = cleanUser.toUpperCase();
       const validAccounts = [
         'STZ-ADMIN-2026',
@@ -92,11 +127,18 @@ export const AdminAccessModal: React.FC<AdminAccessModalProps> = ({
         aria-labelledby="admin-sign-in-title"
       >
         {/* Top Header */}
-        <div className="px-6 pt-6 pb-4 border-b border-stone-100 flex items-start justify-between">
+        <div className="px-6 pt-5 pb-4 border-b border-stone-100 flex items-start justify-between">
           <div>
-            <span className="font-serif text-lg font-bold tracking-wider text-[#26152d]">
-              STENZA <span className="font-light text-[#b86b86]">BEAUTY</span>
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-serif text-lg font-bold tracking-wider text-[#26152d]">
+                STENZA <span className="font-light text-[#b86b86]">BEAUTY</span>
+              </span>
+              {isDevMode && (
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300">
+                  DEVELOPMENT MODE
+                </span>
+              )}
+            </div>
             <h2 id="admin-sign-in-title" className="text-base font-semibold text-stone-900 mt-1">
               Admin Sign In
             </h2>
@@ -109,6 +151,24 @@ export const AdminAccessModal: React.FC<AdminAccessModalProps> = ({
             <X className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Development Mode Notice Banner */}
+        {isDevMode && (
+          <div className="mx-6 mt-4 p-3 rounded-xl bg-amber-50/90 border border-amber-300 text-amber-950 text-xs flex items-start gap-2.5">
+            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div className="space-y-0.5 leading-relaxed">
+              <div className="font-bold text-amber-900 flex items-center gap-1.5">
+                <span>DEVELOPMENT MODE ACTIVE</span>
+              </div>
+              <p className="text-[11px] text-amber-800">
+                You can enter using <strong>any non-empty username and password</strong>. Existing credentials are not required.
+              </p>
+              <p className="text-[10px] text-amber-700/80">
+                (Automatically disabled in production)
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -129,7 +189,7 @@ export const AdminAccessModal: React.FC<AdminAccessModalProps> = ({
                 setUsernameOrEmail(e.target.value);
                 setError('');
               }}
-              placeholder="e.g. STZ-ADMIN-2026"
+              placeholder={isDevMode ? "Enter any username (Dev Mode)" : "e.g. STZ-ADMIN-2026"}
               className="w-full px-3 py-2 text-sm bg-white border border-stone-300 rounded-lg focus:outline-none focus:border-[#695684] text-stone-900 transition-colors"
               autoFocus
               autoComplete="username"

@@ -93,11 +93,41 @@ Your mission:
   }
 });
 
+// Official STENZA Admin Access Identifiers (Existing credentials unchanged)
+const VALID_ADMIN_ACCOUNTS = [
+  'STZ-ADMIN-2026',
+  'ADMIN@STENZA.CO.ZA',
+  'ADMIN2026',
+  'STENZA-ADMIN',
+  'ADMIN',
+  'ZA-COMPLIANCE-8812',
+];
+
+// Helper to determine if Admin Demo / Development Mode is active
+// Enforces:
+// 1. Configurable via ADMIN_DEMO_MODE environment variable
+// 2. ONLY enabled in local development (NODE_ENV !== 'production')
+// 3. Automatically disabled in production
+function getAdminDemoMode(): boolean {
+  if (process.env.NODE_ENV === 'production') {
+    return false;
+  }
+  return process.env.ADMIN_DEMO_MODE !== 'false' && process.env.ADMIN_DEMO_MODE !== '0';
+}
+
+// Endpoint to inspect admin authentication configuration and mode
+app.get('/api/admin/auth-config', (_req, res) => {
+  return res.json({
+    devMode: getAdminDemoMode(),
+    isProduction: process.env.NODE_ENV === 'production',
+  });
+});
+
 // Admin Authentication endpoint (Backend protected authorization)
 app.post('/api/admin/login', (req, res) => {
   try {
     const { usernameOrEmail, password } = req.body;
-    const cleanUser = (usernameOrEmail || '').trim().toUpperCase();
+    const cleanUser = (usernameOrEmail || '').trim();
     const cleanPass = (password || '').trim();
 
     if (!cleanUser) {
@@ -114,27 +144,41 @@ app.post('/api/admin/login', (req, res) => {
       });
     }
 
-    // Official STENZA Admin Access Identifiers
-    const VALID_ADMIN_ACCOUNTS = [
-      'STZ-ADMIN-2026',
-      'ADMIN@STENZA.CO.ZA',
-      'ADMIN2026',
-      'STENZA-ADMIN',
-      'ADMIN',
-      'ZA-COMPLIANCE-8812',
-    ];
+    // Do NOT save or log the temporary username or password.
+    const isDevMode = getAdminDemoMode();
 
-    const isAuthorized = VALID_ADMIN_ACCOUNTS.includes(cleanUser);
+    if (isDevMode) {
+      // Temporary development mode: Allow access using any non-empty username & password.
+      // Do not require existing admin credentials while this temporary mode is enabled.
+      const normalized = cleanUser.toUpperCase();
+      const isKnownAdmin = VALID_ADMIN_ACCOUNTS.includes(normalized);
+
+      return res.json({
+        success: true,
+        devMode: true,
+        officer: {
+          name: isKnownAdmin ? 'Govender M.' : 'Development Admin',
+          role: isKnownAdmin ? 'Accreditation & Compliance Officer' : 'Temporary Admin (Dev Mode)',
+          desk: 'South African Marketplace Governance',
+        },
+        token: `stz_adm_dev_${Date.now()}`,
+      });
+    }
+
+    // Production / Standard mode: Check against existing valid admin accounts
+    const normalized = cleanUser.toUpperCase();
+    const isAuthorized = VALID_ADMIN_ACCOUNTS.includes(normalized);
 
     if (isAuthorized) {
       return res.json({
         success: true,
+        devMode: false,
         officer: {
           name: 'Govender M.',
           role: 'Accreditation & Compliance Officer',
           desk: 'South African Marketplace Governance',
         },
-        token: `stz_adm_${Buffer.from(cleanUser + Date.now()).toString('base64').slice(0, 24)}`,
+        token: `stz_adm_${Buffer.from(normalized + Date.now()).toString('base64').slice(0, 24)}`,
       });
     }
 
